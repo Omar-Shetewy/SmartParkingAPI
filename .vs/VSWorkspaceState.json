@@ -1,15 +1,12 @@
 {
   "ExpandedNodes": [
     "",
+    "\\SmartParkingAPI",
+    "\\SmartParkingAPI\\bin",
     "\\SmartParkingAPI\\bin\\Debug",
-    "\\SmartParkingAPI\\bin\\Debug\\net9.0",
-    "\\SmartParkingAPI\\bin\\Release",
-    "\\SmartParkingAPI\\bin\\Release\\net9.0",
     "\\SmartParkingAPI\\obj",
     "\\SmartParkingAPI\\obj\\Debug",
-    "\\SmartParkingAPI\\SmartParkingAPI\\obj",
-    "\\SmartParkingAPI\\SmartParkingAPI\\obj\\Debug",
-    "\\SmartParkingAPI\\SmartParkingAPI\\obj\\Debug\\net9.0"
+    "\\SmartParkingAPI\\obj\\Debug\\net9.0"
   ],
   "SelectedNode": "\\SmartParkingAPI.sln",
   "PreviewInSolutionExplorer": false
