@@ -1,7 +1,28 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "D:\\Mohamed_Mostafa\\My_GitHub\\SmartParkingAPI\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{247CBC5B-FD7E-4251-854F-DAA59730BE3E}|SmartParkingAPI\\SmartParkingAPI.csproj|d:\\mohamed_mostafa\\my_github\\smartparkingapi\\smartparkingapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{247CBC5B-FD7E-4251-854F-DAA59730BE3E}|SmartParkingAPI\\SmartParkingAPI.csproj|solutionrelative:smartparkingapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{247CBC5B-FD7E-4251-854F-DAA59730BE3E}|SmartParkingAPI\\SmartParkingAPI.csproj|d:\\mohamed_mostafa\\my_github\\smartparkingapi\\smartparkingapi\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{247CBC5B-FD7E-4251-854F-DAA59730BE3E}|SmartParkingAPI\\SmartParkingAPI.csproj|solutionrelative:smartparkingapi\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{247CBC5B-FD7E-4251-854F-DAA59730BE3E}|SmartParkingAPI\\SmartParkingAPI.csproj|d:\\mohamed_mostafa\\my_github\\smartparkingapi\\smartparkingapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{247CBC5B-FD7E-4251-854F-DAA59730BE3E}|SmartParkingAPI\\SmartParkingAPI.csproj|solutionrelative:smartparkingapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{247CBC5B-FD7E-4251-854F-DAA59730BE3E}|SmartParkingAPI\\SmartParkingAPI.csproj|d:\\mohamed_mostafa\\my_github\\smartparkingapi\\smartparkingapi\\controllers\\weatherforecastcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{247CBC5B-FD7E-4251-854F-DAA59730BE3E}|SmartParkingAPI\\SmartParkingAPI.csproj|solutionrelative:smartparkingapi\\controllers\\weatherforecastcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{247CBC5B-FD7E-4251-854F-DAA59730BE3E}|SmartParkingAPI\\SmartParkingAPI.csproj|d:\\mohamed_mostafa\\my_github\\smartparkingapi\\smartparkingapi\\weatherforecast.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{247CBC5B-FD7E-4251-854F-DAA59730BE3E}|SmartParkingAPI\\SmartParkingAPI.csproj|solutionrelative:smartparkingapi\\weatherforecast.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,7 +30,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 228,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Bookmark",
@@ -18,6 +39,75 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c64b9c2-e352-428e-a56d-0ace190b99a6}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "launchSettings.json",
+              "DocumentMoniker": "D:\\Mohamed_Mostafa\\My_GitHub\\SmartParkingAPI\\SmartParkingAPI\\Properties\\launchSettings.json",
+              "RelativeDocumentMoniker": "SmartParkingAPI\\Properties\\launchSettings.json",
+              "ToolTip": "D:\\Mohamed_Mostafa\\My_GitHub\\SmartParkingAPI\\SmartParkingAPI\\Properties\\launchSettings.json*",
+              "RelativeToolTip": "SmartParkingAPI\\Properties\\launchSettings.json*",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-03-10T00:29:19.58Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\Mohamed_Mostafa\\My_GitHub\\SmartParkingAPI\\SmartParkingAPI\\appsettings.json",
+              "RelativeDocumentMoniker": "SmartParkingAPI\\appsettings.json",
+              "ToolTip": "D:\\Mohamed_Mostafa\\My_GitHub\\SmartParkingAPI\\SmartParkingAPI\\appsettings.json",
+              "RelativeToolTip": "SmartParkingAPI\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-03-10T00:29:16.558Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "WeatherForecastController.cs",
+              "DocumentMoniker": "D:\\Mohamed_Mostafa\\My_GitHub\\SmartParkingAPI\\SmartParkingAPI\\Controllers\\WeatherForecastController.cs",
+              "RelativeDocumentMoniker": "SmartParkingAPI\\Controllers\\WeatherForecastController.cs",
+              "ToolTip": "D:\\Mohamed_Mostafa\\My_GitHub\\SmartParkingAPI\\SmartParkingAPI\\Controllers\\WeatherForecastController.cs",
+              "RelativeToolTip": "SmartParkingAPI\\Controllers\\WeatherForecastController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-10T00:24:41.315Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "WeatherForecast.cs",
+              "DocumentMoniker": "D:\\Mohamed_Mostafa\\My_GitHub\\SmartParkingAPI\\SmartParkingAPI\\WeatherForecast.cs",
+              "RelativeDocumentMoniker": "SmartParkingAPI\\WeatherForecast.cs",
+              "ToolTip": "D:\\Mohamed_Mostafa\\My_GitHub\\SmartParkingAPI\\SmartParkingAPI\\WeatherForecast.cs",
+              "RelativeToolTip": "SmartParkingAPI\\WeatherForecast.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-10T00:23:49.789Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\Mohamed_Mostafa\\My_GitHub\\SmartParkingAPI\\SmartParkingAPI\\Program.cs",
+              "RelativeDocumentMoniker": "SmartParkingAPI\\Program.cs",
+              "ToolTip": "D:\\Mohamed_Mostafa\\My_GitHub\\SmartParkingAPI\\SmartParkingAPI\\Program.cs",
+              "RelativeToolTip": "SmartParkingAPI\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-10T00:15:02.163Z",
+              "EditorCaption": ""
             }
           ]
         }
