@@ -1,9 +1,11 @@
+<img width="100px" src="https://res.cloudinary.com/anuraghazra/image/upload/v1594908242/logo_ccswme.svg" align="center" alt="GitHub Readme Stats" />
+
 # SmartParkingAPI
 
 
 ## Contact 📬
 
-Feel free to reach out to us if you have any questions or feedback.
+Feel free to contact us if you have any questions or feedback.
 
 - Omar Mohaamed Shetewy
   [LinkedIn](https://www.linkedin.com/in/omar-shetewy/) | [GitHub](https://github.com/Omar-Shetewy)
