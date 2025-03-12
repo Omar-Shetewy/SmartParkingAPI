@@ -1,4 +1,6 @@
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using SmartParkingAPI.Data;
 using SmartParkingAPI.Services;
 
@@ -14,8 +16,40 @@ builder.Services.AddTransient<IUserService, UserService>();
 
 builder.Services.AddAutoMapper(typeof(Program));
 
-var ConnectionString = builder.Configuration.GetConnectionString("AmorConnection");
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(ConnectionString));
+var configuration = builder.Configuration;
+var connectionStrings = new Dictionary<string, string>
+{
+    { "MedoConnection", configuration.GetConnectionString("MedoConnection") },
+    { "RokaConnection", configuration.GetConnectionString("RokaConnection") },
+    { "AmorConnection", configuration.GetConnectionString("AmorConnection") }
+};
+
+string? activeConnection = connectionStrings.FirstOrDefault(c => IsDatabaseAvailable(c.Value)).Value;
+
+if (activeConnection != null)
+{
+    Console.WriteLine($"? Using active connection: {activeConnection}");
+
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseSqlServer(activeConnection));
+}
+
+static bool IsDatabaseAvailable(string connectionString)
+{
+    try
+    {
+        using (var connection = new SqlConnection(connectionString))
+        {
+            connection.Open();
+            return true;
+        }
+    }
+    catch
+    {
+        return false;
+    }
+}
+
 
 builder.Services.AddSwaggerGen();
 
