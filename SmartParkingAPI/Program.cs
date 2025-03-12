@@ -34,23 +34,6 @@ if (activeConnection != null)
         options.UseSqlServer(activeConnection));
 }
 
-static bool IsDatabaseAvailable(string connectionString)
-{
-    try
-    {
-        using (var connection = new SqlConnection(connectionString))
-        {
-            connection.Open();
-            return true;
-        }
-    }
-    catch
-    {
-        return false;
-    }
-}
-
-
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
@@ -71,3 +54,21 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+
+
+static bool IsDatabaseAvailable(string connectionString)
+{
+    try
+    {
+        using (var connection = new SqlConnection(connectionString))
+        {
+            connection.Open();
+            return true;
+        }
+    }
+    catch
+    {
+        return false;
+    }
+}
