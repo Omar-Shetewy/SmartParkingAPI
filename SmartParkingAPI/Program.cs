@@ -1,3 +1,7 @@
+using Microsoft.EntityFrameworkCore;
+using SmartParkingAPI.Data;
+using SmartParkingAPI.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -5,6 +9,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+builder.Services.AddTransient<IUserService, UserService>();
+
+builder.Services.AddAutoMapper(typeof(Program));
+
+var ConnectionString = builder.Configuration.GetConnectionString("AmorConnection");
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(ConnectionString));
 
 builder.Services.AddSwaggerGen();
 
