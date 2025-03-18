@@ -1,14 +1,9 @@
-﻿using AutoMapper;
-using SmartParkingAPI.Data.DTO;
-using SmartParkingAPI.Data.Models;
+﻿namespace SmartParkingAPI.Helpers;
 
-namespace SmartParkingAPI.Helpers
+public class MappingProfile: Profile
 {
-    public class MappingProfile: Profile
+    public MappingProfile()
     {
-        public MappingProfile()
-        {
-            CreateMap<RegisterationDTO, User>();
-        }
+        CreateMap<RegisterationDTO, User>();
     }
 }

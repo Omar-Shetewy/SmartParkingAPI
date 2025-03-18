@@ -1,7 +1,6 @@
-﻿namespace SmartParking.BLL
-{
-    public class Class1
-    {
+﻿namespace SmartParking.BLL;
 
-    }
+public class Class1
+{
+
 }

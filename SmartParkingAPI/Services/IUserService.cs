@@ -1,14 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using SmartParkingAPI.Data.Models;
+﻿namespace SmartParkingAPI.Services;
 
-namespace SmartParkingAPI.Services
+public interface IUserService
 {
-    public interface IUserService
-    {
-        Task<IEnumerable<User>> GetAll();
-        Task<User> GetBy(int id);
-        Task<User> GetBy(string email);
-        Task<User> GetBy(string email, string password);
-        Task<User> Add(User user);
-    }
+    Task<IEnumerable<User>> GetAll();
+    Task<User> GetBy(int id);
+    Task<User> GetBy(string email);
+    Task<User> GetBy(string email, string password);
+    Task<User> Add(User user);
 }
