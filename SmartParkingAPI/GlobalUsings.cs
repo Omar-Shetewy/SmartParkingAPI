@@ -10,3 +10,4 @@ global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Mvc;
 global using SmartParkingAPI.Data.DTO;
 global using SmartParkingAPI.Services;
+global using System.Reflection.Metadata;
