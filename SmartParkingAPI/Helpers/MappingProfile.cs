@@ -1,6 +1,4 @@
-﻿using SmartParking.API.Data.DTO;
-
-namespace SmartParkingAPI.Helpers;
+﻿namespace SmartParkingAPI.Helpers;
 
 public class MappingProfile: Profile
 {
@@ -10,5 +8,7 @@ public class MappingProfile: Profile
         CreateMap<Car, CarDetailsDTO>();
         CreateMap<CarDetailsDTO, Car>();
         CreateMap<CarDTO, Car>();
+        CreateMap<GarageDTO,Garage>();
+        CreateMap<Garage,GarageDTO>();
     }
 }

@@ -8,6 +8,7 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<ICarService, CarService>();
+builder.Services.AddTransient<IGarageService, GarageService>();
 
 builder.Services.AddAutoMapper(typeof(Program));
 
