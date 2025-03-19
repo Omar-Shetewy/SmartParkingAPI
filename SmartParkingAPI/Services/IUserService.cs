@@ -7,5 +7,5 @@ public interface IUserService
     Task<User> GetBy(string email);
     Task<User> GetBy(string email, string password);
     Task<User> Add(User user);
-    Task<bool> isValidUser(int id);
+    Task<bool> isValidUser(int userId);
 }
