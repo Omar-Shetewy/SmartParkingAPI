@@ -14,8 +14,5 @@ public class Garage
     public int ReservedSpots { get; set; }
     public int IsActive { get; set; }
     public List<Spot>? Spots { get; set; }
-    public List<Gate>? Gates { get; set; }
-    public List<Camera>? Cameras { get; set; }
-
     public DateTime CreatedOn { get; set; } = DateTime.Now;
 }
