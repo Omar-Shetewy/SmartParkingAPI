@@ -1,4 +1,6 @@
-﻿namespace SmartParkingAPI.Services;
+﻿using SmartParkingAPI.Data.Models;
+
+namespace SmartParkingAPI.Services;
 
 public class UserService : IUserService
 {
@@ -11,7 +13,7 @@ public class UserService : IUserService
 
     public async Task<User> Add(User user)
     {
-        _dbContext.Users.Add(user);
+        await _dbContext.Users.AddAsync(user);
         _dbContext.SaveChanges();
 
         return user;
@@ -35,5 +37,10 @@ public class UserService : IUserService
     public async Task<User> GetBy(string email, string password)
     {
         return await _dbContext.Users.FirstOrDefaultAsync(user => user.Email == email && user.Password == password);
+    }
+
+    public async Task<bool> isValidUser(int id)
+    {
+        return await _dbContext.Users.AnyAsync(u => u.UserId == id);
     }
 }

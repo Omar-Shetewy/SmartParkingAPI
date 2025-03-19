@@ -9,4 +9,5 @@ public class User
     public string Password { get; set; }
     public int IsActive { get; set; } = 1;
     public DateTime CreatedOn { get; set; } = DateTime.Now;
+    public List<Car> Cars { get; set; }
 }
