@@ -6,13 +6,12 @@ public class Garage
     public string Name { get; set; }
     public string Address { get; set; }
     public string City { get; set; }
-    public string State { get; set; }
-    public string Phone { get; set; }
-    public string Email { get; set; }
     public int TotalSpots { get; set; }
     public int AvailableSpots { get; set; }
     public int ReservedSpots { get; set; } = 0;
     public int IsActive { get; set; } = 1;
     public List<Spot>? Spots { get; set; }
     public DateTime CreatedOn { get; set; } = DateTime.Now;
+
+    public List<ReservationRecord> ReservationRecords { get; set; }
 }
