@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartParkingAPI.Data;
 
@@ -11,9 +12,11 @@ using SmartParkingAPI.Data;
 namespace SmartParkingAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250319194017_AddReservationRecordsTable")]
+    partial class AddReservationRecordsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,9 +41,6 @@ namespace SmartParkingAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("SpotId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -49,8 +49,6 @@ namespace SmartParkingAPI.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("CarId");
-
-                    b.HasIndex("SpotId");
 
                     b.HasIndex("UserId");
 
@@ -198,17 +196,11 @@ namespace SmartParkingAPI.Migrations
 
             modelBuilder.Entity("SmartParking.API.Data.Models.Car", b =>
                 {
-                    b.HasOne("SmartParking.API.Data.Models.Spot", "Spot")
-                        .WithMany()
-                        .HasForeignKey("SpotId");
-
                     b.HasOne("SmartParkingAPI.Data.Models.User", "User")
                         .WithMany("Cars")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Spot");
 
                     b.Navigation("User");
                 });

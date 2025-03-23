@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SmartParking.API.Data.DTO;
+using SmartParking.API.Services;
 
 namespace SmartParking.API.Controllers
 {

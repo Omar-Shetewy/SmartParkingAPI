@@ -6,4 +6,5 @@ public class CarDTO
     public string Model { get; set; }
     public string Type { get; set; }
     public int UserId { get; set; }
+    public int? SpotId { get; set; }
 }

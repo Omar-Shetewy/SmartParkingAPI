@@ -10,5 +10,8 @@ public class MappingProfile: Profile
         CreateMap<CarDTO, Car>();
         CreateMap<GarageDTO,Garage>();
         CreateMap<Garage,GarageDTO>();
+        CreateMap<ReservationRecord,ReservationRecordDetailsDTO>();
+        CreateMap<ReservationRecord,ReservationRecordDTO>();
+        CreateMap<ReservationRecordDTO,ReservationRecord>();
     }
 }

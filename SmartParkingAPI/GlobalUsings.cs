@@ -13,4 +13,3 @@ global using SmartParkingAPI.Services;
 global using System.Reflection.Metadata;
 global using SmartParking.API.Services;
 global using SmartParking.API.Data.DTO;
-

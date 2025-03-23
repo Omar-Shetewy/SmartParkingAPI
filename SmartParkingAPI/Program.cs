@@ -9,14 +9,15 @@ builder.Services.AddOpenApi();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<ICarService, CarService>();
 builder.Services.AddTransient<IGarageService, GarageService>();
+builder.Services.AddTransient<IReservationService, ReservationService>();
 
 builder.Services.AddAutoMapper(typeof(Program));
 
 var configuration = builder.Configuration;
 var connectionStrings = new Dictionary<string, string>
 {
-    { "MedoConnection", configuration.GetConnectionString("MedoConnection") },
-    { "RokaConnection", configuration.GetConnectionString("RokaConnection") },
+    //{ "MedoConnection", configuration.GetConnectionString("MedoConnection") },
+    //{ "RokaConnection", configuration.GetConnectionString("RokaConnection") },
     { "AmorConnection", configuration.GetConnectionString("AmorConnection") }
 };
 

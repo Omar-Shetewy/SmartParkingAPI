@@ -8,4 +8,5 @@ public class CarDetailsDTO
     public string Type { get; set; }
 
     public int UserId { get; set; }
+    public int? SpotId { get; set; }
 }
