@@ -1,6 +1,7 @@
-﻿using SmartParkingAPI.Data.Models;
+﻿using SmartParking.API.Services.Interface;
+using SmartParkingAPI.Data.Models;
 
-namespace SmartParkingAPI.Services;
+namespace SmartParking.API.Services.Implementation;
 
 public class UserService : IUserService
 {

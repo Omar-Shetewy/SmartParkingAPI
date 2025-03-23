@@ -1,4 +1,6 @@
-﻿namespace SmartParking.API.Services;
+﻿using SmartParking.API.Services.Interface;
+
+namespace SmartParking.API.Services.Implementation;
 
 public class GarageService : IGarageService
 {
@@ -42,5 +44,10 @@ public class GarageService : IGarageService
         _dbContext.Update(garage);
         _dbContext.SaveChanges();
         return garage;
+    }
+
+    public async Task<bool> isValidGarage(int id)
+    {
+        return await _dbContext.Garages.AnyAsync(g => g.GarageId == id);
     }
 }

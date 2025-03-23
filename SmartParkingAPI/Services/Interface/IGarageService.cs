@@ -1,4 +1,4 @@
-﻿namespace SmartParking.API.Services;
+﻿namespace SmartParking.API.Services.Interface;
 
 public interface IGarageService
 {
@@ -8,4 +8,6 @@ public interface IGarageService
     Task<Garage> Add(Garage garage);
     Garage Update(Garage garage);
     Garage Delete(Garage garage);
+    Task<bool> isValidGarage(int id);
+
 }

@@ -1,4 +1,6 @@
-﻿namespace SmartParking.API.Controllers;
+﻿using SmartParking.API.Services.Interface;
+
+namespace SmartParking.API.Controllers;
 
 [Route("api/ReservationRecords")]
 [ApiController]
@@ -6,13 +8,15 @@ public class ReservationRecordsController : ControllerBase
 {
     private readonly IReservationService _reservationService;
     private readonly IUserService _userService;
+    private readonly IGarageService _garageService;
     private readonly IMapper _mapper;
 
-    public ReservationRecordsController(IReservationService reservationService, IMapper mapper, IUserService userService)
+    public ReservationRecordsController(IReservationService reservationService, IMapper mapper, IUserService userService, IGarageService garageService)
     {
         _reservationService = reservationService;
         _mapper = mapper;
         _userService = userService;
+        _garageService = garageService;
     }
 
     [HttpGet]
@@ -89,6 +93,11 @@ public class ReservationRecordsController : ControllerBase
 
         if (!isValidUser)
             return BadRequest($"Invalid User Id:{dto.UserId}");
+
+        var isValidGarage = await _garageService.isValidGarage(dto.GarageId);
+
+        if (!isValidGarage)
+            return BadRequest($"Invalid Garage Id:{dto.GarageId}");
 
         var recordByUserId = await _reservationService.GetByUserId(dto.UserId);
 

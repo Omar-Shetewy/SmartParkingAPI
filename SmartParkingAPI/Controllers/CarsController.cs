@@ -1,4 +1,6 @@
-﻿namespace SmartParking.API.Controllers;
+﻿using SmartParking.API.Services.Interface;
+
+namespace SmartParking.API.Controllers;
 
 [Route("api/Cars")]
 [ApiController]

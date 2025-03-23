@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SmartParking.API.Data.DTO;
-using SmartParking.API.Services;
+using SmartParking.API.Services.Interface;
 
 namespace SmartParking.API.Controllers
 {
@@ -27,7 +27,7 @@ namespace SmartParking.API.Controllers
             var garages = await _garageService.GetAll();
             if (garages.Count() == 0)
                 return NoContent();
-            var data = _mapper.Map<List<GarageDTO>>(garages);
+            var data = _mapper.Map<List<GarageDetailsDTO>>(garages);
             return Ok(data);
         }
 
@@ -43,7 +43,7 @@ namespace SmartParking.API.Controllers
             var garage = await _garageService.GetBy(id);
             if (garage == null)
                 return NoContent();
-            var data = _mapper.Map<GarageDTO>(garage);
+            var data = _mapper.Map<GarageDetailsDTO>(garage);
             return Ok(data);
         }
 
@@ -66,7 +66,7 @@ namespace SmartParking.API.Controllers
         [Route("UpdateGarage")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult UpdateGarage([FromBody] GarageDTO garageDTO)
+        public IActionResult UpdateGarage([FromBody] GarageDetailsDTO garageDTO)
         {
             if (garageDTO == null)
                 return BadRequest("Garage data is required");

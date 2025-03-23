@@ -8,8 +8,9 @@ public class MappingProfile: Profile
         CreateMap<Car, CarDetailsDTO>();
         CreateMap<CarDetailsDTO, Car>();
         CreateMap<CarDTO, Car>();
+        CreateMap<GarageDetailsDTO,Garage>();
         CreateMap<GarageDTO,Garage>();
-        CreateMap<Garage,GarageDTO>();
+        CreateMap<Garage,GarageDetailsDTO>();
         CreateMap<ReservationRecord,ReservationRecordDetailsDTO>();
         CreateMap<ReservationRecord,ReservationRecordDTO>();
         CreateMap<ReservationRecordDTO,ReservationRecord>();

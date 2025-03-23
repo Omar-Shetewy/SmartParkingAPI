@@ -1,3 +1,6 @@
+using SmartParking.API.Services.Implementation;
+using SmartParking.API.Services.Interface;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.

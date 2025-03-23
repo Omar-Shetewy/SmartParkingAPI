@@ -1,4 +1,4 @@
-﻿namespace SmartParkingAPI.Services;
+﻿namespace SmartParking.API.Services.Interface;
 
 public interface IUserService
 {

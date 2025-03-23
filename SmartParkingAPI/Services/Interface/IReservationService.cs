@@ -1,7 +1,7 @@
-﻿namespace SmartParking.API.Services;
+﻿namespace SmartParking.API.Services.Interface;
 
-public interface IReservationService 
-{ 
+public interface IReservationService
+{
     Task<IEnumerable<ReservationRecord>> GetAll();
     Task<ReservationRecord> GetById(int id);
     Task<ReservationRecord> GetByUserId(int userId);
