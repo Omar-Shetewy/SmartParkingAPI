@@ -8,5 +8,8 @@
 
         public int UserId { get; set; }
         public User User { get; set; }
+        
+        public int GarageId { get; set; }
+        public Garage Garage { get; set; }
     }
 }
