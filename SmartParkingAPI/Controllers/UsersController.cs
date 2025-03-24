@@ -1,25 +1,28 @@
-﻿namespace SmartParkingAPI.Controllers;
+﻿using SmartParking.API.Services.Interface;
 
+namespace SmartParkingAPI.Controllers;
+
+[Authorize(Roles = "Admin")]
 [Route("api/Users")]
 [ApiController]
 public class UsersController : ControllerBase
 {
     private readonly IUserService _userServices;
-    private readonly IMapper _mapper;
 
-    public UsersController(IUserService userService, IMapper mapper)
+    public UsersController(IUserService userService)
     {
         _userServices = userService;
-        _mapper = mapper;
     }
 
+    // User output should be handeled
     [HttpGet]
     [Route("GetAllUsers")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> GetAllUsersAsync()
     {
-        var users = await _userServices.GetAll();
+        var users = await _userServices.GetAllAsync();
 
         if (users.Count() == 0)
         {
@@ -34,12 +37,13 @@ public class UsersController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> GetUserByIdAsync(int id)
     {
         if (id < 1)
-            return BadRequest($"Invalid ID:{id}");
+            return BadRequest("Invalid usre id");
 
-        var user = await _userServices.GetBy(id);
+        var user = await _userServices.GetByAsync(id);
 
         if (user == null)
             return NoContent();
@@ -47,38 +51,72 @@ public class UsersController : ControllerBase
         return Ok(user);
     }
 
-    [HttpPost]
-    [Route("Registration")]
+    [Authorize(Roles = "Admin, User")]
+    [HttpPut]
+    [Route("UpdateUser")]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> RegistrationAsync([FromBody] RegisterationDTO dto)
+    public async Task<IActionResult> UpdateUserAsync(int id, [FromBody] UserDTO dto)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var userObj = await _userServices.GetBy(dto.Email);
+        var user = await _userServices.GetByAsync(id);
 
-        if (userObj != null)
-            return BadRequest("User already exists with the same email address and password");
+        if (user == null || dto.RoleId < 1)
+            return BadRequest("Invalid entry");
 
-        var user = _mapper.Map<User>(dto);
+        user.FirstName = dto.FirstName;
+        user.LastName = dto.LastName;
+        user.PhoneNumber = dto.PhoneNumber;
+        user.RoleId = dto.RoleId;
 
-        await _userServices.Add(user);
+        _userServices.Update(user);
+
+        return Ok(dto);
+    }
+
+    [HttpPut]
+    [Route("UpdateUserRole")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> UpdateRoleAsync(int id, [FromBody] SingleRoleDTO dto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        var user = await _userServices.GetByAsync(id);
+
+        if (user == null || dto.RoleId < 1)
+            return BadRequest("Invalid entry");
+
+        user.RoleId = dto.RoleId;
+
+        _userServices.Update(user);
+
+        return Ok(dto.RoleId);
+    }
+
+    [HttpDelete]
+    [Route("DeleteUserById/{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> DeleteUserAsync(int id)
+    {
+        if (id < 1)
+            return BadRequest("Invalid usre id");
+
+        var user = await _userServices.GetByAsync(id);
+
+        if (user == null)
+            return BadRequest("user not found");
+
+        _userServices.Delete(user);
 
         return Ok(user);
     }
 
-    [HttpPost]
-    [Route("Login")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> LoginAsync(LoginDTO dto)
-    {
-        var user = await _userServices.GetBy(dto.Email, dto.Password);
-
-        if (user == null)
-            return NotFound($"User with email: {dto.Email} and password: {dto.Password} is not found!");
-
-        return Ok(user);    
-    }
 }

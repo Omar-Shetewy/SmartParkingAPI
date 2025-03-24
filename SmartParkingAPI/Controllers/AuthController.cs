@@ -1,4 +1,6 @@
 ﻿
+using SmartParking.API.Services.Interface;
+
 namespace SmartParking.API.Controllers
 {
     [Route("api/Auth")]
