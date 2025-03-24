@@ -1,0 +1,53 @@
+﻿using SmartParking.API.Services.Interface;
+using SmartParkingAPI.Data.Models;
+
+namespace SmartParking.API.Services.Implementation;
+
+public class UserService : IUserService
+{
+    private readonly ApplicationDbContext _dbContext;
+
+    public UserService(ApplicationDbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
+
+
+
+
+    public async Task<IEnumerable<User>> GetAllAsync()
+    {
+        return  await _dbContext.Users.ToListAsync();
+    }
+
+    public async Task<User?> GetByAsync(int id)
+    {
+        return await _dbContext.Users.FindAsync(id);
+    }
+
+    public async Task<User?> GetByAsync(string email)
+    {
+        return await _dbContext.Users.FirstOrDefaultAsync(user => user.Email == email);
+    }
+
+    public async Task<bool> isValidUserAsync(int id)
+    {
+        return await _dbContext.Users.AnyAsync(u => u.UserId == id);
+    }
+
+    public User Update(User user)
+    {
+        _dbContext.SaveChanges();
+
+        return user;
+    }
+
+    public User Delete(User user)
+    {
+        _dbContext.Remove(user);
+        _dbContext.SaveChanges();
+
+        return user;
+    }
+
+}

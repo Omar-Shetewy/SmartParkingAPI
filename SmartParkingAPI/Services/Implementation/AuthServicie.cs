@@ -1,5 +1,6 @@
-﻿
-namespace SmartParking.API.Services
+﻿using SmartParking.API.Services.Interface;
+
+namespace SmartParking.API.Services.Implementation
 {
     public class AuthServicie : IAuthService
     {

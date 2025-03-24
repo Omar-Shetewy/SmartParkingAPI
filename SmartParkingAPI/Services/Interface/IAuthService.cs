@@ -1,4 +1,4 @@
-﻿namespace SmartParking.API.Services
+﻿namespace SmartParking.API.Services.Interface
 {
     public interface IAuthService
     {
