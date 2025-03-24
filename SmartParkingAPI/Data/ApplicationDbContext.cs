@@ -8,23 +8,17 @@ public class ApplicationDbContext : DbContext
     {
 
     }
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
+    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    //{
 
-        optionsBuilder.UseSqlite("Data Source=SmartParkingDB.db");
+    //    optionsBuilder.UseSqlite("Data Source=SmartParkingDB.db");
 
-        base.OnConfiguring(optionsBuilder);
-    }
+    //    base.OnConfiguring(optionsBuilder);
+    //}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        modelBuilder.Entity<Spot>()
-            .HasOne(s => s.Garage)
-            .WithMany(g => g.Spots)
-            .HasForeignKey(s => s.GarageId);
-
-
     }
 
     public DbSet<Spot> Spots { get; set; }

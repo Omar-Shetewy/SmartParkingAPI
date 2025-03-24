@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SmartParking.API.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdateDatabase : Migration
+    public partial class AddDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,16 +15,16 @@ namespace SmartParking.API.Migrations
                 name: "Garages",
                 columns: table => new
                 {
-                    GarageId = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Address = table.Column<string>(type: "TEXT", nullable: false),
-                    City = table.Column<string>(type: "TEXT", nullable: false),
-                    TotalSpots = table.Column<int>(type: "INTEGER", nullable: false),
-                    AvailableSpots = table.Column<int>(type: "INTEGER", nullable: false),
-                    ReservedSpots = table.Column<int>(type: "INTEGER", nullable: false),
-                    IsActive = table.Column<int>(type: "INTEGER", nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    GarageId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TotalSpots = table.Column<int>(type: "int", nullable: false),
+                    AvailableSpots = table.Column<int>(type: "int", nullable: false),
+                    ReservedSpots = table.Column<int>(type: "int", nullable: false),
+                    IsActive = table.Column<int>(type: "int", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -35,14 +35,14 @@ namespace SmartParking.API.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    FirstName = table.Column<string>(type: "TEXT", nullable: false),
-                    LastName = table.Column<string>(type: "TEXT", nullable: false),
-                    Email = table.Column<string>(type: "TEXT", nullable: false),
-                    Password = table.Column<string>(type: "TEXT", nullable: false),
-                    IsActive = table.Column<int>(type: "INTEGER", nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsActive = table.Column<int>(type: "int", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -53,12 +53,12 @@ namespace SmartParking.API.Migrations
                 name: "Spots",
                 columns: table => new
                 {
-                    SpotId = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Floor = table.Column<int>(type: "INTEGER", nullable: false),
-                    Code = table.Column<string>(type: "TEXT", nullable: false),
-                    Status = table.Column<int>(type: "INTEGER", nullable: false),
-                    GarageId = table.Column<int>(type: "INTEGER", nullable: false)
+                    SpotId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Floor = table.Column<int>(type: "int", nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    GarageId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -75,12 +75,12 @@ namespace SmartParking.API.Migrations
                 name: "ReservationRecords",
                 columns: table => new
                 {
-                    ReservationRecordId = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    StartDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UserId = table.Column<int>(type: "INTEGER", nullable: false),
-                    GarageId = table.Column<int>(type: "INTEGER", nullable: false)
+                    ReservationRecordId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    GarageId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -103,13 +103,13 @@ namespace SmartParking.API.Migrations
                 name: "Cars",
                 columns: table => new
                 {
-                    CarId = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    PlateNumber = table.Column<string>(type: "TEXT", nullable: false),
-                    Model = table.Column<string>(type: "TEXT", nullable: false),
-                    Type = table.Column<string>(type: "TEXT", nullable: false),
-                    UserId = table.Column<int>(type: "INTEGER", nullable: false),
-                    SpotId = table.Column<int>(type: "INTEGER", nullable: true)
+                    CarId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PlateNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Model = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    SpotId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
