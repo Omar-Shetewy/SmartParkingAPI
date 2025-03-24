@@ -65,7 +65,7 @@ public class ReservationRecordsController : ControllerBase
         if (userId < 1)
             return BadRequest($"Invalid ID:{userId}");
 
-        var isValidUser = await _userService.isValidUser(userId);
+        var isValidUser = await _userService.isValidUserAsync(userId);
 
         if (!isValidUser)
             return BadRequest($"Invalid User Id:{userId}");
@@ -89,7 +89,7 @@ public class ReservationRecordsController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var isValidUser = await _userService.isValidUser(dto.UserId);
+        var isValidUser = await _userService.isValidUserAsync(dto.UserId);
 
         if (!isValidUser)
             return BadRequest($"Invalid User Id:{dto.UserId}");
