@@ -12,7 +12,13 @@ public class UserService : IUserService
         _dbContext = dbContext;
     }
 
+    public async Task<User> Add(User user)
+    {
+        await _dbContext.Users.AddAsync(user);
+        _dbContext.SaveChanges();
 
+        return user;
+    }
 
 
     public async Task<IEnumerable<User>> GetAllAsync()

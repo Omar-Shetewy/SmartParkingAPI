@@ -12,7 +12,9 @@ public class User
     public DateTime? RefreshTokenExpiryTime { get; set; }
     public int IsActive { get; set; } = 1;
     public DateTime CreatedOn { get; set; } = DateTime.Now;
+
     public List<Car> Cars { get; set; }
     public int RoleId { get; set; }
     public Role Role { get; set; }
+    public ReservationRecord Reservation { get; set; }
 }

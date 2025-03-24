@@ -9,11 +9,11 @@ using SmartParkingAPI.Data;
 
 #nullable disable
 
-namespace SmartParkingAPI.Migrations
+namespace SmartParking.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250319183348_RemoveBelongingsOfHardware")]
-    partial class RemoveBelongingsOfHardware
+    [Migration("20250324185221_AddDatabase")]
+    partial class AddDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,6 +41,9 @@ namespace SmartParkingAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("SpotId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -49,6 +52,8 @@ namespace SmartParkingAPI.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("CarId");
+
+                    b.HasIndex("SpotId");
 
                     b.HasIndex("UserId");
 
@@ -77,10 +82,6 @@ namespace SmartParkingAPI.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("IsActive")
                         .HasColumnType("int");
 
@@ -88,16 +89,8 @@ namespace SmartParkingAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("ReservedSpots")
                         .HasColumnType("int");
-
-                    b.Property<string>("State")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TotalSpots")
                         .HasColumnType("int");
@@ -105,6 +98,36 @@ namespace SmartParkingAPI.Migrations
                     b.HasKey("GarageId");
 
                     b.ToTable("Garages");
+                });
+
+            modelBuilder.Entity("SmartParking.API.Data.Models.ReservationRecord", b =>
+                {
+                    b.Property<int>("ReservationRecordId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReservationRecordId"));
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("GarageId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ReservationRecordId");
+
+                    b.HasIndex("GarageId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("ReservationRecords");
                 });
 
             modelBuilder.Entity("SmartParking.API.Data.Models.Spot", b =>
@@ -115,13 +138,14 @@ namespace SmartParkingAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SpotId"));
 
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Floor")
                         .HasColumnType("int");
 
                     b.Property<int>("GarageId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Number")
                         .HasColumnType("int");
 
                     b.Property<int>("Status")
@@ -171,11 +195,36 @@ namespace SmartParkingAPI.Migrations
 
             modelBuilder.Entity("SmartParking.API.Data.Models.Car", b =>
                 {
+                    b.HasOne("SmartParking.API.Data.Models.Spot", "Spot")
+                        .WithMany()
+                        .HasForeignKey("SpotId");
+
                     b.HasOne("SmartParkingAPI.Data.Models.User", "User")
                         .WithMany("Cars")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Spot");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SmartParking.API.Data.Models.ReservationRecord", b =>
+                {
+                    b.HasOne("SmartParking.API.Data.Models.Garage", "Garage")
+                        .WithMany("ReservationRecords")
+                        .HasForeignKey("GarageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SmartParkingAPI.Data.Models.User", "User")
+                        .WithOne("Reservation")
+                        .HasForeignKey("SmartParking.API.Data.Models.ReservationRecord", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Garage");
 
                     b.Navigation("User");
                 });
@@ -193,12 +242,17 @@ namespace SmartParkingAPI.Migrations
 
             modelBuilder.Entity("SmartParking.API.Data.Models.Garage", b =>
                 {
+                    b.Navigation("ReservationRecords");
+
                     b.Navigation("Spots");
                 });
 
             modelBuilder.Entity("SmartParkingAPI.Data.Models.User", b =>
                 {
                     b.Navigation("Cars");
+
+                    b.Navigation("Reservation")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

@@ -1,4 +1,4 @@
-
+using System;
 using SmartParking.API.Services.Implementation;
 using SmartParking.API.Services.Interface;
 
@@ -42,15 +42,14 @@ var connectionStrings = new Dictionary<string, string>
     //{ "AmorConnection", configuration.GetConnectionString("AmorConnection") }
 };
 
-string? activeConnection = connectionStrings.FirstOrDefault(c => IsDatabaseAvailable(c.Value)).Value;
+//builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("AmorConnection")));
 
-if (activeConnection != null)
-{
-    Console.WriteLine($"? Using active connection: {activeConnection}");
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MedoConnection")));
 
-    builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseSqlServer(activeConnection));
-}
+//builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("RokaConnection")));
 
 builder.Services.AddSwaggerGen();
 
@@ -74,21 +73,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-
-
-
-static bool IsDatabaseAvailable(string connectionString)
-{
-    try
-    {
-        using (var connection = new SqlConnection(connectionString))
-        {
-            connection.Open();
-            return true;
-        }
-    }
-    catch
-    {
-        return false;
-    }
-}

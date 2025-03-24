@@ -1,7 +1,4 @@
-﻿
-using SmartParking.API.Services.Interface;
-
-namespace SmartParking.API.Controllers;
+﻿namespace SmartParking.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -15,18 +12,17 @@ public class GaragesController : ControllerBase
         _mapper = mapper;
     }
 
-    [Authorize(Roles ="admin")]
+
     [HttpGet]
     [Route("GetAllGarages")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> GetAllGaragesAsync()
     {
         var garages = await _garageService.GetAll();
         if (garages.Count() == 0)
             return NoContent();
-        var data = _mapper.Map<List<GarageDTO>>(garages);
+        var data = _mapper.Map<List<GarageDetailsDTO>>(garages);
         return Ok(data);
     }
 
@@ -42,7 +38,23 @@ public class GaragesController : ControllerBase
         var garage = await _garageService.GetBy(id);
         if (garage == null)
             return NoContent();
-        var data = _mapper.Map<GarageDTO>(garage);
+        var data = _mapper.Map<GarageDetailsDTO>(garage);
+        return Ok(data);
+    }
+
+    [HttpGet]
+    [Route("GetAllSpots/{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetAllSpots(int id)
+    {
+        if (id < 1)
+            return BadRequest($"Invalid ID:{id}");
+        var spots = await _garageService.GetAllSpots(id);
+        if (spots.Count() == 0)
+            return NoContent();
+        var data = _mapper.Map<List<SpotDetailsDTO>>(spots);
         return Ok(data);
     }
 
@@ -58,7 +70,7 @@ public class GaragesController : ControllerBase
         var result = await _garageService.Add(garage);
         if (result == null)
             return BadRequest("Failed to add garage");
-        return CreatedAtAction(nameof(GetGarageById), new { id = result.GarageId }, result);
+        return Ok(result);
     }
 
     [HttpPut]
@@ -76,4 +88,20 @@ public class GaragesController : ControllerBase
         return Ok(result);
     }
 
+    [HttpDelete]
+    [Route("DeleteGarage/{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> DeleteGarage(int id)
+    {
+        if (id < 1)
+            return BadRequest($"Invalid ID:{id}");
+        var garage = await _garageService.GetBy(id);
+        if (garage == null)
+            return BadRequest($"Garage with ID:{id} not found");
+        var result = _garageService.Delete(garage);
+        if (result == null)
+            return BadRequest("Failed to delete garage");
+        return Ok(result);
+    }
 }

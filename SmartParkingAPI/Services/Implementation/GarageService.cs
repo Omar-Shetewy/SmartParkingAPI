@@ -45,4 +45,15 @@ public class GarageService : IGarageService
         _dbContext.SaveChanges();
         return garage;
     }
+
+
+    public async Task<bool> isValidGarage(int id)
+    {
+        return await _dbContext.Garages.AnyAsync(g => g.GarageId == id);
+    }
+
+    public async Task<IEnumerable<Spot>> GetAllSpots(int garageId)
+    {
+        return await _dbContext.Spots.Where(s => s.GarageId == garageId).ToListAsync();
+    }
 }

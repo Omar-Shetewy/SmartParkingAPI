@@ -1,4 +1,6 @@
-﻿namespace SmartParkingAPI.Data;
+﻿using Microsoft.Extensions.Options;
+
+namespace SmartParkingAPI.Data;
 
 public class ApplicationDbContext : DbContext
 {
@@ -6,6 +8,13 @@ public class ApplicationDbContext : DbContext
     {
 
     }
+    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    //{
+
+    //    optionsBuilder.UseSqlite("Data Source=SmartParkingDB.db");
+
+    //    base.OnConfiguring(optionsBuilder);
+    //}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -21,4 +30,5 @@ public class ApplicationDbContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<Role> Roles { get; set; }
     public DbSet<Car> Cars { get; set; }
+    public DbSet<ReservationRecord> ReservationRecords { get; set; }
 }
