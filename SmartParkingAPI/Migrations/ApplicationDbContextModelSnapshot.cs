@@ -127,6 +127,23 @@ namespace SmartParking.API.Migrations
                     b.ToTable("ReservationRecords");
                 });
 
+            modelBuilder.Entity("SmartParking.API.Data.Models.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("RoleName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles");
+                });
+
             modelBuilder.Entity("SmartParking.API.Data.Models.Spot", b =>
                 {
                     b.Property<int>("SpotId")
