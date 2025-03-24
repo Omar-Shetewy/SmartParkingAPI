@@ -128,9 +128,6 @@ public class CarsController : ControllerBase
         car.Type = dto.Type;
         car.UserId = dto.UserId;
 
-        if (dto.SpotId != null)
-            car.SpotId = dto.SpotId;
-
         _carService.Update(car);
 
         return Ok(car);
