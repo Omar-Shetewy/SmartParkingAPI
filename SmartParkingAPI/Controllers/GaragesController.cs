@@ -42,6 +42,22 @@ public class GaragesController : ControllerBase
         return Ok(data);
     }
 
+    [HttpGet]
+    [Route("GetAllSpots/{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetAllSpots(int id)
+    {
+        if (id < 1)
+            return BadRequest($"Invalid ID:{id}");
+        var spots = await _garageService.GetAllSpots(id);
+        if (spots.Count() == 0)
+            return NoContent();
+        var data = _mapper.Map<List<SpotDetailsDTO>>(spots);
+        return Ok(data);
+    }
+
     [HttpPost]
     [Route("AddGarage")]
     [ProducesResponseType(StatusCodes.Status201Created)]

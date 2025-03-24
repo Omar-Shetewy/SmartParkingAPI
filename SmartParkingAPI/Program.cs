@@ -14,6 +14,7 @@ builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<ICarService, CarService>();
 builder.Services.AddTransient<IGarageService, GarageService>();
 builder.Services.AddTransient<IReservationService, ReservationService>();
+builder.Services.AddTransient<ISpotService, SpotService>();
 
 builder.Services.AddAutoMapper(typeof(Program));
 

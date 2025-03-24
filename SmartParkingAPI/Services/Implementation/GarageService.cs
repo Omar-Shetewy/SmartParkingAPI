@@ -1,6 +1,4 @@
-﻿using SmartParking.API.Services.Interface;
-
-namespace SmartParking.API.Services.Implementation;
+﻿namespace SmartParking.API.Services.Implementation;
 
 public class GarageService : IGarageService
 {
@@ -46,8 +44,14 @@ public class GarageService : IGarageService
         return garage;
     }
 
+
     public async Task<bool> isValidGarage(int id)
     {
         return await _dbContext.Garages.AnyAsync(g => g.GarageId == id);
+    }
+
+    public async Task<IEnumerable<Spot>> GetAllSpots(int garageId)
+    {
+        return await _dbContext.Spots.Where(s => s.GarageId == garageId).ToListAsync();
     }
 }
