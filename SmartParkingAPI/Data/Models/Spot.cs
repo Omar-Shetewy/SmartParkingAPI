@@ -8,6 +8,7 @@ public class Spot
     public int Status { get; set; }
     public int GarageId { get; set; }
     [ForeignKey("GarageId")]
+    [JsonIgnore]
     public Garage Garage { get; set; }
 
 }

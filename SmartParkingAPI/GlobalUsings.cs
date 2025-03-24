@@ -12,3 +12,4 @@ global using SmartParkingAPI.Data.DTO;
 global using SmartParking.API.Services.Implementation;
 global using SmartParking.API.Services.Interface;
 global using SmartParking.API.Data.DTO;
+global using System.Text.Json.Serialization;
