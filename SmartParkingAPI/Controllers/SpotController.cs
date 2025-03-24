@@ -73,6 +73,6 @@ public class SpotController: ControllerBase
         var result = await _spotService.Add(spot);
         if (result == null)
             return BadRequest("Failed to add spot");
-        return CreatedAtAction(nameof(GetSpotById), new { id = result.SpotId }, result);
+        return Ok(spot);
     }
 }

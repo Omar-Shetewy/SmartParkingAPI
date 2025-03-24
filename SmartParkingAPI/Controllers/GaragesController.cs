@@ -70,14 +70,14 @@ public class GaragesController : ControllerBase
         var result = await _garageService.Add(garage);
         if (result == null)
             return BadRequest("Failed to add garage");
-        return CreatedAtAction(nameof(GetGarageById), new { id = result.GarageId }, result);
+        return Ok(result);
     }
 
     [HttpPut]
     [Route("UpdateGarage")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public IActionResult UpdateGarage([FromBody] GarageDetailsDTO garageDTO)
+    public IActionResult UpdateGarage([FromBody] GarageDTO garageDTO)
     {
         if (garageDTO == null)
             return BadRequest("Garage data is required");

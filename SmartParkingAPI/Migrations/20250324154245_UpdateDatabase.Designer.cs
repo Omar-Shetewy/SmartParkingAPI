@@ -11,8 +11,8 @@ using SmartParkingAPI.Data;
 namespace SmartParking.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250324125835_UseSQLiteInDbContext")]
-    partial class UseSQLiteInDbContext
+    [Migration("20250324154245_UpdateDatabase")]
+    partial class UpdateDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,12 +28,10 @@ namespace SmartParking.API.Migrations
 
                     b.Property<string>("Model")
                         .IsRequired()
-                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PlateNumber")
                         .IsRequired()
-                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("SpotId")
@@ -41,7 +39,6 @@ namespace SmartParking.API.Migrations
 
                     b.Property<string>("Type")
                         .IsRequired()
-                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("UserId")
@@ -64,7 +61,6 @@ namespace SmartParking.API.Migrations
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasMaxLength(200)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("AvailableSpots")
@@ -72,7 +68,6 @@ namespace SmartParking.API.Migrations
 
                     b.Property<string>("City")
                         .IsRequired()
-                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CreatedOn")
@@ -83,7 +78,6 @@ namespace SmartParking.API.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("ReservedSpots")
@@ -131,13 +125,14 @@ namespace SmartParking.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("Floor")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("GarageId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Number")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Status")
@@ -161,12 +156,10 @@ namespace SmartParking.API.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("IsActive")
@@ -174,12 +167,10 @@ namespace SmartParking.API.Migrations
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.HasKey("UserId");

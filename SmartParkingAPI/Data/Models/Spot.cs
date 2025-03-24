@@ -4,7 +4,7 @@ public class Spot
 {
     public int SpotId { get; set; }
     public int Floor { get; set; }
-    public int Number { get; set; }
+    public string Code { get; set; }
     public int Status { get; set; }
     public int GarageId { get; set; }
     [ForeignKey("GarageId")]

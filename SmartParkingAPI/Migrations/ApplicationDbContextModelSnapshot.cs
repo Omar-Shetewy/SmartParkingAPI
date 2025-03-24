@@ -25,12 +25,10 @@ namespace SmartParking.API.Migrations
 
                     b.Property<string>("Model")
                         .IsRequired()
-                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PlateNumber")
                         .IsRequired()
-                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("SpotId")
@@ -38,7 +36,6 @@ namespace SmartParking.API.Migrations
 
                     b.Property<string>("Type")
                         .IsRequired()
-                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("UserId")
@@ -50,7 +47,7 @@ namespace SmartParking.API.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Cars", (string)null);
+                    b.ToTable("Cars");
                 });
 
             modelBuilder.Entity("SmartParking.API.Data.Models.Garage", b =>
@@ -61,7 +58,6 @@ namespace SmartParking.API.Migrations
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasMaxLength(200)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("AvailableSpots")
@@ -69,7 +65,6 @@ namespace SmartParking.API.Migrations
 
                     b.Property<string>("City")
                         .IsRequired()
-                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CreatedOn")
@@ -80,7 +75,6 @@ namespace SmartParking.API.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("ReservedSpots")
@@ -91,7 +85,7 @@ namespace SmartParking.API.Migrations
 
                     b.HasKey("GarageId");
 
-                    b.ToTable("Garages", (string)null);
+                    b.ToTable("Garages");
                 });
 
             modelBuilder.Entity("SmartParking.API.Data.Models.ReservationRecord", b =>
@@ -119,7 +113,7 @@ namespace SmartParking.API.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("ReservationRecords", (string)null);
+                    b.ToTable("ReservationRecords");
                 });
 
             modelBuilder.Entity("SmartParking.API.Data.Models.Spot", b =>
@@ -128,13 +122,14 @@ namespace SmartParking.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("Floor")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("GarageId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Number")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Status")
@@ -144,7 +139,7 @@ namespace SmartParking.API.Migrations
 
                     b.HasIndex("GarageId");
 
-                    b.ToTable("Spots", (string)null);
+                    b.ToTable("Spots");
                 });
 
             modelBuilder.Entity("SmartParkingAPI.Data.Models.User", b =>
@@ -158,12 +153,10 @@ namespace SmartParking.API.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("IsActive")
@@ -171,17 +164,15 @@ namespace SmartParking.API.Migrations
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("SmartParking.API.Data.Models.Car", b =>
