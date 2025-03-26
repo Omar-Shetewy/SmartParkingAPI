@@ -39,7 +39,7 @@ namespace SmartParking.API.Services.Implementation
 
         public async Task<string?> UserValidationAsync(LoginDTO request)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+            var user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.Email == request.Email);
 
             if (user == null || new PasswordHasher<User>().VerifyHashedPassword(user, user.PasswordHash, request.Password) == PasswordVerificationResult.Failed)
             {

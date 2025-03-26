@@ -2,16 +2,18 @@
 
 namespace SmartParkingAPI.Controllers;
 
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "User,Admin")]
 [Route("api/Users")]
 [ApiController]
 public class UsersController : ControllerBase
 {
     private readonly IUserService _userServices;
+    private readonly IMapper _mapper;
 
-    public UsersController(IUserService userService)
+    public UsersController(IUserService userService, IMapper mapper)
     {
         _userServices = userService;
+        _mapper = mapper;
     }
 
     // User output should be handeled
@@ -29,10 +31,13 @@ public class UsersController : ControllerBase
             return NotFound("No Users Found!");
         }
 
+        var data = _mapper.Map<IEnumerable<UserDTO>>(users);
+
         return Ok(users);
     }
-
+    [Authorize(Roles = "User")]
     [HttpGet]
+
     [Route("GetUserById/{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -51,7 +56,7 @@ public class UsersController : ControllerBase
         return Ok(user);
     }
 
-    [Authorize(Roles = "Admin, User")]
+    //[Authorize(Roles = "Admin, User")]
     [HttpPut]
     [Route("UpdateUser")]
     [ProducesResponseType(StatusCodes.Status200OK)]
