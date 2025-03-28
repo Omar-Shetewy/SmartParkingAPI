@@ -31,4 +31,6 @@ public class ApplicationDbContext : DbContext
     public DbSet<Role> Roles { get; set; }
     public DbSet<Car> Cars { get; set; }
     public DbSet<ReservationRecord> ReservationRecords { get; set; }
+    public DbSet<Payment> Payments { get; set; }
+    public DbSet<PaymentMethod> PaymentMethods { get; set; }
 }

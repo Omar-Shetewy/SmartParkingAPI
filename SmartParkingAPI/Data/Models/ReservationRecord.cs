@@ -11,5 +11,8 @@
         
         public int GarageId { get; set; }
         public Garage Garage { get; set; }
+
+        public int PaymentId { get; set; }
+        public Payment Payment { get; set; }
     }
 }

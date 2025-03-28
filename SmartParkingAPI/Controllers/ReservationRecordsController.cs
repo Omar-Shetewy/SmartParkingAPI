@@ -9,14 +9,16 @@ public class ReservationRecordsController : ControllerBase
     private readonly IReservationService _reservationService;
     private readonly IUserService _userService;
     private readonly IGarageService _garageService;
+    private readonly IPaymentService _paymentService;
     private readonly IMapper _mapper;
 
-    public ReservationRecordsController(IReservationService reservationService, IMapper mapper, IUserService userService, IGarageService garageService)
+    public ReservationRecordsController(IReservationService reservationService, IMapper mapper, IUserService userService, IGarageService garageService, IPaymentService paymentService)
     {
         _reservationService = reservationService;
         _mapper = mapper;
         _userService = userService;
         _garageService = garageService;
+        _paymentService = paymentService;
     }
 
     [HttpGet]
@@ -98,6 +100,11 @@ public class ReservationRecordsController : ControllerBase
 
         if (!isValidGarage)
             return BadRequest($"Invalid Garage Id:{dto.GarageId}");
+
+        var isValidPayment = await _paymentService.isValidPayment(dto.PaymentId);
+
+        if (!isValidPayment)
+            return BadRequest($"Invalid Payment Id:{dto.PaymentId}");
 
         var recordByUserId = await _reservationService.GetByUserId(dto.UserId);
 

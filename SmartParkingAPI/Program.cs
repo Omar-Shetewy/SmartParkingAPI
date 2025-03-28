@@ -25,8 +25,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<ICarService, CarService>();
 builder.Services.AddTransient<IGarageService, GarageService>();
+builder.Services.AddTransient<IReservationService, ReservationService>();
+builder.Services.AddTransient<IPaymentMethodService, PaymentMethodService>();
+builder.Services.AddTransient<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IAuthService, AuthServicie>();
 builder.Services.AddScoped<IRoleService, RoleService>();
+
 
 builder.Services.AddAutoMapper(typeof(Program));
 
@@ -34,15 +38,15 @@ var configuration = builder.Configuration;
 var connectionStrings = new Dictionary<string, string>
 {
     //{ "MedoConnection", configuration.GetConnectionString("MedoConnection") },
-    { "RokaConnection", configuration.GetConnectionString("RokaConnection") }
-    //{ "AmorConnection", configuration.GetConnectionString("AmorConnection") }
+    //{ "RokaConnection", configuration.GetConnectionString("RokaConnection") }
+    { "AmorConnection", configuration.GetConnectionString("AmorConnection") }
 };
 
-//builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//    options.UseSqlServer(builder.Configuration.GetConnectionString("AmorConnection")));
-
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("MedoConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AmorConnection")));
+
+//builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("MedoConnection")));
 
 //builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //    options.UseSqlServer(builder.Configuration.GetConnectionString("RokaConnection")));
