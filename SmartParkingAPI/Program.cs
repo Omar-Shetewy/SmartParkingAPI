@@ -1,3 +1,5 @@
+using Microsoft.OpenApi.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -34,24 +36,61 @@ builder.Services.AddScoped<IRoleService, RoleService>();
 
 builder.Services.AddAutoMapper(typeof(Program));
 
-var configuration = builder.Configuration;
-var connectionStrings = new Dictionary<string, string>
-{
-    //{ "MedoConnection", configuration.GetConnectionString("MedoConnection") },
-    //{ "RokaConnection", configuration.GetConnectionString("RokaConnection") }
-    { "AmorConnection", configuration.GetConnectionString("AmorConnection") }
-};
+//builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("AmorConnection")));
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("AmorConnection")));
-
-//builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//    options.UseSqlServer(builder.Configuration.GetConnectionString("MedoConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MedoConnection")));
 
 //builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //    options.UseSqlServer(builder.Configuration.GetConnectionString("RokaConnection")));
 
-builder.Services.AddSwaggerGen();
+// add cors policy to allow all origins
+builder.Services.AddCors();
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "SmartParkingAPI",
+        Description = "The proposed Smart Parking System is designed to serve both drivers and garage \r\nowners by incorporating automation, optimized space utilization, and enhanced \r\nsecurity through user-friendly interfaces. These include dedicated applications \r\nfor users and administrators, streamlining operations.",
+        Contact = new OpenApiContact
+        {
+            Name = "iSpot",
+            Email = "ispot@gmail.com",
+            Url = new Uri("https://ispot.com"),
+        },
+    });
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "JWT Authorization header using the Bearer scheme. Example: ",
+
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                },
+                Name = "Bearer",
+                In = ParameterLocation.Header,
+
+            },
+            new string[] {}
+        }
+    });
+});
 
 var app = builder.Build();
 
@@ -63,6 +102,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// allow all origins to access the api 
+app.UseCors(c => c.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
 app.UseHttpsRedirection();
 
