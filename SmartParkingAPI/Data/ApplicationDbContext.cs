@@ -23,6 +23,17 @@ public class ApplicationDbContext : DbContext
             .HasOne(s => s.Garage)
             .WithMany(g => g.Spots)
             .HasForeignKey(s => s.GarageId);
+
+        modelBuilder.Entity<Role>().HasData(new Role
+        {
+            Id = 1,
+            RoleName = "User"
+        },
+        new Role
+        {
+            Id = 2,
+            RoleName = "Admin"
+        });
     }
 
     public DbSet<Spot> Spots { get; set; }
