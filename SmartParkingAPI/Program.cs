@@ -1,5 +1,3 @@
-using Microsoft.OpenApi.Models;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -23,6 +21,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
             ValidateIssuerSigningKey = true
         };
     });
+
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<IANBRService, ANBRService>();
 
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<ICarService, CarService>();
