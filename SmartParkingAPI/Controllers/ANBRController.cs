@@ -25,18 +25,27 @@ public class ANBRController : ControllerBase
         {
             byte[] imageBytes = Convert.FromBase64String(request.ImageFile);
 
-            var plateNumber = await _anbrService.SendToAIModel(imageBytes);
+            var aiResponse = await _anbrService.SendToAIModel(imageBytes);
 
-            if (string.IsNullOrEmpty(plateNumber))
+            if (string.IsNullOrEmpty(aiResponse))
             {
                 return BadRequest("AI model failed to extract the plate number.");
             }
+
+            // Extract values from AI response
+            var aiResult = JsonSerializer.Deserialize<Dictionary<string, string>>(aiResponse);
+            if (aiResult == null || !aiResult.ContainsKey("Plate Number"))
+            {
+                return BadRequest("Invalid AI response.");
+            }
+
+            string plateNumber = aiResult["Plate Number"];
 
             bool isValid = await _anbrService.ValidatePlateNumber(plateNumber);
 
             //await _anbrService.SavePlateData(imageBytes, plateNumber);
 
-            return Ok(plateNumber);
+            return Ok(isValid);
         }
         catch (FormatException)
         {

@@ -20,3 +20,4 @@ global using SmartParking.API.Services.Interface;
 global using SmartParking.API.Data.DTO;
 global using System.Text.Json.Serialization;
 global using Microsoft.OpenApi.Models;
+global using System.Text.Json;

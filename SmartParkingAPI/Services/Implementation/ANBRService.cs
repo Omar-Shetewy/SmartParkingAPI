@@ -27,7 +27,16 @@ public class ANBRService : IANBRService
 
     public async Task<bool> ValidatePlateNumber(string plateNumber)
     {
-        return await _context.Cars.AnyAsync(r => r.PlateNumber == plateNumber);
+        var user = await _context.Cars
+        .Where(c => c.PlateNumber == plateNumber)
+        .Select(c => c.UserId)
+        .FirstOrDefaultAsync();
+
+        if (user == 0) return false; 
+
+        return await _context.ReservationRecords.AnyAsync(r => r.UserId == user);
+
+        //return await _context.Cars.AnyAsync(r => r.PlateNumber == plateNumber);
     }
 
 
