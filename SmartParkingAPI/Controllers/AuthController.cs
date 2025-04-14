@@ -9,9 +9,11 @@ namespace SmartParking.API.Controllers
     {
 
         private readonly IAuthService _authServices;
-        public AuthController(IAuthService authServices)
+        private readonly IEmailServices _emailServices;
+        public AuthController(IAuthService authServices, IEmailServices emailServices)
         {
             _authServices = authServices;
+            _emailServices = emailServices;
         }
 
 
@@ -27,8 +29,24 @@ namespace SmartParking.API.Controllers
 
             if (user == null)
                 return BadRequest("User already exists!");
-            return Ok(user);
+
+            await _emailServices.SendVerificationCodeAsync(user.UserId);
+
+            return Ok(user.UserId);
         }
+
+        [HttpPost("VerifyEmail")]
+        public async Task<IActionResult> VerifyEmail([FromBody] VerifyEmailDTO request)
+        {
+
+            var result = await _emailServices.VerifyCodeAsync(request.Id, request.Code);
+
+            if (!result)
+                return BadRequest("Invalid or expired code.");
+
+            return Ok("Email verified successfully.");
+        }
+
 
         [HttpPost("Login")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -40,7 +58,10 @@ namespace SmartParking.API.Controllers
             if (token == null)
                 return BadRequest("Invalid Email or Password!");
 
-            return Ok(token);
+            if (!token.IsVerified)
+                return BadRequest("Please verify your email before logging in.");
+
+            return Ok(token.Token);
         }
 
     }

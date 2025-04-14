@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-
-namespace SmartParkingAPI.Data;
+﻿namespace SmartParkingAPI.Data;
 
 public class ApplicationDbContext : DbContext
 {
@@ -34,6 +32,10 @@ public class ApplicationDbContext : DbContext
             Id = 2,
             RoleName = "Admin"
         });
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.VerificationCodes)
+            .WithOne(vc => vc.User)
+            .HasForeignKey(vc => vc.UserId);
     }
 
     public DbSet<Spot> Spots { get; set; }
@@ -44,5 +46,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<ReservationRecord> ReservationRecords { get; set; }
     public DbSet<Payment> Payments { get; set; }
     public DbSet<PaymentMethod> PaymentMethods { get; set; }
+    public DbSet<UserVerificationCode> UserVerificationCodes { get; set; }
+
     //public DbSet<PlateRecord> PlateRecords { get; set; }
 }
