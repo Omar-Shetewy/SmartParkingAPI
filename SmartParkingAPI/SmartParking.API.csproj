@@ -4,6 +4,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>fef7a69a-138f-4ede-b155-e0708c0d2a6b</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,6 +23,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="NETCore.MailKit" Version="2.1.0" />
     <PackageReference Include="Scalar.AspNetCore" Version="2.1.1" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="7.3.1" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="7.3.1" />
