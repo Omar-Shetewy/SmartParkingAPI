@@ -37,7 +37,7 @@ namespace SmartParking.API.Services.Implementation
             return user;
         }
 
-        public async Task<string?> UserValidationAsync(LoginDTO request)
+        public async Task<AuthResponseDTO?> UserValidationAsync(LoginDTO request)
         {
             var user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.Email == request.Email);
 
@@ -45,7 +45,10 @@ namespace SmartParking.API.Services.Implementation
             {
                 return null;
             }
-            return GenerateToken(user);
+
+            var token = GenerateToken(user);
+
+            return new AuthResponseDTO { Token = token, IsVerified = user.IsVerified};
         }
 
         private string GenerateToken(User user)
