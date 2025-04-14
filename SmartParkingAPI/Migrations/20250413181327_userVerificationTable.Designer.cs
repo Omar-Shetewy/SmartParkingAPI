@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartParkingAPI.Data;
 
@@ -11,9 +12,11 @@ using SmartParkingAPI.Data;
 namespace SmartParking.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250413181327_userVerificationTable")]
+    partial class userVerificationTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -278,8 +281,8 @@ namespace SmartParking.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsVerified")
-                        .HasColumnType("bit");
+                    b.Property<int>("IsActive")
+                        .HasColumnType("int");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -378,7 +381,7 @@ namespace SmartParking.API.Migrations
             modelBuilder.Entity("SmartParking.API.Data.Models.UserVerificationCode", b =>
                 {
                     b.HasOne("SmartParkingAPI.Data.Models.User", "User")
-                        .WithMany("VerificationCodes")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -421,8 +424,6 @@ namespace SmartParking.API.Migrations
 
                     b.Navigation("Reservation")
                         .IsRequired();
-
-                    b.Navigation("VerificationCodes");
                 });
 #pragma warning restore 612, 618
         }
