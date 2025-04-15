@@ -6,10 +6,12 @@ public class GaragesController : ControllerBase
 {
     private readonly IGarageService _garageService;
     private readonly IMapper _mapper;
-    public GaragesController(IGarageService garageService, IMapper mapper)
+    private readonly IOwnerService _ownerService;
+    public GaragesController(IGarageService garageService, IMapper mapper, IOwnerService ownerService)
     {
         _garageService = garageService;
         _mapper = mapper;
+        _ownerService = ownerService;
     }
 
 
@@ -66,6 +68,12 @@ public class GaragesController : ControllerBase
     {
         if (garageDTO == null)
             return BadRequest("Garage data is required");
+
+        var isValidOwner = _ownerService.isValidOwner(garageDTO.OwnerId);
+
+        if (!isValidOwner)
+            return BadRequest($"Invalid Owner ID {garageDTO.OwnerId}");
+
         var garage = _mapper.Map<Garage>(garageDTO);
         var result = await _garageService.Add(garage);
         if (result == null)
@@ -81,6 +89,12 @@ public class GaragesController : ControllerBase
     {
         if (garageDTO == null)
             return BadRequest("Garage data is required");
+
+        var isValidOwner = _ownerService.isValidOwner(garageDTO.OwnerId);
+
+        if (!isValidOwner)
+            return BadRequest($"Invalid Owner ID {garageDTO.OwnerId}");
+
         var garage = _mapper.Map<Garage>(garageDTO);
         var result = _garageService.Update(garage);
         if (result == null)

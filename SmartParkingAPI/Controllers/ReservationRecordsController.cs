@@ -124,6 +124,7 @@ public class ReservationRecordsController : ControllerBase
     [Route("Update/{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateAsync(int id, [FromBody] ReservationRecordUpdateDTO dto)
     {
         if (!ModelState.IsValid)
@@ -133,6 +134,9 @@ public class ReservationRecordsController : ControllerBase
             return BadRequest($"Invalid ID: {id}");
 
         var record = await _reservationService.GetById(id);
+
+        if (record == null)
+            return NotFound($"Record with id {id} is not found!");
 
         record.StartDate = dto.StartDate;
         record.EndDate = dto.EndDate;

@@ -108,6 +108,7 @@ public class CarsController : ControllerBase
     [Route("UpdateCar/{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateCarAsync(int id, [FromBody] CarDTO dto)
     {
         if (!ModelState.IsValid)
@@ -122,6 +123,9 @@ public class CarsController : ControllerBase
             return BadRequest($"Invalid User Id:{dto.UserId}");
 
         var car = await _carService.GetBy(id);
+
+        if (car == null)
+            return NotFound($"Car with id {id} is not found!");
 
         car.PlateNumber = dto.PlateNumber;
         car.Model = dto.Model;

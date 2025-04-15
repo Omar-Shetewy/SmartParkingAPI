@@ -104,7 +104,8 @@ public class PaymentsController : ControllerBase
     [Route("Update/{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> UpdateCarAsync(int id, [FromBody] PaymentDTO dto)
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateAsync(int id, [FromBody] PaymentDTO dto)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -118,6 +119,9 @@ public class PaymentsController : ControllerBase
             return BadRequest($"Invalid Payment Method ID:{dto.PaymentMethodId}");
 
         var payment = await _paymentService.GetById(id);
+
+        if (payment == null)
+            return NotFound($"Payment with id {id} is not found!");
 
         payment.Amount = dto.Amount;
         payment.PaymentStatus = dto.PaymentStatus;

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartParkingAPI.Data;
 
@@ -11,9 +12,11 @@ using SmartParkingAPI.Data;
 namespace SmartParking.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250415120051_AddJobsTable")]
+    partial class AddJobsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,56 +58,6 @@ namespace SmartParking.API.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Cars");
-                });
-
-            modelBuilder.Entity("SmartParking.API.Data.Models.Employee", b =>
-                {
-                    b.Property<int>("EmployeeId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EmployeeId"));
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("GarageId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Gender")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("JobId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("Salary")
-                        .HasColumnType("float");
-
-                    b.HasKey("EmployeeId");
-
-                    b.HasIndex("GarageId");
-
-                    b.HasIndex("JobId");
-
-                    b.ToTable("Employees");
                 });
 
             modelBuilder.Entity("SmartParking.API.Data.Models.Garage", b =>
@@ -435,25 +388,6 @@ namespace SmartParking.API.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SmartParking.API.Data.Models.Employee", b =>
-                {
-                    b.HasOne("SmartParking.API.Data.Models.Garage", "Garage")
-                        .WithMany("Employees")
-                        .HasForeignKey("GarageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SmartParking.API.Data.Models.Job", "Job")
-                        .WithMany("Employees")
-                        .HasForeignKey("JobId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Garage");
-
-                    b.Navigation("Job");
-                });
-
             modelBuilder.Entity("SmartParking.API.Data.Models.Garage", b =>
                 {
                     b.HasOne("SmartParking.API.Data.Models.Owner", "Owner")
@@ -538,16 +472,9 @@ namespace SmartParking.API.Migrations
 
             modelBuilder.Entity("SmartParking.API.Data.Models.Garage", b =>
                 {
-                    b.Navigation("Employees");
-
                     b.Navigation("ReservationRecords");
 
                     b.Navigation("Spots");
-                });
-
-            modelBuilder.Entity("SmartParking.API.Data.Models.Job", b =>
-                {
-                    b.Navigation("Employees");
                 });
 
             modelBuilder.Entity("SmartParking.API.Data.Models.Owner", b =>

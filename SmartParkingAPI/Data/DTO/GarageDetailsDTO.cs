@@ -9,5 +9,5 @@ public class GarageDetailsDTO
     public int TotalSpots { get; set; }
     public int AvailableSpots { get; set; }
     public int ReservedSpots { get; set; }
-
+    public int OwnerId { get; set; }
 }

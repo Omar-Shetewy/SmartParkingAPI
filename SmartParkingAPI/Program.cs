@@ -1,3 +1,5 @@
+using Microsoft.OpenApi.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -31,6 +33,9 @@ builder.Services.AddTransient<IGarageService, GarageService>();
 builder.Services.AddTransient<IReservationService, ReservationService>();
 builder.Services.AddTransient<IPaymentMethodService, PaymentMethodService>();
 builder.Services.AddTransient<IPaymentService, PaymentService>();
+builder.Services.AddTransient<IOwnerService, OwnerService>();
+builder.Services.AddTransient<IJobService, JobService>();
+builder.Services.AddTransient<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IAuthService, AuthServicie>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddTransient<IEmailServices, EmailService>();
@@ -38,14 +43,14 @@ builder.Services.AddTransient<IEmailServices, EmailService>();
 
 builder.Services.AddAutoMapper(typeof(Program));
 
-//builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//    options.UseSqlServer(builder.Configuration.GetConnectionString("AmorConnection")));
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AmorConnection")));
 
 //builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //    options.UseSqlServer(builder.Configuration.GetConnectionString("MedoConnection")));
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("RokaConnection")));
+//builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("RokaConnection")));
 
 // add cors policy to allow all origins
 builder.Services.AddCors();
