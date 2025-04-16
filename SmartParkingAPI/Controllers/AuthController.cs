@@ -9,11 +9,13 @@ namespace SmartParking.API.Controllers
     {
 
         private readonly IAuthService _authServices;
+        private readonly IUserService _userService;
         private readonly IEmailServices _emailServices;
-        public AuthController(IAuthService authServices, IEmailServices emailServices)
+        public AuthController(IAuthService authServices, IEmailServices emailServices, IUserService userService)
         {
             _authServices = authServices;
             _emailServices = emailServices;
+            _userService = userService;
         }
 
 
@@ -35,7 +37,26 @@ namespace SmartParking.API.Controllers
             return Ok(user.UserId);
         }
 
+        [HttpPost("Resend-verification")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Reverify([FromHeader] int userId)
+        {
+            var user = await _userService.GetByAsync(userId);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (user == null)
+                return BadRequest("User not found!");
+
+            await _emailServices.SendVerificationCodeAsync(user.UserId);
+            return Ok("Verification code resent successfully.");
+        }
+
+
         [HttpPost("VerifyEmail")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> VerifyEmail([FromBody] VerifyEmailDTO request)
         {
 
