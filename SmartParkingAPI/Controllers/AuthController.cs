@@ -1,7 +1,4 @@
-﻿
-using SmartParking.API.Services.Interface;
-
-namespace SmartParking.API.Controllers
+﻿namespace SmartParking.API.Controllers
 {
     [Route("api/Auth")]
     [ApiController]
@@ -40,6 +37,7 @@ namespace SmartParking.API.Controllers
         [HttpPost("Resend-verification")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Reverify([FromHeader] int userId)
         {
             var user = await _userService.GetByAsync(userId);
@@ -48,6 +46,9 @@ namespace SmartParking.API.Controllers
 
             if (user == null)
                 return BadRequest("User not found!");
+
+            if (user.IsVerified)
+                return BadRequest("User already verified");
 
             await _emailServices.SendVerificationCodeAsync(user.UserId);
             return Ok("Verification code resent successfully.");
@@ -59,6 +60,10 @@ namespace SmartParking.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> VerifyEmail([FromBody] VerifyEmailDTO request)
         {
+            var user = await _userService.GetByAsync(request.Id);
+
+            if (user.IsVerified)
+                return BadRequest("User already verified");
 
             var result = await _emailServices.VerifyCodeAsync(request.Id, request.Code);
 
