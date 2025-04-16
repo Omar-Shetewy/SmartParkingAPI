@@ -31,7 +31,16 @@
 
             await _emailServices.SendVerificationCodeAsync(user.UserId);
 
-            return Ok(user);
+            RegisterDetailsDTO reg = new RegisterDetailsDTO
+            {
+                Email = request.Email,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                PhoneNumber = request.PhoneNumber,
+                UserId = user.UserId
+            };
+
+            return Ok(reg);
         }
 
         [HttpPost("Resend-verification")]

@@ -6,8 +6,8 @@ public class User
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
-    public string PasswordHash { get; set; } = string.Empty;
     public string PhoneNumber { get; set; } = string.Empty;
+    public string PasswordHash { get; set; } = string.Empty;
     public string? RefreshToken { get; set; } = string.Empty;
     public DateTime? RefreshTokenExpiryTime { get; set; }
     public bool IsVerified { get; set; } = false;
