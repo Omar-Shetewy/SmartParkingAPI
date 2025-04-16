@@ -1,8 +1,4 @@
 ﻿
-using MailKit.Net.Smtp;
-using MailKit.Security;
-using MimeKit;
-
 namespace SmartParking.API.Services.Implementation
 {
 
@@ -67,7 +63,7 @@ namespace SmartParking.API.Services.Implementation
         {
             var email = new MimeMessage();
             email.From.Add(new MailboxAddress(_config["EmailSettings:DisplayName"], _config["EmailSettings:From"]));
-            email.ReplyTo.Add(new MailboxAddress(_config["EmailSettings:DisplayName"], _config["EmailSettings:From"]));
+            email.ReplyTo.Add(new MailboxAddress(null, _config["EmailSettings:From"]));
             email.To.Add(MailboxAddress.Parse(toEmail));
             email.Subject = subject;
             email.Body = new TextPart(MimeKit.Text.TextFormat.Html)
