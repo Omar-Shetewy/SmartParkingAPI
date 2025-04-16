@@ -45,7 +45,7 @@ public class GaragesController : ControllerBase
     }
 
     [HttpGet]
-    [Route("GetAllSpots/{id}")]
+    [Route("GetGarage/{id}/Spots")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

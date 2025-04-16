@@ -10,12 +10,12 @@ public class Garage
     public int AvailableSpots { get; set; }
     public int ReservedSpots { get; set; } = 0;
     public int IsActive { get; set; } = 1;
+    public double Latitude { get; set; }
+    public double Longitude { get; set; }
     public List<Spot> Spots { get; set; }
     public DateTime CreatedOn { get; set; } = DateTime.Now;
-
     public List<ReservationRecord> ReservationRecords { get; set; }
     public List<Employee> Employees { get; set; }
-
     public int OwnerId { get; set; }
     public Owner Owner { get; set; }
 }

@@ -1,9 +1,9 @@
 ﻿namespace SmartParking.API.Services.Implementation;
-public class ANBRService : IANBRService
+public class AiService : IAiService
 {
     private readonly HttpClient _httpClient;
     private readonly ApplicationDbContext _context;
-    public ANBRService(HttpClient httpClient, ApplicationDbContext context)
+    public AiService(HttpClient httpClient, ApplicationDbContext context)
     {
         _httpClient = httpClient;
         _context = context;

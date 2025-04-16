@@ -1,6 +1,4 @@
-﻿using SmartParking.API.Services.Interface;
-
-namespace SmartParking.API.Services.Implementation;
+﻿namespace SmartParking.API.Services.Implementation;
 
 public class GarageService : IGarageService
 {

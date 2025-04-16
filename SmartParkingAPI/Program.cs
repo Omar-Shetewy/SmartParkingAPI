@@ -31,7 +31,7 @@ builder.Services.AddTransient<IGarageService, GarageService>();
 builder.Services.AddTransient<IEmailServices, EmailService>();
 builder.Services.AddTransient<IOwnerService, OwnerService>();
 builder.Services.AddTransient<IAuthService, AuthServicie>();
-builder.Services.AddTransient<IANBRService, ANBRService>();
+builder.Services.AddTransient<IAiService, AiService>();
 builder.Services.AddTransient<ISpotService, SpotService>();
 builder.Services.AddTransient<IRoleService, RoleService>();
 builder.Services.AddTransient<IUserService, UserService>();
@@ -44,11 +44,11 @@ builder.Services.AddAutoMapper(typeof(Program));
 //builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //    options.UseSqlServer(builder.Configuration.GetConnectionString("AmorConnection")));
 
-//builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//    options.UseSqlServer(builder.Configuration.GetConnectionString("MedoConnection")));
-
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("RokaConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MedoConnection")));
+
+//builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("RokaConnection")));
 
 // add cors policy to allow all origins
 builder.Services.AddCors();
