@@ -16,7 +16,7 @@ global using Microsoft.AspNetCore.Mvc;
 global using SmartParkingAPI.Data.DTO;
 global using Microsoft.OpenApi.Models;
 global using System.Security.Claims;
-global using SmartParkingAPI.Data;
+global using SmartParking.API.Data;
 global using Scalar.AspNetCore;
 global using System.Text.Json;
 global using MailKit.Net.Smtp;

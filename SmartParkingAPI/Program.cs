@@ -63,7 +63,7 @@ builder.Services.AddSwaggerGen(c =>
         Contact = new OpenApiContact
         {
             Name = "iSpot",
-            Email = "ispot@gmail.com",
+            Email = "ispotsps@gmail.com",
             Url = new Uri("https://ispot.com"),
         },
     });
@@ -74,7 +74,7 @@ builder.Services.AddSwaggerGen(c =>
         Scheme = "Bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "JWT Authorization header using the Bearer scheme. Example: ",
+        Description = "JWT Authorization header using the Bearer scheme. Example: Bearer [Token]",
 
     });
 
@@ -92,7 +92,7 @@ builder.Services.AddSwaggerGen(c =>
                 In = ParameterLocation.Header,
 
             },
-            new string[] {}
+            Array.Empty<string>()
         }
     });
 });

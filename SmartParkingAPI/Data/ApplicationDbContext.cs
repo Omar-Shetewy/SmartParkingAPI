@@ -1,11 +1,7 @@
-﻿namespace SmartParkingAPI.Data;
+﻿namespace SmartParking.API.Data;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-    {
-
-    }
     //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     //{
 
