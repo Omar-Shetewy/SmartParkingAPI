@@ -1,5 +1,3 @@
-using Microsoft.OpenApi.Models;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -25,20 +23,20 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     });
 
 builder.Services.AddHttpClient();
+builder.Services.AddTransient<IPaymentMethodService, PaymentMethodService>();
+builder.Services.AddTransient<IReservationService, ReservationService>();
+builder.Services.AddTransient<IEmployeeService, EmployeeService>();
+builder.Services.AddTransient<IPaymentService, PaymentService>();
+builder.Services.AddTransient<IGarageService, GarageService>();
+builder.Services.AddTransient<IEmailServices, EmailService>();
+builder.Services.AddTransient<IOwnerService, OwnerService>();
+builder.Services.AddTransient<IAuthService, AuthServicie>();
+builder.Services.AddTransient<IANBRService, ANBRService>();
+builder.Services.AddTransient<ISpotService, SpotService>();
+builder.Services.AddTransient<IRoleService, RoleService>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<ICarService, CarService>();
-builder.Services.AddTransient<IGarageService, GarageService>();
-builder.Services.AddTransient<IReservationService, ReservationService>();
-builder.Services.AddTransient<IPaymentMethodService, PaymentMethodService>();
-builder.Services.AddTransient<IPaymentService, PaymentService>();
-builder.Services.AddTransient<IOwnerService, OwnerService>();
 builder.Services.AddTransient<IJobService, JobService>();
-builder.Services.AddTransient<IEmployeeService, EmployeeService>();
-builder.Services.AddTransient<IEmailServices, EmailService>();
-builder.Services.AddScoped<IANBRService, ANBRService>();
-builder.Services.AddScoped<ISpotService, SpotService>();
-builder.Services.AddScoped<IAuthService, AuthServicie>();
-builder.Services.AddScoped<IRoleService, RoleService>();
 
 
 builder.Services.AddAutoMapper(typeof(Program));
