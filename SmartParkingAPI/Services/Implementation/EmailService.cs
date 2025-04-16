@@ -33,7 +33,18 @@ namespace SmartParking.API.Services.Implementation
                 IsUsed = false
             };
 
-            _context.UserVerificationCodes.Add(verificationCode);
+            var UserVerified = await _context.UserVerificationCodes.FirstOrDefaultAsync(x => x.UserId == userId);
+
+            if (UserVerified != null)
+            {
+                UserVerified.Code = code;
+                _context.UserVerificationCodes.Update(UserVerified);
+            }
+            else
+            {
+                _context.UserVerificationCodes.Add(verificationCode);
+            }
+
             await _context.SaveChangesAsync();
 
             var body = $@"<p>Hi there!</p><p>Your verification code is: <b>{code}</b></p><p>Please enter this code in the app to confirm your email.</p> <p>Thanks,</p> <p>The iSpot Team</p>";
