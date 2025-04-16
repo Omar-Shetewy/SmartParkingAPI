@@ -57,6 +57,7 @@ namespace SmartParking.API.Services.Implementation
                 .Where(vc => vc.UserId == userId && vc.Code == code && !vc.IsUsed)
                 .OrderByDescending(vc => vc.ExpirationDate)
                 .FirstOrDefaultAsync();
+
             if (verificationCode == null || verificationCode.ExpirationDate < DateTime.UtcNow)
                 return false;
 

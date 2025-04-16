@@ -31,12 +31,12 @@ builder.Services.AddTransient<IGarageService, GarageService>();
 builder.Services.AddTransient<IEmailServices, EmailService>();
 builder.Services.AddTransient<IOwnerService, OwnerService>();
 builder.Services.AddTransient<IAuthService, AuthServicie>();
-builder.Services.AddTransient<IAiService, AiService>();
 builder.Services.AddTransient<ISpotService, SpotService>();
 builder.Services.AddTransient<IRoleService, RoleService>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<ICarService, CarService>();
 builder.Services.AddTransient<IJobService, JobService>();
+builder.Services.AddTransient<IAiService, AiService>();
 
 
 builder.Services.AddAutoMapper(typeof(Program));

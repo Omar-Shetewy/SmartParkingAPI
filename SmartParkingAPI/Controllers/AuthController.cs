@@ -31,7 +31,7 @@
 
             await _emailServices.SendVerificationCodeAsync(user.UserId);
 
-            return Ok(user.UserId);
+            return Ok(user);
         }
 
         [HttpPost("Resend-verification")]
