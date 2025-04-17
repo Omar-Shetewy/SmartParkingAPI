@@ -1,4 +1,6 @@
-﻿namespace SmartParking.API.Services.Implementation
+﻿using SmartParking.API.Data.Models;
+
+namespace SmartParking.API.Services.Implementation
 {
     public class PaymentService : IPaymentService
     {
@@ -17,6 +19,11 @@
         public async Task<IEnumerable<Payment>> GetByPaymentMethodId(int paymentMethodId)
         {
             return await _dbContext.Payments.Where(p => p.PaymentMethodId == paymentMethodId).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Payment>> GetByReservationRecordId(int reservationRecordId)
+        {
+            return await _dbContext.Payments.Where(r => r.ReservationRecordId == reservationRecordId).ToListAsync();
         }
 
         public async Task<Payment> GetById(int id)

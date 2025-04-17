@@ -4,6 +4,7 @@
     {
         Task<IEnumerable<Payment>> GetAll();
         Task<IEnumerable<Payment>> GetByPaymentMethodId(int paymentMethodId);
+        Task<IEnumerable<Payment>> GetByReservationRecordId(int reservationRecordId);
         Task<Payment> GetById(int id);
         Task<Payment> Add(Payment payment);
         Payment Update(Payment payment);

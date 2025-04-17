@@ -16,6 +16,7 @@ public class PaymentsController : ControllerBase
         _paymentService = paymentService;
         _ReservationService = reservationService;
         _paymentMethodService = paymentMethodService;
+        _ReservationService = reservationService;
     }
 
     [HttpGet]
@@ -50,6 +51,31 @@ public class PaymentsController : ControllerBase
             return BadRequest($"Invalid Payment Method Id:{id}");
 
         var payments = await _paymentService.GetByPaymentMethodId(id);
+
+        if (payments.Count() == 0)
+            return NoContent();
+
+        var data = _mapper.Map<List<PaymentDetailsDTO>>(payments);
+
+        return Ok(data);
+    }
+
+    [HttpGet]
+    [Route("GetByReservationRecordId/{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetByReservationRecordIdAsync(int id)
+    {
+        if (id < 1)
+            return BadRequest($"Invalid ID:{id}");
+
+        var isValidReservationRecord = await _ReservationService.isValidReservationRecord(id);
+
+        if (!isValidReservationRecord)
+            return BadRequest($"Invalid Reservation Record ID:{id}");
+
+        var payments = await _paymentService.GetByReservationRecordId(id);
 
         if (payments.Count() == 0)
             return NoContent();
@@ -97,6 +123,11 @@ public class PaymentsController : ControllerBase
 
         if (!isValidReservationRecord)
             return BadRequest($"Invalid Reservation Record ID:{dto.PaymentMethodId}");
+
+        var paymentByReservationRecord = _paymentService.GetByReservationRecordId(dto.ReservationRecordId);
+
+        if (paymentByReservationRecord != null)
+            return BadRequest($"Invalid ID {dto.ReservationRecordId}");
 
         var payment = _mapper.Map<Payment>(dto);
 
