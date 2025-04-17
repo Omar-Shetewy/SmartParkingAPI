@@ -60,6 +60,7 @@
                 return BadRequest("User already verified");
 
             await _emailServices.SendVerificationCodeAsync(user.UserId);
+
             return Ok("Verification code resent successfully.");
         }
 
