@@ -1,4 +1,6 @@
 ﻿
+using System.Linq;
+
 namespace SmartParking.API.Services.Implementation
 {
 
@@ -18,6 +20,7 @@ namespace SmartParking.API.Services.Implementation
         public async Task SendVerificationCodeAsync(int userId)
         {
             var user = await _context.Users.FindAsync(userId);
+
             if (user == null)
             {
                 throw new Exception("User not found");
@@ -38,12 +41,15 @@ namespace SmartParking.API.Services.Implementation
             if (UserVerified != null)
             {
                 UserVerified.Code = code;
+                UserVerified.IsUsed = false;
+                UserVerified.ExpirationDate = DateTime.UtcNow.AddMinutes(5);
                 _context.UserVerificationCodes.Update(UserVerified);
             }
             else
             {
                 _context.UserVerificationCodes.Add(verificationCode);
             }
+
 
             await _context.SaveChangesAsync();
 
@@ -64,9 +70,14 @@ namespace SmartParking.API.Services.Implementation
             verificationCode.IsUsed = true;
 
             var user = await _context.Users.FindAsync(userId);
+
+            if (user == null)
+                return false;
+
             user.IsVerified = true;
 
             await _context.SaveChangesAsync();
+
             return true;
         }
 
