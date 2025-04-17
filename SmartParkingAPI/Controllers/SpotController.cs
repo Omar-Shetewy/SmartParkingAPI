@@ -15,7 +15,6 @@ public class SpotController: ControllerBase
         _mapper = mapper;
     }
 
-
     [HttpGet]
     [Route("GetAllSpots")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -26,22 +25,6 @@ public class SpotController: ControllerBase
         if (spots.Count() == 0)
             return NoContent();
         var data = _mapper.Map<List<Spot>>(spots);
-        return Ok(data);
-    }
-
-    [HttpGet]
-    [Route("GetSpotsByGarageId/{id}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetSpotsByGarageId(int id)
-    {
-        if (id < 1)
-            return BadRequest($"Invalid ID:{id}");
-        var spots = await _spotService.GetByGarageId(id);
-        if (spots.Count() == 0)
-            return NoContent();
-        var data = _mapper.Map<List<SpotDetailsDTO>>(spots);
         return Ok(data);
     }
 

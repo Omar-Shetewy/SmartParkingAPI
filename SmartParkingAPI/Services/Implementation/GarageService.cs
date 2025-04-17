@@ -54,4 +54,30 @@ public class GarageService : IGarageService
     {
         return await _dbContext.Spots.Where(s => s.GarageId == garageId).ToListAsync();
     }
+
+    public async Task<IEnumerable<EntryCar>> GetAllCars(int garageId)
+    {
+        return await _dbContext.EntryCars.Where(s => s.GarageId == garageId).ToListAsync();
+    }
+
+    public async Task<EntryCar> AddEntryCar(EntryCar entryCar)
+    {
+        await _dbContext.EntryCars.AddAsync(entryCar);
+        await _dbContext.SaveChangesAsync();
+        return entryCar;
+    }
+
+    public async Task<bool> isValidPlateNumber(string plateNumber)
+    {
+        var car = await _dbContext.Cars.FirstOrDefaultAsync(c => c.PlateNumber == plateNumber);
+
+        if (car == null) return false;
+
+        bool Reserve = await _dbContext.ReservationRecords.AnyAsync(r => r.UserId == car.UserId);
+        if (Reserve) return false;
+
+
+        return true;
+
+    }
 }
