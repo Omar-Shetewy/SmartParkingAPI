@@ -131,7 +131,10 @@
             if (user == null)
                 return BadRequest("User Not Found, Please Register First");
 
-            _userService.UpdatePass(user, password);
+            var updated = _userService.UpdatePass(user, password);
+
+            if (updated == null)
+                return BadRequest("Password is the same as the old one!");
 
             return Ok("Password Updated Successfully");
         }
