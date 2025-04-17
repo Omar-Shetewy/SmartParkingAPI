@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SmartParkingAPI.Data.Models;
 
 namespace SmartParking.API.Controllers
 {
@@ -33,7 +34,8 @@ namespace SmartParking.API.Controllers
 
             var data = _mapper.Map<List<EmployeeDetailsDTO>>(employees);
 
-            return Ok(data);
+            return Ok(new ApiResponse<List<EmployeeDetailsDTO>>(data, "", true));
+
         }
 
         [HttpGet]
@@ -44,12 +46,13 @@ namespace SmartParking.API.Controllers
         public async Task<IActionResult> GetByGarageId(int id)
         {
             if (id < 1)
-                return BadRequest($"Invalid ID:{id}");
+                return BadRequest(new ApiResponse<object>(null, $"Invalid Id:{id}", false));
+
 
             var isValidGarage = await _garageService.isValidGarage(id);
 
             if (!isValidGarage)
-                return BadRequest($"Invalid Garage Id:{id}");
+                return BadRequest(new ApiResponse<object>(null, $"Invalid Garage Id:{id}", false));
 
             var employees = await _employeeService.GetByGarageId(id);
 
@@ -58,7 +61,7 @@ namespace SmartParking.API.Controllers
 
             var data = _mapper.Map<List<EmployeeDetailsDTO>>(employees);
 
-            return Ok(data);
+            return Ok(new ApiResponse<List<EmployeeDetailsDTO>>(data, "", true));
         }
 
         [HttpGet]
@@ -69,12 +72,13 @@ namespace SmartParking.API.Controllers
         public async Task<IActionResult> GetByJobId(int id)
         {
             if (id < 1)
-                return BadRequest($"Invalid ID:{id}");
+                return BadRequest(new ApiResponse<object>(null, $"Invalid Id:{id}", false));
+
 
             var isValidJob = await _jobService.isValidJob(id);
 
             if (!isValidJob)
-                return BadRequest($"Invalid Job Id:{id}");
+                return BadRequest(new ApiResponse<object>(null, $"Invalid Job Id:{id}", false));
 
             var employees = await _employeeService.GetByJobId(id);
 
@@ -83,7 +87,7 @@ namespace SmartParking.API.Controllers
 
             var data = _mapper.Map<List<EmployeeDetailsDTO>>(employees);
 
-            return Ok(data);
+            return Ok(new ApiResponse<List<EmployeeDetailsDTO>>(data, "", true));
         }
 
         [HttpGet]
@@ -94,7 +98,7 @@ namespace SmartParking.API.Controllers
         public async Task<IActionResult> GetByIdAsync(int id)
         {
             if (id < 1)
-                return BadRequest($"Invalid ID:{id}");
+                return BadRequest(new ApiResponse<object>(null, $"Invalid Id:{id}", false));
 
             var employee = await _employeeService.GetById(id);
 
@@ -103,7 +107,8 @@ namespace SmartParking.API.Controllers
 
             var data = _mapper.Map<EmployeeDetailsDTO>(employee);
 
-            return Ok(data);
+            return Ok(new ApiResponse<EmployeeDetailsDTO>(data, "", true));
+
         }
 
         [HttpPost]
@@ -118,12 +123,12 @@ namespace SmartParking.API.Controllers
             var isValidGarage = await _garageService.isValidGarage(dto.GarageId);
 
             if (!isValidGarage)
-                return BadRequest($"Invalid Garage ID:{dto.GarageId}");
+                return BadRequest(new ApiResponse<object>(null, $"Invalid Garage Id:{dto.GarageId}", false));
 
             var isValidJob = await _jobService.isValidJob(dto.JobId);
 
             if (!isValidJob)
-                return BadRequest($"Invalid Job ID:{dto.JobId}");
+                return BadRequest(new ApiResponse<object>(null, $"Invalid Job ID:{dto.JobId}", false));
 
             var employee = _mapper.Map<Employee>(dto);
 
@@ -131,7 +136,7 @@ namespace SmartParking.API.Controllers
 
             var data = _mapper.Map<EmployeeDetailsDTO>(employee);
 
-            return Ok(data);
+            return Ok(new ApiResponse<EmployeeDetailsDTO>(data, "", true));
         }
 
         [HttpPut]
@@ -145,17 +150,17 @@ namespace SmartParking.API.Controllers
                 return BadRequest(new ApiResponse<object>(ModelState,"", false));
 
             if (id < 1)
-                return BadRequest($"Invalid ID: {id}");
+                return BadRequest(new ApiResponse<object>(null, $"Invalid Id:{id}", false));
 
             var isValidGarage = await _garageService.isValidGarage(dto.GarageId);
 
             if (!isValidGarage)
-                return BadRequest($"Invalid Garage ID:{dto.GarageId}");
+                return BadRequest(new ApiResponse<object>(null, $"Invalid Garage Id:{dto.GarageId}", false));
 
             var isValidJob = await _jobService.isValidJob(dto.JobId);
 
             if (!isValidJob)
-                return BadRequest($"Invalid Job ID:{dto.JobId}");
+                return BadRequest(new ApiResponse<object>(null, $"Invalid Job Id:{dto.GarageId}", false));
 
             var employee = await _employeeService.GetById(id);
 
@@ -176,7 +181,7 @@ namespace SmartParking.API.Controllers
 
             var data = _mapper.Map<EmployeeDetailsDTO>(employee);
 
-            return Ok(data);
+            return Ok(new ApiResponse<EmployeeDetailsDTO>(data, "", true));
         }
 
         [HttpDelete]
@@ -190,7 +195,7 @@ namespace SmartParking.API.Controllers
                 return BadRequest(new ApiResponse<object>(ModelState,"", false));
 
             if (id < 1)
-                return BadRequest($"Invalid ID: {id}");
+                return BadRequest(new ApiResponse<object>(null, $"Invalid Id:{id}", false));
 
             var employee = await _employeeService.GetById(id);
 
@@ -201,7 +206,7 @@ namespace SmartParking.API.Controllers
 
             var data = _mapper.Map<EmployeeDetailsDTO>(employee);
 
-            return Ok(data);
+            return Ok(new ApiResponse<EmployeeDetailsDTO>(data, "", true));
         }
     }
 }
