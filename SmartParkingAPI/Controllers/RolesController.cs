@@ -24,7 +24,7 @@ namespace SmartParking.API.Controllers
         public async Task<ActionResult> GetAllRolesAsync()
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                return BadRequest(new ApiResponse<object>(ModelState,"", false));
 
             var roles = await _roleService.GetAllRolesAsync();
 
@@ -44,7 +44,7 @@ namespace SmartParking.API.Controllers
         public async Task<ActionResult> GetRoleByIdAsync(int id)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                return BadRequest(new ApiResponse<object>(ModelState,"", false));
 
             var role = await _roleService.GetRoleByIdAsync(id);
 
@@ -63,7 +63,7 @@ namespace SmartParking.API.Controllers
         public async Task<ActionResult> AddRoleAsync(RoleDTO role)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                return BadRequest(new ApiResponse<object>(ModelState,"", false));
 
             if (role == null)
                 return BadRequest("Please Add A Role");
@@ -86,7 +86,7 @@ namespace SmartParking.API.Controllers
         public async Task<ActionResult> UpdateRoleAsync(int id,[FromBody] RoleDTO role)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                return BadRequest(new ApiResponse<object>(ModelState,"", false));
 
             var Role = await _roleService.GetRoleByIdAsync(id);
 
@@ -110,7 +110,7 @@ namespace SmartParking.API.Controllers
         public async Task<ActionResult> DeleteRoleAsync(int id)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                return BadRequest(new ApiResponse<object>(ModelState,"", false));
 
             if (id < 1)
                 return BadRequest($"Invalid Id");

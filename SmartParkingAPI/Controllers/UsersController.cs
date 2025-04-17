@@ -1,4 +1,5 @@
-﻿using SmartParking.API.Services.Interface;
+﻿using SmartParking.API.Helpers;
+using SmartParking.API.Services.Interface;
 
 namespace SmartParkingAPI.Controllers;
 
@@ -65,7 +66,7 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> UpdateUserAsync(int id, [FromBody] UserDTO dto)
     {
         if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+            return BadRequest(new ApiResponse<object>(ModelState, "", false));
 
         var user = await _userServices.GetByAsync(id);
 
@@ -90,7 +91,7 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> UpdateRoleAsync(int id, [FromBody] SingleRoleDTO dto)
     {
         if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+            return BadRequest(new ApiResponse<object>(ModelState,"", false));
 
         var user = await _userServices.GetByAsync(id);
 

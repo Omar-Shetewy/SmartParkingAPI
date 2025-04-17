@@ -85,7 +85,7 @@ public class CarsController : ControllerBase
     public async Task<IActionResult> AddNewCarAsync([FromBody] CarDTO dto)
     {
         if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+            return BadRequest(new ApiResponse<object>(ModelState,"", false));
 
         var isValidUser = await _userService.isValidUserAsync(dto.UserId);
 
@@ -112,7 +112,7 @@ public class CarsController : ControllerBase
     public async Task<IActionResult> UpdateCarAsync(int id, [FromBody] CarDTO dto)
     {
         if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+            return BadRequest(new ApiResponse<object>(ModelState,"", false));
 
         if (id < 1)
             return BadRequest($"Invalid ID: {id}");
@@ -145,7 +145,7 @@ public class CarsController : ControllerBase
     public async Task<IActionResult> DeleteCarAsync(int id)
     {
         if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+            return BadRequest(new ApiResponse<object>(ModelState,"", false));
 
         if (id < 1)
             return BadRequest($"Invalid ID: {id}");

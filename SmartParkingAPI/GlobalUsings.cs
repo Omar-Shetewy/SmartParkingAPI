@@ -14,6 +14,7 @@ global using SmartParkingAPI.Data.Models;
 global using SmartParking.API.Data.DTO;
 global using Microsoft.AspNetCore.Mvc;
 global using SmartParkingAPI.Data.DTO;
+global using SmartParking.API.Helpers;
 global using Microsoft.OpenApi.Models;
 global using System.Security.Claims;
 global using SmartParking.API.Data;
