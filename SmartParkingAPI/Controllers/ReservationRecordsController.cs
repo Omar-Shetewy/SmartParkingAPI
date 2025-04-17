@@ -89,12 +89,7 @@ public class ReservationRecordsController : ControllerBase
     public async Task<IActionResult> AddAsync([FromBody] ReservationRecordDTO dto)
     {
         if (!ModelState.IsValid)
-            return 
-                
-                
-                
-                
-                ;
+            return BadRequest(new ApiResponse<object>(ModelState, "", false));
 
         var isValidUser = await _userService.isValidUserAsync(dto.UserId);
 
