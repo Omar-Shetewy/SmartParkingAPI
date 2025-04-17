@@ -93,16 +93,17 @@ namespace SmartParking.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> LogInAsync([FromBody] LoginDTO request)
         {
-            var token = await _authServices.UserValidationAsync(request);
+            var result = await _authServices.UserValidationAsync(request);
 
-            if (token == null)
+            if (result == null)
                 return BadRequest(new ApiResponse<object>(null,"Invalid Email or Password!", false));
 
-            if (!token.IsVerified)
+            if (!result.IsVerified)
                 return BadRequest(new ApiResponse<object>(null,"Please verify your email before logging in", false));
 
-            //return Ok(token.Token);
-            return Ok(new ApiResponse<string>(token.Token, "user successfully logged in", true));
+            TokenDTO token = new() { Token = result.Token };
+
+            return Ok(new ApiResponse<TokenDTO>(token, "User successfully logged in", true));
         }
 
         [HttpPost("Forget-Password")]
