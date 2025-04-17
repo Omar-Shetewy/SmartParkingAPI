@@ -15,6 +15,10 @@ public class MappingProfile: Profile
         CreateMap<GarageDTO,Garage>();
         CreateMap<Garage,GarageDetailsDTO>();
 
+        CreateMap<EntryCar, EntryCarDetailsDTO>();
+        CreateMap<EntryCarDTO,EntryCar>();
+        CreateMap<EntryCar, EntryCarDTO>();
+
         CreateMap<Spot, SpotDetailsDTO>();
         CreateMap<Spot, SpotDTO>();
         CreateMap<SpotDTO, Spot>();
