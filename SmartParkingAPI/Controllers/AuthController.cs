@@ -24,10 +24,11 @@ namespace SmartParking.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> RegisterAsync([FromBody] RegisterDTO request)
         {
-            var user = await _authServices.AddAsync(request);
 
             if (!ModelState.IsValid)
                 return BadRequest(new ApiResponse<object>(ModelState,"", false));
+
+            var user = await _authServices.AddAsync(request);
 
             if (user == null)
                 return BadRequest(new ApiResponse<object>(null,"User already exists!",false));

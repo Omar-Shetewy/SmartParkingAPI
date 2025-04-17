@@ -22,6 +22,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         };
     });
 
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
+
+
 builder.Services.AddHttpClient();
 builder.Services.AddTransient<IPaymentMethodService, PaymentMethodService>();
 builder.Services.AddTransient<IReservationService, ReservationService>();
@@ -44,11 +50,11 @@ builder.Services.AddAutoMapper(typeof(Program));
 //builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //    options.UseSqlServer(builder.Configuration.GetConnectionString("AmorConnection")));
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("MedoConnection")));
-
 //builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//    options.UseSqlServer(builder.Configuration.GetConnectionString("RokaConnection")));
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("MedoConnection")));
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("RokaConnection")));
 
 //builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //    options.UseSqlServer(builder.Configuration.GetConnectionString("ElZa3eMConnection")));
