@@ -48,6 +48,20 @@ public class UserService : IUserService
         return user;
     }
 
+    public User UpdatePass(User user, string password)
+    {
+        if (new PasswordHasher<User>().VerifyHashedPassword(user, user.PasswordHash, password) == PasswordVerificationResult.Success)
+        {
+            return null;
+        }
+
+        user.PasswordHash = new PasswordHasher<User>().HashPassword(user, password);
+
+        _dbContext.Users.Update(user);
+        _dbContext.SaveChanges();
+        return user;
+    }
+
     public User Delete(User user)
     {
         _dbContext.Remove(user);
