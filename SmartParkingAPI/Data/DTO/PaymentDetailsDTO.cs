@@ -7,5 +7,6 @@
         public bool PaymentStatus { get; set; }
 
         public int PaymentMethodId { get; set; }
+        public int ReservationRecordId { get; set; }
     }
 }

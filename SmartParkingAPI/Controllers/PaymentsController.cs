@@ -8,6 +8,7 @@ public class PaymentsController : ControllerBase
     private readonly IMapper _mapper;
     private readonly IPaymentService _paymentService;
     private readonly IPaymentMethodService _paymentMethodService;
+    private readonly IReservationService _ReservationService;
 
     public PaymentsController(IMapper mapper, IPaymentService paymentService, IPaymentMethodService paymentMethodService)
     {
@@ -91,6 +92,11 @@ public class PaymentsController : ControllerBase
         if (!isValidPaymentMethod)
             return BadRequest($"Invalid Payment Method ID:{dto.PaymentMethodId}");
 
+        //var isValidReservationRecord = await _ReservationService.isValidReservationRecord(dto.ReservationRecordId);
+
+        //if (!isValidReservationRecord)
+        //    return BadRequest($"Invalid Reservation Record ID:{dto.PaymentMethodId}");
+
         var payment = _mapper.Map<Payment>(dto);
 
         await _paymentService.Add(payment);
@@ -105,7 +111,7 @@ public class PaymentsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateAsync(int id, [FromBody] PaymentDTO dto)
+    public async Task<IActionResult> UpdateAsync(int id, [FromBody] PaymentUpdateDTO dto)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);

@@ -8,4 +8,5 @@ public interface IReservationService
     Task<ReservationRecord> Add(ReservationRecord record);
     ReservationRecord Update(ReservationRecord record);
     ReservationRecord Delete(ReservationRecord record);
+    Task<bool> isValidReservationRecord(int id);
 }

@@ -9,6 +9,7 @@
         public int PaymentMethodId { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
 
+        public int ReservationRecordId { get; set; }
         public ReservationRecord ReservationRecord { get; set; }
     }
 }

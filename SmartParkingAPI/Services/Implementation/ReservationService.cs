@@ -49,4 +49,9 @@ public class ReservationService : IReservationService
 
         return record;
     }
+
+    public async Task<bool> isValidReservationRecord(int id)
+    {
+        return await _dbContext.ReservationRecords.AnyAsync(r => r.ReservationRecordId == id);
+    }
 }

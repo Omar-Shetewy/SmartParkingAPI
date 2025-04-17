@@ -6,6 +6,5 @@
         public DateTime EndDate { get; set; }
         public int UserId { get; set; }
         public int GarageId { get; set; }
-        public int PaymentId { get; set; }
     }
 }

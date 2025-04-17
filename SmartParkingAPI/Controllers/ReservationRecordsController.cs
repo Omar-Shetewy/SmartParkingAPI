@@ -101,11 +101,6 @@ public class ReservationRecordsController : ControllerBase
         if (!isValidGarage)
             return BadRequest($"Invalid Garage Id:{dto.GarageId}");
 
-        var isValidPayment = await _paymentService.isValidPayment(dto.PaymentId);
-
-        if (!isValidPayment)
-            return BadRequest($"Invalid Payment Id:{dto.PaymentId}");
-
         var recordByUserId = await _reservationService.GetByUserId(dto.UserId);
 
         if (recordByUserId != null)
