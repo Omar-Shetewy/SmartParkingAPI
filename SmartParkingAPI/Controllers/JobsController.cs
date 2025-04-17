@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-
-namespace SmartParking.API.Controllers
+﻿namespace SmartParking.API.Controllers
 {
     [Route("api/Jobs")]
     [ApiController]
@@ -29,7 +26,7 @@ namespace SmartParking.API.Controllers
 
             var data = _mapper.Map<List<JobDetailsDTO>>(jobs);
 
-            return Ok(data);
+            return Ok(new ApiResponse<List<JobDetailsDTO>>(data, "Success", true));
         }
 
         [HttpGet]
@@ -40,16 +37,16 @@ namespace SmartParking.API.Controllers
         public async Task<IActionResult> GetByIdAsync(int id)
         {
             if (id < 1)
-                return BadRequest($"Invalid ID:{id}");
+                return BadRequest(new ApiResponse<object>(null, $"Invalid ID:{id}", false));
 
             var job = await _jobService.GetById(id);
 
             if (job == null)
-                return NotFound($"Job with id {id} is not found!");
+                return NotFound(new ApiResponse<object>(null, $"Job with id {id} is not found!", false));
 
             var data = _mapper.Map<JobDetailsDTO>(job);
 
-            return Ok(data);
+            return Ok(new ApiResponse<JobDetailsDTO>(data, "Success", true));
         }
 
         [HttpPost]
@@ -59,7 +56,7 @@ namespace SmartParking.API.Controllers
         public async Task<IActionResult> AddAsync([FromBody] JobDTO dto)
         {
             if (!ModelState.IsValid)
-                return BadRequest(new ApiResponse<object>(ModelState,"", false));
+                return BadRequest(new ApiResponse<object>(null,"Is Invalid", false));
 
             var job = _mapper.Map<Job>(dto);
 
@@ -67,7 +64,7 @@ namespace SmartParking.API.Controllers
 
             var data = _mapper.Map<JobDetailsDTO>(job);
 
-            return Ok(data);
+            return Ok(new ApiResponse<JobDetailsDTO>(data, "Success", true));
         }
 
         [HttpPut]
@@ -78,15 +75,15 @@ namespace SmartParking.API.Controllers
         public async Task<IActionResult> UpdateAsync(int id, [FromBody] JobDTO dto)
         {
             if (!ModelState.IsValid)
-                return BadRequest(new ApiResponse<object>(ModelState,"", false));
+                return BadRequest(new ApiResponse<object>(null,"Is Invalid", false));
 
             if (id < 1)
-                return BadRequest($"Invalid ID: {id}");
+                return BadRequest(new ApiResponse<object>(null, $"Invalid ID: {id}", false));
 
             var job = await _jobService.GetById(id);
 
             if (job == null)
-                return NotFound($"Job with id {id} is not found!");
+                return NotFound(new ApiResponse<object>(null, $"Job with id {id} is not found!", false));
 
             job.JobName = dto.JobName;
 
@@ -94,7 +91,7 @@ namespace SmartParking.API.Controllers
 
             var data = _mapper.Map<JobDetailsDTO>(job);
 
-            return Ok(data);
+            return Ok(new ApiResponse<JobDetailsDTO>(data, "Success", true));
         }
 
         [HttpDelete]
@@ -105,21 +102,21 @@ namespace SmartParking.API.Controllers
         public async Task<IActionResult> DeleteAsync(int id)
         {
             if (!ModelState.IsValid)
-                return BadRequest(new ApiResponse<object>(ModelState,"", false));
+                return BadRequest(new ApiResponse<object>(null,"Invalid", false));
 
             if (id < 1)
-                return BadRequest($"Invalid ID: {id}");
+                return BadRequest(new ApiResponse<object>(null, $"Invalid ID: {id}", false));
 
             var job = await _jobService.GetById(id);
 
             if (job == null)
-                return NotFound($"Job with ID {id} is not found!");
+                return NotFound(new ApiResponse<object>(null, $"Job with ID {id} is not found!", false));
 
             _jobService.Delete(job);
 
             var data = _mapper.Map<JobDetailsDTO>(job);
 
-            return Ok(data);
+            return Ok(new ApiResponse<JobDetailsDTO>(data, "Success", true));
         }
     }
 }
