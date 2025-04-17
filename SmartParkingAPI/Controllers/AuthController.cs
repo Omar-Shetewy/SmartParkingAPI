@@ -1,4 +1,7 @@
-﻿namespace SmartParking.API.Controllers
+﻿using SmartParking.API.Data.DTO;
+using SmartParking.API.Helpers;
+
+namespace SmartParking.API.Controllers
 {
     [Route("api/Auth")]
     [ApiController]
@@ -24,14 +27,14 @@
             var user = await _authServices.AddAsync(request);
 
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                return BadRequest(new ApiResponse<object>(ModelState,"", false));
 
             if (user == null)
-                return BadRequest("User already exists!");
+                return BadRequest(new ApiResponse<object>(null,"User already exists!",false));
 
             await _emailServices.SendVerificationCodeAsync(user.UserId);
 
-            RegisterDetailsDTO reg = new RegisterDetailsDTO
+            RegisterDetailsDTO userData = new RegisterDetailsDTO
             {
                 Email = request.Email,
                 FirstName = request.FirstName,
@@ -40,7 +43,7 @@
                 UserId = user.UserId
             };
 
-            return Ok(reg);
+            return Ok(new ApiResponse<RegisterDetailsDTO>(userData, "Verify your email",true));
         }
 
         [HttpPost("Resend-verification")]
@@ -51,17 +54,18 @@
         {
             var user = await _userService.GetByAsync(userId);
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                return BadRequest(new ApiResponse<object>(ModelState,"", false));
 
             if (user == null)
-                return BadRequest("User not found!");
+                return BadRequest(new ApiResponse<object>(null, "User not found!", false));
 
             if (user.IsVerified)
-                return BadRequest("User already verified");
+                return BadRequest(new ApiResponse<object>(null, "User already verified", false));
 
             await _emailServices.SendVerificationCodeAsync(user.UserId);
 
-            return Ok("Verification code resent successfully.");
+            return Ok(new ApiResponse<object>(null, "Verification code resent successfully", true));
+
         }
 
 
@@ -73,14 +77,14 @@
             var user = await _userService.GetByAsync(request.Id);
 
             if (user.IsVerified)
-                return BadRequest("User already verified");
+                return BadRequest(new ApiResponse<object>(null,"User already verified", false));
 
             var result = await _emailServices.VerifyCodeAsync(request.Id, request.Code);
 
             if (!result)
-                return BadRequest("Invalid or expired code.");
+                return BadRequest(new ApiResponse<object>(null,"Invalid or expired code", false));
 
-            return Ok("Email verified successfully.");
+            return Ok(new ApiResponse<object>(null, "Email verified successfully", true));
         }
 
 
@@ -92,12 +96,13 @@
             var token = await _authServices.UserValidationAsync(request);
 
             if (token == null)
-                return BadRequest("Invalid Email or Password!");
+                return BadRequest(new ApiResponse<object>(null,"Invalid Email or Password!", false));
 
             if (!token.IsVerified)
-                return BadRequest("Please verify your email before logging in.");
+                return BadRequest(new ApiResponse<object>(null,"Please verify your email before logging in", false));
 
-            return Ok(token.Token);
+            //return Ok(token.Token);
+            return Ok(new ApiResponse<string>(token.Token, "user successfully logged in", true));
         }
 
         [HttpPost("Forget-Password")]
@@ -109,7 +114,7 @@
             var user = await _userService.GetByAsync(Email);
 
             if (user == null)
-                return BadRequest("User not found!");
+                return BadRequest(new ApiResponse<object>(null, "User not found!", false));
             
             if (user.IsVerified)
                 user.IsVerified = false;
@@ -118,7 +123,8 @@
 
             await _emailServices.SendVerificationCodeAsync(user.UserId);
 
-            return Ok("Verify Your Account Then Create Your New Password");
+            return Ok(new ApiResponse<object>(null, "Verify Your Account Then Create Your New Password", true));
+
         }
 
         [HttpPost("update-password")]
@@ -130,14 +136,14 @@
             var user = await _userService.GetByAsync(id);
             
             if (user == null)
-                return BadRequest("User Not Found, Please Register First");
+                return BadRequest(new ApiResponse<object>(null,"User Not Found, Please Register First", false));
 
             var updated = _userService.UpdatePass(user, password);
 
             if (updated == null)
-                return BadRequest("Password is the same as the old one!");
+                return BadRequest(new ApiResponse<object>(null, "Password is the same as the old one!", false));
 
-            return Ok("Password Updated Successfully");
+            return Ok(new ApiResponse<object>(null, "Password Updated Successfully", true));
         }
     }
 }

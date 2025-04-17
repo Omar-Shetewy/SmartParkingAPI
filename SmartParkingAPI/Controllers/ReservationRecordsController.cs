@@ -89,7 +89,12 @@ public class ReservationRecordsController : ControllerBase
     public async Task<IActionResult> AddAsync([FromBody] ReservationRecordDTO dto)
     {
         if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+            return 
+                
+                
+                
+                
+                ;
 
         var isValidUser = await _userService.isValidUserAsync(dto.UserId);
 
@@ -123,7 +128,7 @@ public class ReservationRecordsController : ControllerBase
     public async Task<IActionResult> UpdateAsync(int id, [FromBody] ReservationRecordUpdateDTO dto)
     {
         if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+            return BadRequest(new ApiResponse<object>(ModelState,"", false));
 
         if (id < 1)
             return BadRequest($"Invalid ID: {id}");
@@ -151,7 +156,7 @@ public class ReservationRecordsController : ControllerBase
     public async Task<IActionResult> DeleteAsync(int id)
     {
         if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+            return BadRequest(new ApiResponse<object>(ModelState,"", false));
 
         if (id < 1)
             return BadRequest($"Invalid ID: {id}");

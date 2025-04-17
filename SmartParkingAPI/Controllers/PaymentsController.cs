@@ -7,13 +7,14 @@ public class PaymentsController : ControllerBase
 {
     private readonly IMapper _mapper;
     private readonly IPaymentService _paymentService;
-    private readonly IPaymentMethodService _paymentMethodService;
     private readonly IReservationService _ReservationService;
+    private readonly IPaymentMethodService _paymentMethodService;
 
-    public PaymentsController(IMapper mapper, IPaymentService paymentService, IPaymentMethodService paymentMethodService)
+    public PaymentsController(IMapper mapper, IPaymentService paymentService, IPaymentMethodService paymentMethodService, IReservationService reservationService)
     {
         _mapper = mapper;
         _paymentService = paymentService;
+        _ReservationService = reservationService;
         _paymentMethodService = paymentMethodService;
     }
 
@@ -85,17 +86,17 @@ public class PaymentsController : ControllerBase
     public async Task<IActionResult> AddAsync([FromBody] PaymentDTO dto)
     {
         if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+            return BadRequest(new ApiResponse<object>(ModelState,"", false));
 
         var isValidPaymentMethod = await _paymentMethodService.isValidPaymentMethod(dto.PaymentMethodId);
 
         if (!isValidPaymentMethod)
             return BadRequest($"Invalid Payment Method ID:{dto.PaymentMethodId}");
 
-        //var isValidReservationRecord = await _ReservationService.isValidReservationRecord(dto.ReservationRecordId);
+        var isValidReservationRecord = await _ReservationService.isValidReservationRecord(dto.ReservationRecordId);
 
-        //if (!isValidReservationRecord)
-        //    return BadRequest($"Invalid Reservation Record ID:{dto.PaymentMethodId}");
+        if (!isValidReservationRecord)
+            return BadRequest($"Invalid Reservation Record ID:{dto.PaymentMethodId}");
 
         var payment = _mapper.Map<Payment>(dto);
 
@@ -114,7 +115,7 @@ public class PaymentsController : ControllerBase
     public async Task<IActionResult> UpdateAsync(int id, [FromBody] PaymentUpdateDTO dto)
     {
         if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+            return BadRequest(new ApiResponse<object>(ModelState,"", false));
 
         if (id < 1)
             return BadRequest($"Invalid ID: {id}");
@@ -148,7 +149,7 @@ public class PaymentsController : ControllerBase
     public async Task<IActionResult> DeleteAsync(int id)
     {
         if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+            return BadRequest(new ApiResponse<object>(ModelState,"", false));
 
         if (id < 1)
             return BadRequest($"Invalid ID: {id}");

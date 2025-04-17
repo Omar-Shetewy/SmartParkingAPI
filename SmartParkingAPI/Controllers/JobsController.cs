@@ -59,7 +59,7 @@ namespace SmartParking.API.Controllers
         public async Task<IActionResult> AddAsync([FromBody] JobDTO dto)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                return BadRequest(new ApiResponse<object>(ModelState,"", false));
 
             var job = _mapper.Map<Job>(dto);
 
@@ -78,7 +78,7 @@ namespace SmartParking.API.Controllers
         public async Task<IActionResult> UpdateAsync(int id, [FromBody] JobDTO dto)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                return BadRequest(new ApiResponse<object>(ModelState,"", false));
 
             if (id < 1)
                 return BadRequest($"Invalid ID: {id}");
@@ -105,7 +105,7 @@ namespace SmartParking.API.Controllers
         public async Task<IActionResult> DeleteAsync(int id)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                return BadRequest(new ApiResponse<object>(ModelState,"", false));
 
             if (id < 1)
                 return BadRequest($"Invalid ID: {id}");

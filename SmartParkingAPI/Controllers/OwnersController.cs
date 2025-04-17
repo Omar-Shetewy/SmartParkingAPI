@@ -59,7 +59,7 @@ public class OwnersController : ControllerBase
     public async Task<IActionResult> AddAsync([FromBody] OwnerDTO dto)
     {
         if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+            return BadRequest(new ApiResponse<object>(ModelState,"", false));
 
         var owner = _mapper.Map<Owner>(dto);
 
@@ -78,7 +78,7 @@ public class OwnersController : ControllerBase
     public async Task<IActionResult> UpdateAsync(int id, [FromBody] OwnerDTO dto)
     {
         if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+            return BadRequest(new ApiResponse<object>(ModelState,"", false));
 
         if (id < 1)
             return BadRequest($"Invalid ID: {id}");
@@ -110,7 +110,7 @@ public class OwnersController : ControllerBase
     public async Task<IActionResult> DeleteAsync(int id)
     {
         if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+            return BadRequest(new ApiResponse<object>(ModelState,"", false));
 
         if (id < 1)
             return BadRequest($"Invalid ID: {id}");
