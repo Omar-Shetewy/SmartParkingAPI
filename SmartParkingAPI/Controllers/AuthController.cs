@@ -99,5 +99,41 @@
             return Ok(token.Token);
         }
 
+        [HttpPost("Forget-Password")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ForgetPassword(string Email)
+        { 
+            var user = await _userService.GetByAsync(Email);
+
+            if (user == null)
+                return BadRequest("User not found!");
+            
+            if (user.IsVerified)
+                user.IsVerified = false;
+
+            _userService.Update(user);
+
+            await _emailServices.SendVerificationCodeAsync(user.UserId);
+
+            return Ok("Verify Your Account Then Create Your New Password");
+        }
+
+        [HttpPost("update-password")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdatePassword(int id, string password)
+        {
+            var user = await _userService.GetByAsync(id);
+            
+            if (user == null)
+                return BadRequest("User Not Found, Please Register First");
+
+            _userService.UpdatePass(user, password);
+
+            return Ok("Password Updated Successfully");
+        }
     }
 }
