@@ -1,4 +1,5 @@
 ﻿using SmartParking.API.Services.Interface;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SmartParking.API.Controllers;
 
@@ -30,7 +31,7 @@ public class CarsController : ControllerBase
 
         var data = _mapper.Map<List<CarDetailsDTO>>(cars);
 
-        return Ok(data);
+        return Ok(new ApiResponse<List<CarDetailsDTO>>(data, "", true));
     }
 
     [HttpGet]
@@ -41,12 +42,12 @@ public class CarsController : ControllerBase
     public async Task<IActionResult> GetCarsByUserId(int userId)
     {
         if (userId < 1)
-            return BadRequest($"Invalid ID:{userId}");
+            return BadRequest(new ApiResponse<object>(null, $"Invalid User Id:{userId}", false));
 
         var isValidUser = await _userService.isValidUserAsync(userId);
 
         if (!isValidUser)
-            return BadRequest($"Invalid User Id:{userId}");
+            return BadRequest(new ApiResponse<object>(null, $"Invalid User Id:{userId}", false));
 
         var cars = await _carService.GetByUserId(userId);
 
@@ -55,7 +56,7 @@ public class CarsController : ControllerBase
 
         var data = _mapper.Map<List<CarDetailsDTO>>(cars);
 
-        return Ok(data);
+        return Ok(new ApiResponse<List<CarDetailsDTO>>(data, "", true));
     }
 
     [HttpGet]
@@ -66,16 +67,16 @@ public class CarsController : ControllerBase
     public async Task<IActionResult> GetCarByIdAsync(int id)
     {
         if (id < 1)
-            return BadRequest($"Invalid ID:{id}");
+            return BadRequest(new ApiResponse<object>(null, $"Invalid User Id:{id}", false));
 
         var car = await _carService.GetBy(id);
 
         if (car == null)
-            return NotFound($"User with id = {id} is not found.");
+            return NotFound(new ApiResponse<object>(null, $"User with id = {id} is not found", false));
 
         var data = _mapper.Map<CarDetailsDTO>(car);
 
-        return Ok(data);
+        return Ok(new ApiResponse<CarDetailsDTO>(data, "", true));
     }
 
     [HttpPost]
@@ -90,18 +91,18 @@ public class CarsController : ControllerBase
         var isValidUser = await _userService.isValidUserAsync(dto.UserId);
 
         if (!isValidUser)
-            return BadRequest($"Invalid User Id:{dto.UserId}");
+            return BadRequest(new ApiResponse<object>(null,$"Invalid User Id:{dto.UserId}", false));
 
         var carWithPlateNumber = await _carService.GetBy(dto.PlateNumber);
 
         if (carWithPlateNumber != null)
-            return BadRequest($"Invalid Plate Number: {dto.PlateNumber}");
+            return BadRequest(new ApiResponse<object>(null,$"Invalid Plate Number: {dto.PlateNumber}", false));
 
         var car = _mapper.Map<Car>(dto);
-
         await _carService.Add(car);
 
-        return Ok(car);
+        return Ok(new ApiResponse<Car>(car, "", true));
+
     }
 
     [HttpPut]
@@ -115,17 +116,18 @@ public class CarsController : ControllerBase
             return BadRequest(new ApiResponse<object>(ModelState,"", false));
 
         if (id < 1)
-            return BadRequest($"Invalid ID: {id}");
+            return BadRequest(new ApiResponse<object>(null, $"Invalid User Id:{id}", false));
 
         var isValidUser = await _userService.isValidUserAsync(dto.UserId);
 
         if (!isValidUser)
-            return BadRequest($"Invalid User Id:{dto.UserId}");
+            return BadRequest(new ApiResponse<object>(null,$"Invalid User Id:{dto.UserId}", false));
 
         var car = await _carService.GetBy(id);
 
         if (car == null)
-            return NotFound($"Car with id {id} is not found!");
+            return NotFound(new ApiResponse<object>(null,$"Car with id {id} is not found!", false));
+
 
         car.PlateNumber = dto.PlateNumber;
         car.Model = dto.Model;
@@ -134,7 +136,8 @@ public class CarsController : ControllerBase
 
         _carService.Update(car);
 
-        return Ok(car);
+        return Ok(new ApiResponse<Car>(car, "Updated Successfully", true));
+
     }
 
     [HttpDelete]
@@ -148,15 +151,15 @@ public class CarsController : ControllerBase
             return BadRequest(new ApiResponse<object>(ModelState,"", false));
 
         if (id < 1)
-            return BadRequest($"Invalid ID: {id}");
+            return BadRequest(new ApiResponse<object>(null, $"Invalid User Id:{id}", false));
 
         var car = await _carService.GetBy(id);
 
         if (car == null)
-            return NotFound($"Car with ID {id} is not found.");
+            return NotFound(new ApiResponse<object>(null, $"Car with id {id} is not found!", false));
 
         _carService.Delete(car);
 
-        return Ok(car);
+        return Ok(new ApiResponse<Car>(car, "Deleted Successfully", true));
     }
 }
