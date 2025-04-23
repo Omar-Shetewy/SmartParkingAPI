@@ -54,7 +54,10 @@ builder.Services.AddAutoMapper(typeof(Program));
 //    options.UseSqlServer(builder.Configuration.GetConnectionString("MedoConnection")));
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("RokaConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MonsterASP")));
+
+//builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("RokaConnection")));
 
 //builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //    options.UseSqlServer(builder.Configuration.GetConnectionString("ElZa3eMConnection")));
