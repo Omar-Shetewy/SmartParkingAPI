@@ -7,5 +7,4 @@ public class EntryCarDTO
     public DateTime ExitTime { get; set; }
     public bool IsActive { get; set; }
     public int GarageId { get; set; }
-    public int? SpotId { get; set; }
 }
