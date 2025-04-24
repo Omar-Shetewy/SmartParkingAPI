@@ -1,7 +1,4 @@
-﻿using SmartParking.API.Helpers;
-using SmartParking.API.Services.Interface;
-
-namespace SmartParkingAPI.Controllers;
+﻿namespace SmartParkingAPI.Controllers;
 
 [Authorize(Roles = "User,Admin")]
 [Route("api/Users")]
@@ -27,18 +24,16 @@ public class UsersController : ControllerBase
     {
         var users = await _userServices.GetAllAsync();
 
-        if (users.Count() == 0)
-        {
+        if (users == null)
             return NotFound("No Users Found!");
-        }
 
         var data = _mapper.Map<IEnumerable<UserDTO>>(users);
 
-        return Ok(users);
+        return Ok(new ApiResponse<IEnumerable<UserDTO>>(data, "Success", true));
     }
+
     [Authorize(Roles = "User")]
     [HttpGet]
-
     [Route("GetUserById/{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -47,14 +42,14 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> GetUserByIdAsync(int id)
     {
         if (id < 1)
-            return BadRequest("Invalid usre id");
+            return BadRequest(new ApiResponse<object>(null, $"Invalid Id:{id}", false));
 
         var user = await _userServices.GetByAsync(id);
 
         if (user == null)
             return NoContent();
 
-        return Ok(user);
+        return Ok(new ApiResponse<User>(user, "Success", true));
     }
 
     //[Authorize(Roles = "Admin, User")]
@@ -71,7 +66,7 @@ public class UsersController : ControllerBase
         var user = await _userServices.GetByAsync(id);
 
         if (user == null || dto.RoleId < 1)
-            return BadRequest("Invalid entry");
+            return BadRequest(new ApiResponse<object>(null, $"Invalid User Id:{id}", false));
 
         user.FirstName = dto.FirstName;
         user.LastName = dto.LastName;
@@ -80,7 +75,7 @@ public class UsersController : ControllerBase
 
         _userServices.Update(user);
 
-        return Ok(dto);
+        return Ok(new ApiResponse<UserDTO>(dto, "Success", true));
     }
 
     [HttpPut]
@@ -96,13 +91,16 @@ public class UsersController : ControllerBase
         var user = await _userServices.GetByAsync(id);
 
         if (user == null || dto.RoleId < 1)
-            return BadRequest("Invalid entry");
+            return BadRequest(new ApiResponse<object>(null, $"Invalid User Id:{id}", false));
 
         user.RoleId = dto.RoleId;
 
         _userServices.Update(user);
 
-        return Ok(dto.RoleId);
+        var Id = dto.RoleId;
+
+        return Ok(new ApiResponse<int>(Id, "Success", true));
+
     }
 
     [HttpDelete]
@@ -113,16 +111,15 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> DeleteUserAsync(int id)
     {
         if (id < 1)
-            return BadRequest("Invalid usre id");
+            return BadRequest(new ApiResponse<object>(null, $"Invalid Id:{id}", false));
 
         var user = await _userServices.GetByAsync(id);
 
         if (user == null)
-            return BadRequest("user not found");
+            return BadRequest(new ApiResponse<object>(null, $"Invalid User Id:{id}", false));
 
         _userServices.Delete(user);
 
-        return Ok(user);
+        return Ok(new ApiResponse<User>(user, "Success", true));
     }
-
 }

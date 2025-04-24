@@ -1,10 +1,8 @@
-﻿using Microsoft.OpenApi.Any;
-
-namespace SmartParking.API.Controllers;
+﻿namespace SmartParking.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class SpotController: ControllerBase
+public class SpotController : ControllerBase
 {
     private readonly ISpotService _spotService;
     private readonly IMapper _mapper;
@@ -22,10 +20,13 @@ public class SpotController: ControllerBase
     public async Task<IActionResult> GetAllSpotsAsync()
     {
         var spots = await _spotService.GetAll();
+
         if (spots.Count() == 0)
             return NoContent();
+
         var data = _mapper.Map<List<Spot>>(spots);
-        return Ok(data);
+
+        return Ok(new ApiResponse<List<Spot>>(data, "Success", true));
     }
 
     [HttpGet]
@@ -36,12 +37,16 @@ public class SpotController: ControllerBase
     public async Task<IActionResult> GetSpotById(int id)
     {
         if (id < 1)
-            return BadRequest($"Invalid ID:{id}");
+            return BadRequest(new ApiResponse<object>(null, $"Invalid ID:{id}", false));
+
         var spot = await _spotService.GetById(id);
+
         if (spot == null)
             return NoContent();
+
         var data = _mapper.Map<SpotDTO>(spot);
-        return Ok(data);
+        
+        return Ok(new ApiResponse<SpotDTO>(data, "Success", true));
     }
 
     [HttpPost]
@@ -50,12 +55,22 @@ public class SpotController: ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddSpotAsync([FromBody] SpotDTO spotDTO)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(new ApiResponse<object>(ModelState, "", false));
+
         if (spotDTO == null)
-            return BadRequest("Spot data is required");
+            return BadRequest(new ApiResponse<object>(null, "Spot data is required", false));
+
         var spot = _mapper.Map<Spot>(spotDTO);
+
+        if (spot == null)
+            return BadRequest(new ApiResponse<object>(null, "Invalid spot data", false));
+        
         var result = await _spotService.Add(spot);
+
         if (result == null)
-            return BadRequest("Failed to add spot");
-        return Ok(spot);
+            return BadRequest(new ApiResponse<object>(null, "Failed to add spot", false));
+
+        return Ok(new ApiResponse<Spot>(result, "Spot added successfully", true));
     }
 }

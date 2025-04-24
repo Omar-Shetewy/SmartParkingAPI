@@ -1,7 +1,4 @@
-﻿using SmartParking.API.Services.Interface;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-
-namespace SmartParking.API.Controllers;
+﻿namespace SmartParking.API.Controllers;
 
 [Route("api/Cars")]
 [ApiController]

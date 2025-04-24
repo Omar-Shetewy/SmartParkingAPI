@@ -1,5 +1,4 @@
-﻿
-namespace SmartParking.API.Controllers;
+﻿namespace SmartParking.API.Controllers;
 
 [Route("api/Payments")]
 [ApiController]
@@ -32,7 +31,7 @@ public class PaymentsController : ControllerBase
 
         var data = _mapper.Map<List<PaymentDetailsDTO>>(payments);
 
-        return Ok(data);
+        return Ok(new ApiResponse<List<PaymentDetailsDTO>>(data, "Success", true));
     }
 
     [HttpGet]
@@ -43,12 +42,12 @@ public class PaymentsController : ControllerBase
     public async Task<IActionResult> GetByPaymentMethodId(int id)
     {
         if (id < 1)
-            return BadRequest($"Invalid ID:{id}");
+            return BadRequest(new ApiResponse<object>(null, $"Invalid ID:{id}", false));
 
         var isValidPaymentMethod = await _paymentMethodService.isValidPaymentMethod(id);
 
         if (!isValidPaymentMethod)
-            return BadRequest($"Invalid Payment Method Id:{id}");
+            return BadRequest(new ApiResponse<object>(null, $"Invalid Payment Method Id:{id}", false));
 
         var payments = await _paymentService.GetByPaymentMethodId(id);
 
@@ -57,7 +56,7 @@ public class PaymentsController : ControllerBase
 
         var data = _mapper.Map<List<PaymentDetailsDTO>>(payments);
 
-        return Ok(data);
+        return Ok(new ApiResponse<List<PaymentDetailsDTO>>(data, "Success", true));
     }
 
     [HttpGet]
@@ -68,12 +67,12 @@ public class PaymentsController : ControllerBase
     public async Task<IActionResult> GetByReservationRecordIdAsync(int id)
     {
         if (id < 1)
-            return BadRequest($"Invalid ID:{id}");
+            return BadRequest(new ApiResponse<object>(null, $"Invalid ID:{id}", false));
 
         var isValidReservationRecord = await _ReservationService.isValidReservationRecord(id);
 
         if (!isValidReservationRecord)
-            return BadRequest($"Invalid Reservation Record ID:{id}");
+            return BadRequest(new ApiResponse<object>(null, $"Invalid Reservation Record Id:{id}", false));
 
         var payments = await _paymentService.GetByReservationRecordId(id);
 
@@ -82,7 +81,7 @@ public class PaymentsController : ControllerBase
 
         var data = _mapper.Map<List<PaymentDetailsDTO>>(payments);
 
-        return Ok(data);
+        return Ok(new ApiResponse<List<PaymentDetailsDTO>>(data, "Success", true));
     }
 
     [HttpGet]
@@ -93,7 +92,7 @@ public class PaymentsController : ControllerBase
     public async Task<IActionResult> GetByIdAsync(int id)
     {
         if (id < 1)
-            return BadRequest($"Invalid ID:{id}");
+            return BadRequest(new ApiResponse<object>(null, $"Invalid ID:{id}", false));
 
         var payment = await _paymentService.GetById(id);
 
@@ -102,7 +101,7 @@ public class PaymentsController : ControllerBase
 
         var data = _mapper.Map<PaymentDetailsDTO>(payment);
 
-        return Ok(data);
+        return Ok(new ApiResponse<PaymentDetailsDTO>(data, "Success", true));
     }
 
     [HttpPost]
@@ -112,22 +111,22 @@ public class PaymentsController : ControllerBase
     public async Task<IActionResult> AddAsync([FromBody] PaymentDTO dto)
     {
         if (!ModelState.IsValid)
-            return BadRequest(new ApiResponse<object>(ModelState,"", false));
+            return BadRequest(new ApiResponse<object>(ModelState, "", false));
 
         var isValidPaymentMethod = await _paymentMethodService.isValidPaymentMethod(dto.PaymentMethodId);
 
         if (!isValidPaymentMethod)
-            return BadRequest($"Invalid Payment Method ID:{dto.PaymentMethodId}");
+            return BadRequest(new ApiResponse<object>(null, $"Invalid Payment Method Id:{dto.PaymentMethodId}", false));
 
         var isValidReservationRecord = await _ReservationService.isValidReservationRecord(dto.ReservationRecordId);
 
         if (!isValidReservationRecord)
-            return BadRequest($"Invalid Reservation Record ID:{dto.PaymentMethodId}");
+            return BadRequest(new ApiResponse<object>(null, $"Invalid Reservation Record Id:{dto.PaymentMethodId}", false));
 
         var paymentByReservationRecord = _paymentService.GetByReservationRecordId(dto.ReservationRecordId);
 
         if (paymentByReservationRecord != null)
-            return BadRequest($"Invalid ID {dto.ReservationRecordId}");
+            return BadRequest(new ApiResponse<object>(null, $"Invalid Id:{dto.ReservationRecordId}", false));
 
         var payment = _mapper.Map<Payment>(dto);
 
@@ -135,7 +134,7 @@ public class PaymentsController : ControllerBase
 
         var data = _mapper.Map<PaymentDetailsDTO>(payment);
 
-        return Ok(data);
+        return Ok(new ApiResponse<PaymentDetailsDTO>(data, "Success", true));
     }
 
     [HttpPut]
@@ -146,15 +145,15 @@ public class PaymentsController : ControllerBase
     public async Task<IActionResult> UpdateAsync(int id, [FromBody] PaymentUpdateDTO dto)
     {
         if (!ModelState.IsValid)
-            return BadRequest(new ApiResponse<object>(ModelState,"", false));
+            return BadRequest(new ApiResponse<object>(ModelState, "", false));
 
         if (id < 1)
-            return BadRequest($"Invalid ID: {id}");
+            return BadRequest(new ApiResponse<object>(null, $"Invalid Id:{id}", false));
 
         var isValidPaymentMethod = await _paymentMethodService.isValidPaymentMethod(dto.PaymentMethodId);
 
         if (!isValidPaymentMethod)
-            return BadRequest($"Invalid Payment Method ID:{dto.PaymentMethodId}");
+            return BadRequest(new ApiResponse<object>(null, $"Invalid Payment Method Id:{dto.PaymentMethodId}", false));
 
         var payment = await _paymentService.GetById(id);
 
@@ -169,7 +168,7 @@ public class PaymentsController : ControllerBase
 
         var data = _mapper.Map<PaymentDetailsDTO>(payment);
 
-        return Ok(data);
+        return Ok(new ApiResponse<PaymentDetailsDTO>(data, "Success", true));
     }
 
     [HttpDelete]
@@ -180,10 +179,10 @@ public class PaymentsController : ControllerBase
     public async Task<IActionResult> DeleteAsync(int id)
     {
         if (!ModelState.IsValid)
-            return BadRequest(new ApiResponse<object>(ModelState,"", false));
+            return BadRequest(new ApiResponse<object>(ModelState, "", false));
 
         if (id < 1)
-            return BadRequest($"Invalid ID: {id}");
+            return BadRequest(new ApiResponse<object>(null, $"Invalid Id:{id}", false));
 
         var payment = await _paymentService.GetById(id);
 
@@ -194,6 +193,6 @@ public class PaymentsController : ControllerBase
 
         var data = _mapper.Map<PaymentDetailsDTO>(payment);
 
-        return Ok(data);
+        return Ok(new ApiResponse<PaymentDetailsDTO>(data, "Success", true));
     }
 }

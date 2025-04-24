@@ -1,130 +1,122 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using SmartParking.API.Services.Interface;
-using System.Threading.Tasks;
+﻿namespace SmartParking.API.Controllers;
 
-namespace SmartParking.API.Controllers
+[Route("api/Roles")]
+[ApiController]
+public class RolesController : ControllerBase
 {
-    [Route("api/Roles")]
-    [ApiController]
-    public class RolesController : ControllerBase
+    private readonly IRoleService _roleService;
+
+    public RolesController(IRoleService roleService)
     {
-        private readonly IRoleService _roleService;
+        _roleService = roleService;
+    }
 
-        public RolesController(IRoleService roleService)
+    [HttpGet]
+    [Route("GetAllRoles")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> GetAllRolesAsync()
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(new ApiResponse<object>(ModelState,"", false));
+
+        var role = await _roleService.GetAllRolesAsync();
+
+        if (role == null)
+            return NotFound("There is no roles");
+
+        return Ok(new ApiResponse<IEnumerable<Role>>(role, "Success", true));
+    }
+
+    [HttpGet]
+    [Route("GetRoleById/{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> GetRoleByIdAsync(int id)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(new ApiResponse<object>(ModelState,"", false));
+        
+        if (id < 1)
+            return BadRequest(new ApiResponse<object>(null, $"Invalid Id:{id}", false));
+
+        var role = await _roleService.GetRoleByIdAsync(id);
+
+        if (role == null)
+            return NotFound("There is no rule for this id");
+
+        return Ok(new ApiResponse<Role>(role, "Success", true));
+    }
+
+    [HttpPost]
+    [Route("AddRole")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> AddRoleAsync(RoleDTO Role)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(new ApiResponse<object>(ModelState,"", false));
+
+        if (Role == null)
+            return BadRequest("Please Add A Role");
+
+        var role = new Role
         {
-            _roleService = roleService;
-        }
+            RoleName = Role.RoleName
+        };
 
-        [HttpGet]
-        [Route("GetAllRoles")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> GetAllRolesAsync()
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(new ApiResponse<object>(ModelState,"", false));
+        await _roleService.AddRoleAsync(role);
 
-            var roles = await _roleService.GetAllRolesAsync();
+        return Ok(new ApiResponse<Role>(role, "Success", true));
+    }
 
-            if (roles == null)
-            {
-                return NotFound("There is no roles");
-            }
+    [HttpPut]
+    [Route("UpdateRole/{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> UpdateRoleAsync(int id,[FromBody] RoleDTO Role)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(new ApiResponse<object>(ModelState,"", false));
+        
+        if (id < 1)
+            return BadRequest(new ApiResponse<object>(null, $"Invalid Id:{id}", false));
 
-            return Ok(roles);
-        }
+        var role = await _roleService.GetRoleByIdAsync(id);
 
-        [HttpGet]
-        [Route("GetRoleById/{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> GetRoleByIdAsync(int id)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(new ApiResponse<object>(ModelState,"", false));
+        if (role == null)
+            return NotFound("There is no rule for this id");
 
-            var role = await _roleService.GetRoleByIdAsync(id);
+        role.RoleName = Role.RoleName;
 
-            if (role == null)
-            {
-                return NotFound("There is no rule for this id");
-            }
+        _roleService.UpdateRole(role);
 
-            return Ok(role);
-        }
+        return Ok(new ApiResponse<Role>(role, "Success", true));
+    }
 
-        [HttpPost]
-        [Route("AddRole")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> AddRoleAsync(RoleDTO role)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(new ApiResponse<object>(ModelState,"", false));
+    [HttpDelete]
+    [Route("DeleteRole/{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> DeleteRoleAsync(int id)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(new ApiResponse<object>(ModelState,"", false));
 
-            if (role == null)
-                return BadRequest("Please Add A Role");
+        if (id < 1)
+            return BadRequest(new ApiResponse<object>(null, $"Invalid Id:{id}", false));
 
-            var Role = new Role
-            {
-                RoleName = role.RoleName
-            };
+        var role = await _roleService.GetRoleByIdAsync(id);
 
-            await _roleService.AddRoleAsync(Role);
+        if (role == null)
+            return NotFound("Role not found");
 
-            return Ok(Role);
-        }
+        _roleService.DeleteRole(role);
 
-        [HttpPut]
-        [Route("UpdateRole/{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> UpdateRoleAsync(int id,[FromBody] RoleDTO role)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(new ApiResponse<object>(ModelState,"", false));
-
-            var Role = await _roleService.GetRoleByIdAsync(id);
-
-            if (Role == null)
-            {
-                return NotFound("There is no rule for this id");
-            }
-
-            Role.RoleName = role.RoleName;
-
-            _roleService.UpdateRole(Role);
-            
-            return Ok(Role);
-        }
-
-        [HttpDelete]
-        [Route("DeleteRole/{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> DeleteRoleAsync(int id)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(new ApiResponse<object>(ModelState,"", false));
-
-            if (id < 1)
-                return BadRequest($"Invalid Id");
-
-            var role = await _roleService.GetRoleByIdAsync(id);
-
-            if (role == null)
-            {
-                return NotFound("Role not found");
-            }
-
-            _roleService.DeleteRole(role);
-
-            return Ok(role);
-        }
+        return Ok(new ApiResponse<Role>(role, "Success", true));
     }
 }

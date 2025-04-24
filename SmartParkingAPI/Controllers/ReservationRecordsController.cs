@@ -1,6 +1,4 @@
-﻿using SmartParking.API.Services.Interface;
-
-namespace SmartParking.API.Controllers;
+﻿namespace SmartParking.API.Controllers;
 
 [Route("api/ReservationRecords")]
 [ApiController]
@@ -34,7 +32,7 @@ public class ReservationRecordsController : ControllerBase
 
         var data = _mapper.Map<List<ReservationRecordDetailsDTO>>(records);
 
-        return Ok(data);
+        return Ok(new ApiResponse<List<ReservationRecordDetailsDTO>>(data, "Success", true));
     }
 
     [HttpGet]
@@ -45,7 +43,7 @@ public class ReservationRecordsController : ControllerBase
     public async Task<IActionResult> GetByIdAsync(int id)
     {
         if (id < 1)
-            return BadRequest($"Invalid ID:{id}");
+            return BadRequest(new ApiResponse<object>(null, $"Invalid Id:{id}", false));
 
         var record = await _reservationService.GetById(id);
 
@@ -54,7 +52,7 @@ public class ReservationRecordsController : ControllerBase
 
         var data = _mapper.Map<ReservationRecordDetailsDTO>(record);
 
-        return Ok(data);
+        return Ok(new ApiResponse<ReservationRecordDetailsDTO>(data, "Success", true));
     }
 
     [HttpGet]
@@ -62,24 +60,24 @@ public class ReservationRecordsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetByUserId(int userId)
+    public async Task<IActionResult> GetByUserId(int id)
     {
-        if (userId < 1)
-            return BadRequest($"Invalid ID:{userId}");
+        if (id < 1)
+            return BadRequest(new ApiResponse<object>(null, $"Invalid Id:{id}", false));
 
-        var isValidUser = await _userService.isValidUserAsync(userId);
+        var isValidUser = await _userService.isValidUserAsync(id);
 
         if (!isValidUser)
-            return BadRequest($"Invalid User Id:{userId}");
+            return BadRequest(new ApiResponse<object>(null, $"Invalid User Id:{id}", false));
 
-        var record = await _reservationService.GetByUserId(userId);
+        var record = await _reservationService.GetByUserId(id);
 
         if (record == null)
             return NoContent();
 
         var data = _mapper.Map<ReservationRecordDetailsDTO>(record);
 
-        return Ok(data);
+        return Ok(new ApiResponse<ReservationRecordDetailsDTO>(data, "Success", true));
     }
 
     [HttpPost]
@@ -94,25 +92,25 @@ public class ReservationRecordsController : ControllerBase
         var isValidUser = await _userService.isValidUserAsync(dto.UserId);
 
         if (!isValidUser)
-            return BadRequest($"Invalid User Id:{dto.UserId}");
+            return BadRequest(new ApiResponse<object>(null, $"Invalid User Id:{dto.UserId}", false));
 
         var isValidGarage = await _garageService.isValidGarage(dto.GarageId);
 
         if (!isValidGarage)
-            return BadRequest($"Invalid Garage Id:{dto.GarageId}");
+            return BadRequest(new ApiResponse<object>(null, $"Invalid Garage Id:{dto.GarageId}", false));
 
         var recordByUserId = await _reservationService.GetByUserId(dto.UserId);
 
         if (recordByUserId != null)
-            return BadRequest($"Invalid User ID: user ID {dto.UserId} is already assigned to another registration record");
-           
+            return BadRequest(new ApiResponse<object>(null, $"Invalid User ID: user ID {dto.UserId} is already assigned to another registration record", false));
+
         var record = _mapper.Map<ReservationRecord>(dto);
 
         await _reservationService.Add(record);
 
         var data = _mapper.Map<ReservationRecordDTO>(record);
 
-        return Ok(data);
+        return Ok(new ApiResponse<ReservationRecordDTO>(data, "Success", true));
     }
 
     [HttpPut]
@@ -123,10 +121,10 @@ public class ReservationRecordsController : ControllerBase
     public async Task<IActionResult> UpdateAsync(int id, [FromBody] ReservationRecordUpdateDTO dto)
     {
         if (!ModelState.IsValid)
-            return BadRequest(new ApiResponse<object>(ModelState,"", false));
+            return BadRequest(new ApiResponse<object>(ModelState, "", false));
 
         if (id < 1)
-            return BadRequest($"Invalid ID: {id}");
+            return BadRequest(new ApiResponse<object>(null, $"Invalid Id:{id}", false));
 
         var record = await _reservationService.GetById(id);
 
@@ -140,7 +138,7 @@ public class ReservationRecordsController : ControllerBase
 
         var data = _mapper.Map<ReservationRecordDTO>(record);
 
-        return Ok(data);
+        return Ok(new ApiResponse<ReservationRecordDTO>(data, "Success", true));
     }
 
     [HttpDelete]
@@ -151,10 +149,10 @@ public class ReservationRecordsController : ControllerBase
     public async Task<IActionResult> DeleteAsync(int id)
     {
         if (!ModelState.IsValid)
-            return BadRequest(new ApiResponse<object>(ModelState,"", false));
+            return BadRequest(new ApiResponse<object>(ModelState, "", false));
 
         if (id < 1)
-            return BadRequest($"Invalid ID: {id}");
+            return BadRequest(new ApiResponse<object>(null, $"Invalid Id:{id}", false));
 
         var record = await _reservationService.GetById(id);
 
@@ -165,6 +163,6 @@ public class ReservationRecordsController : ControllerBase
 
         var data = _mapper.Map<ReservationRecordDTO>(record);
 
-        return Ok(data);
+        return Ok(new ApiResponse<ReservationRecordDTO>(data, "Success", true));
     }
 }
