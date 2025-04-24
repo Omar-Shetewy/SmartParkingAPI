@@ -47,6 +47,10 @@ builder.Services.AddTransient<IAiService, AiService>();
 
 builder.Services.AddAutoMapper(typeof(Program));
 
+builder.Configuration.AddEnvironmentVariables();
+
+var secret = builder.Configuration["MySecretKey"];
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MonsterASP")));
 
