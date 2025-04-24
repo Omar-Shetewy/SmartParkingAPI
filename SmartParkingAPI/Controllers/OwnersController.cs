@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-
-namespace SmartParking.API.Controllers;
+﻿namespace SmartParking.API.Controllers;
 
 [Route("api/Owners")]
 [ApiController]
@@ -29,7 +26,8 @@ public class OwnersController : ControllerBase
 
         var data = _mapper.Map<List<OwnerDetailsDTO>>(owners);
 
-        return Ok(data);
+        return Ok(new ApiResponse<List<OwnerDetailsDTO>>(data, "Success", true));
+
     }
 
     [HttpGet]
@@ -40,7 +38,7 @@ public class OwnersController : ControllerBase
     public async Task<IActionResult> GetByIdAsync(int id)
     {
         if (id < 1)
-            return BadRequest($"Invalid ID:{id}");
+            return BadRequest(new ApiResponse<object>(null, $"Invalid ID:{id}", false));
 
         var owner = await _ownerService.GetById(id);
 
@@ -49,7 +47,7 @@ public class OwnersController : ControllerBase
 
         var data = _mapper.Map<OwnerDetailsDTO>(owner);
 
-        return Ok(data);
+        return Ok(new ApiResponse<OwnerDetailsDTO>(data, "Success", true));
     }
 
     [HttpPost]
@@ -59,15 +57,18 @@ public class OwnersController : ControllerBase
     public async Task<IActionResult> AddAsync([FromBody] OwnerDTO dto)
     {
         if (!ModelState.IsValid)
-            return BadRequest(new ApiResponse<object>(ModelState,"", false));
+            return BadRequest(new ApiResponse<object>(ModelState, "", false));
 
         var owner = _mapper.Map<Owner>(dto);
 
+        if (owner == null)
+            return BadRequest(new ApiResponse<object>(null, "Owner is not added", false));
+        
         await _ownerService.Add(owner);
 
         var data = _mapper.Map<OwnerDetailsDTO>(owner);
 
-        return Ok(data);
+        return Ok(new ApiResponse<OwnerDetailsDTO>(data, "Success", true));
     }
 
     [HttpPut]
@@ -78,10 +79,10 @@ public class OwnersController : ControllerBase
     public async Task<IActionResult> UpdateAsync(int id, [FromBody] OwnerDTO dto)
     {
         if (!ModelState.IsValid)
-            return BadRequest(new ApiResponse<object>(ModelState,"", false));
+            return BadRequest(new ApiResponse<object>(ModelState, "", false));
 
         if (id < 1)
-            return BadRequest($"Invalid ID: {id}");
+            return BadRequest(new ApiResponse<object>(null, $"Invalid ID:{id}", false));
 
         var owner = await _ownerService.GetById(id);
 
@@ -99,7 +100,7 @@ public class OwnersController : ControllerBase
 
         var data = _mapper.Map<OwnerDetailsDTO>(owner);
 
-        return Ok(data);
+        return Ok(new ApiResponse<OwnerDetailsDTO>(data, "Success", true));
     }
 
     [HttpDelete]
@@ -110,10 +111,10 @@ public class OwnersController : ControllerBase
     public async Task<IActionResult> DeleteAsync(int id)
     {
         if (!ModelState.IsValid)
-            return BadRequest(new ApiResponse<object>(ModelState,"", false));
+            return BadRequest(new ApiResponse<object>(ModelState, "", false));
 
         if (id < 1)
-            return BadRequest($"Invalid ID: {id}");
+            return BadRequest(new ApiResponse<object>(null, $"Invalid ID:{id}", false));
 
         var owner = await _ownerService.GetById(id);
 
@@ -124,6 +125,6 @@ public class OwnersController : ControllerBase
 
         var data = _mapper.Map<OwnerDetailsDTO>(owner);
 
-        return Ok(data);
+        return Ok(new ApiResponse<OwnerDetailsDTO>(data, "Success", true));
     }
 }

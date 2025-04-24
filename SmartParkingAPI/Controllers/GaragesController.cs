@@ -1,9 +1,4 @@
-﻿using Azure;
-using Org.BouncyCastle.Ocsp;
-using SmartParking.API.Data.DTO;
-using SmartParking.API.Helpers;
-
-namespace SmartParking.API.Controllers;
+﻿namespace SmartParking.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -73,7 +68,7 @@ public class GaragesController : ControllerBase
     public async Task<IActionResult> GetAllCars(int id)
     {
         if (id < 1)
-            return BadRequest($"Invalid ID:{id}");
+            return BadRequest(new ApiResponse<object>(null, $"Invalid ID:{id}", false));
         var cars = await _garageService.GetAllCars(id);
         if (cars.Count() == 0)
             return NoContent();

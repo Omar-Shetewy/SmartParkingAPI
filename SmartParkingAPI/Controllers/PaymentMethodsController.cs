@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-
-namespace SmartParking.API.Controllers;
+﻿namespace SmartParking.API.Controllers;
 
 [Route("api/PaymentMethods")]
 [ApiController]
@@ -29,7 +26,7 @@ public class PaymentMethodsController : ControllerBase
 
         var data = _mapper.Map<List<PaymentMethodDetailsDTO>>(methods);
 
-        return Ok(data);
+        return Ok(new ApiResponse<List<PaymentMethodDetailsDTO>>(data, "Success", true));
     }
 
     [HttpGet]
@@ -40,7 +37,7 @@ public class PaymentMethodsController : ControllerBase
     public async Task<IActionResult> GetByIdAsync(int id)
     {
         if (id < 1)
-            return BadRequest($"Invalid ID:{id}");
+            return BadRequest(new ApiResponse<object>(null, $"Invalid ID:{id}", false));
 
         var method = await _paymentMethodService.GetById(id);
 
@@ -49,7 +46,7 @@ public class PaymentMethodsController : ControllerBase
 
         var data = _mapper.Map<PaymentMethodDetailsDTO>(method);
 
-        return Ok(data);
+        return Ok(new ApiResponse<PaymentMethodDetailsDTO>(data, "Success", true));
     }
 
     [HttpPost]
@@ -59,7 +56,7 @@ public class PaymentMethodsController : ControllerBase
     public async Task<IActionResult> AddAsync([FromBody] PaymentMethodDTO dto)
     {
         if (!ModelState.IsValid)
-            return BadRequest(new ApiResponse<object>(ModelState,"", false));
+            return BadRequest(new ApiResponse<object>(ModelState, "", false));
 
         var method = _mapper.Map<PaymentMethod>(dto);
 
@@ -67,7 +64,7 @@ public class PaymentMethodsController : ControllerBase
 
         var data = _mapper.Map<PaymentMethodDetailsDTO>(method);
 
-        return Ok(data);
+        return Ok(new ApiResponse<PaymentMethodDetailsDTO>(data, "Success", true));
     }
 
     [HttpPut]
@@ -77,10 +74,10 @@ public class PaymentMethodsController : ControllerBase
     public async Task<IActionResult> UpdateAsync(int id, [FromBody] PaymentMethodDTO dto)
     {
         if (!ModelState.IsValid)
-            return BadRequest(new ApiResponse<object>(ModelState,"", false));
+            return BadRequest(new ApiResponse<object>(ModelState, "", false));
 
         if (id < 1)
-            return BadRequest($"Invalid ID: {id}");
+            return BadRequest(new ApiResponse<object>(null, $"Invalid ID:{id}", false));
 
         var method = await _paymentMethodService.GetById(id);
 
@@ -93,7 +90,7 @@ public class PaymentMethodsController : ControllerBase
 
         var data = _mapper.Map<PaymentMethodDetailsDTO>(method);
 
-        return Ok(data);
+        return Ok(new ApiResponse<PaymentMethodDetailsDTO>(data, "Success", true));
     }
 
     [HttpDelete]
@@ -104,10 +101,10 @@ public class PaymentMethodsController : ControllerBase
     public async Task<IActionResult> DeleteAsync(int id)
     {
         if (!ModelState.IsValid)
-            return BadRequest(new ApiResponse<object>(ModelState,"", false));
+            return BadRequest(new ApiResponse<object>(ModelState, "", false));
 
         if (id < 1)
-            return BadRequest($"Invalid ID: {id}");
+            return BadRequest(new ApiResponse<object>(null, $"Invalid ID:{id}", false));
 
         var method = await _paymentMethodService.GetById(id);
 
@@ -118,6 +115,6 @@ public class PaymentMethodsController : ControllerBase
 
         var data = _mapper.Map<PaymentMethodDetailsDTO>(method);
 
-        return Ok(data);
+        return Ok(new ApiResponse<PaymentMethodDetailsDTO>(data, "Success", true));
     }
 }

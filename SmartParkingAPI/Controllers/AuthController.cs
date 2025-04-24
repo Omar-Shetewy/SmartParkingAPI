@@ -1,151 +1,147 @@
-﻿using SmartParking.API.Data.DTO;
-using SmartParking.API.Helpers;
+﻿namespace SmartParking.API.Controllers;
 
-namespace SmartParking.API.Controllers
+[Route("api/Auth")]
+[ApiController]
+public class AuthController : ControllerBase
 {
-    [Route("api/Auth")]
-    [ApiController]
-    public class AuthController : ControllerBase
+
+    private readonly IAuthService _authServices;
+    private readonly IUserService _userService;
+    private readonly IEmailServices _emailServices;
+    public AuthController(IAuthService authServices, IEmailServices emailServices, IUserService userService)
+    {
+        _authServices = authServices;
+        _emailServices = emailServices;
+        _userService = userService;
+    }
+
+
+    [HttpPost("Register")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> RegisterAsync([FromBody] RegisterDTO request)
     {
 
-        private readonly IAuthService _authServices;
-        private readonly IUserService _userService;
-        private readonly IEmailServices _emailServices;
-        public AuthController(IAuthService authServices, IEmailServices emailServices, IUserService userService)
+        if (!ModelState.IsValid)
+            return BadRequest(new ApiResponse<object>(ModelState,"", false));
+
+        var user = await _authServices.AddAsync(request);
+
+        if (user == null)
+            return BadRequest(new ApiResponse<object>(null,"User already exists!",false));
+
+        await _emailServices.SendVerificationCodeAsync(user.UserId);
+
+        RegisterDetailsDTO userData = new RegisterDetailsDTO
         {
-            _authServices = authServices;
-            _emailServices = emailServices;
-            _userService = userService;
-        }
+            Email = request.Email,
+            FirstName = request.FirstName,
+            LastName = request.LastName,
+            PhoneNumber = request.PhoneNumber,
+            UserId = user.UserId
+        };
+
+        return Ok(new ApiResponse<RegisterDetailsDTO>(userData, "Verify your email",true));
+    }
+
+    [HttpPost("Resend-verification")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> Reverify([FromHeader] int userId)
+    {
+        var user = await _userService.GetByAsync(userId);
+        if (!ModelState.IsValid)
+            return BadRequest(new ApiResponse<object>(ModelState,"", false));
+
+        if (user == null)
+            return BadRequest(new ApiResponse<object>(null, "User not found!", false));
+
+        if (user.IsVerified)
+            return BadRequest(new ApiResponse<object>(null, "User already verified", false));
+
+        await _emailServices.SendVerificationCodeAsync(user.UserId);
+
+        return Ok(new ApiResponse<object>(null, "Verification code resent successfully", true));
+
+    }
 
 
-        [HttpPost("Register")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> RegisterAsync([FromBody] RegisterDTO request)
-        {
+    [HttpPost("VerifyEmail")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> VerifyEmail([FromBody] VerifyEmailDTO request)
+    {
+        var user = await _userService.GetByAsync(request.Id);
 
-            if (!ModelState.IsValid)
-                return BadRequest(new ApiResponse<object>(ModelState,"", false));
+        if (user.IsVerified)
+            return BadRequest(new ApiResponse<object>(null,"User already verified", false));
 
-            var user = await _authServices.AddAsync(request);
+        var result = await _emailServices.VerifyCodeAsync(request.Id, request.Code);
 
-            if (user == null)
-                return BadRequest(new ApiResponse<object>(null,"User already exists!",false));
+        if (!result)
+            return BadRequest(new ApiResponse<object>(null,"Invalid or expired code", false));
 
-            await _emailServices.SendVerificationCodeAsync(user.UserId);
-
-            RegisterDetailsDTO userData = new RegisterDetailsDTO
-            {
-                Email = request.Email,
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                PhoneNumber = request.PhoneNumber,
-                UserId = user.UserId
-            };
-
-            return Ok(new ApiResponse<RegisterDetailsDTO>(userData, "Verify your email",true));
-        }
-
-        [HttpPost("Resend-verification")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Reverify([FromHeader] int userId)
-        {
-            var user = await _userService.GetByAsync(userId);
-            if (!ModelState.IsValid)
-                return BadRequest(new ApiResponse<object>(ModelState,"", false));
-
-            if (user == null)
-                return BadRequest(new ApiResponse<object>(null, "User not found!", false));
-
-            if (user.IsVerified)
-                return BadRequest(new ApiResponse<object>(null, "User already verified", false));
-
-            await _emailServices.SendVerificationCodeAsync(user.UserId);
-
-            return Ok(new ApiResponse<object>(null, "Verification code resent successfully", true));
-
-        }
+        return Ok(new ApiResponse<object>(null, "Email verified successfully", true));
+    }
 
 
-        [HttpPost("VerifyEmail")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> VerifyEmail([FromBody] VerifyEmailDTO request)
-        {
-            var user = await _userService.GetByAsync(request.Id);
+    [HttpPost("Login")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> LogInAsync([FromBody] LoginDTO request)
+    {
+        var result = await _authServices.UserValidationAsync(request);
 
-            if (user.IsVerified)
-                return BadRequest(new ApiResponse<object>(null,"User already verified", false));
+        if (result == null)
+            return BadRequest(new ApiResponse<object>(null,"Invalid Email or Password!", false));
 
-            var result = await _emailServices.VerifyCodeAsync(request.Id, request.Code);
+        if (!result.IsVerified)
+            return BadRequest(new ApiResponse<object>(null,"Please verify your email before logging in", false));
 
-            if (!result)
-                return BadRequest(new ApiResponse<object>(null,"Invalid or expired code", false));
+        TokenDTO token = new() { Token = result.Token };
 
-            return Ok(new ApiResponse<object>(null, "Email verified successfully", true));
-        }
+        return Ok(new ApiResponse<TokenDTO>(token, "User successfully logged in", true));
+    }
 
+    [HttpPost("Forget-Password")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> ForgetPassword(string Email)
+    { 
+        var user = await _userService.GetByAsync(Email);
 
-        [HttpPost("Login")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> LogInAsync([FromBody] LoginDTO request)
-        {
-            var result = await _authServices.UserValidationAsync(request);
+        if (user == null)
+            return BadRequest(new ApiResponse<object>(null, "User not found!", false));
+        
+        if (user.IsVerified)
+            user.IsVerified = false;
 
-            if (result == null)
-                return BadRequest(new ApiResponse<object>(null,"Invalid Email or Password!", false));
+        _userService.Update(user);
 
-            if (!result.IsVerified)
-                return BadRequest(new ApiResponse<object>(null,"Please verify your email before logging in", false));
+        await _emailServices.SendVerificationCodeAsync(user.UserId);
 
-            TokenDTO token = new() { Token = result.Token };
+        return Ok(new ApiResponse<object>(null, "Verify Your Account Then Create Your New Password", true));
 
-            return Ok(new ApiResponse<TokenDTO>(token, "User successfully logged in", true));
-        }
+    }
 
-        [HttpPost("Forget-Password")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> ForgetPassword(string Email)
-        { 
-            var user = await _userService.GetByAsync(Email);
+    [HttpPost("update-password")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> UpdatePassword(int id, string password)
+    {
+        var user = await _userService.GetByAsync(id);
+        
+        if (user == null)
+            return BadRequest(new ApiResponse<object>(null,"User Not Found, Please Register First", false));
 
-            if (user == null)
-                return BadRequest(new ApiResponse<object>(null, "User not found!", false));
-            
-            if (user.IsVerified)
-                user.IsVerified = false;
+        var updated = _userService.UpdatePass(user, password);
 
-            _userService.Update(user);
+        if (updated == null)
+            return BadRequest(new ApiResponse<object>(null, "Password is the same as the old one!", false));
 
-            await _emailServices.SendVerificationCodeAsync(user.UserId);
-
-            return Ok(new ApiResponse<object>(null, "Verify Your Account Then Create Your New Password", true));
-
-        }
-
-        [HttpPost("update-password")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdatePassword(int id, string password)
-        {
-            var user = await _userService.GetByAsync(id);
-            
-            if (user == null)
-                return BadRequest(new ApiResponse<object>(null,"User Not Found, Please Register First", false));
-
-            var updated = _userService.UpdatePass(user, password);
-
-            if (updated == null)
-                return BadRequest(new ApiResponse<object>(null, "Password is the same as the old one!", false));
-
-            return Ok(new ApiResponse<object>(null, "Password Updated Successfully", true));
-        }
+        return Ok(new ApiResponse<object>(null, "Password Updated Successfully", true));
     }
 }
