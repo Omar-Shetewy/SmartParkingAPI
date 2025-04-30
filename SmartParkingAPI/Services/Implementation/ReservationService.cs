@@ -29,6 +29,8 @@ public class ReservationService : IReservationService
     public async Task<ReservationRecord> Add(ReservationRecord record)
     {
         await _dbContext.ReservationRecords.AddAsync(record);
+        _dbContext.Garages.FirstOrDefault(g => g.GarageId == record.GarageId).ReservedSpots++;
+        _dbContext.Garages.FirstOrDefault(g => g.GarageId == record.GarageId).AvailableSpots--;
         _dbContext.SaveChanges();
 
         return record;
