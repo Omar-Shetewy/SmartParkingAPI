@@ -8,13 +8,14 @@ public class User
     public string Email { get; set; } = string.Empty;
     public string PhoneNumber { get; set; } = string.Empty;
     public string PasswordHash { get; set; } = string.Empty;
-    public string? RefreshToken { get; set; } = string.Empty;
-    public DateTime? RefreshTokenExpiryTime { get; set; }
     public bool IsVerified { get; set; } = false;
     public DateTime CreatedOn { get; set; } = DateTime.Now;
-    public List<Car> Cars { get; set; }
     public int RoleId { get; set; }
     public Role Role { get; set; }
+    public string? RefreshToken { get; set; } = string.Empty;
+    public DateTime? RefreshTokenExpiryTime { get; set; }
+    public List<Car> Cars { get; set; }
     public ReservationRecord Reservation { get; set; }
     public ICollection<UserVerificationCode> VerificationCodes { get; set; } = new List<UserVerificationCode>();
+    public List<RefreshToken>? RefreshTokens { get; set; }
 }
