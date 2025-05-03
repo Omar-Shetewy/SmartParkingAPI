@@ -75,5 +75,7 @@ namespace SmartParking.API.Services.Implementation
             return new JwtSecurityTokenHandler().WriteToken(TokenDesciptor);
         }
 
+
+
     }
 }
