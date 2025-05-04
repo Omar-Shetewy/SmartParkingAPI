@@ -15,6 +15,19 @@ public class GarageService : IGarageService
         return garage;
     }
 
+    public async Task<EntryCar> UpdateExitCar(string PlateNumber)
+    {
+        var entryCar = await _dbContext.EntryCars.FirstOrDefaultAsync(e => e.PlateNumber == PlateNumber);
+        if (entryCar != null)
+        {
+            entryCar.ExitTime = DateTime.Now;
+            entryCar.IsPaid = true;
+            _dbContext.EntryCars.Update(entryCar);
+            await _dbContext.SaveChangesAsync();
+        }
+        return entryCar;
+    }
+
     public Garage Delete(Garage garage)
     {
         _dbContext.Garages.Remove(garage);

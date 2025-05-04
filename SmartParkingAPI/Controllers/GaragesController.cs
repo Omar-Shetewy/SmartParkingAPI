@@ -14,7 +14,6 @@ public class GaragesController : ControllerBase
         _ownerService = ownerService;
     }
 
-
     [HttpGet]
     [Route("GetAllGarages")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -82,7 +81,7 @@ public class GaragesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddEntryCarAsync([FromBody] EntryCarDTO entryCarDTO)
     {
-        
+
         var isValidPlateNumber = await _garageService.isValidPlateNumber(entryCarDTO.PlateNumber);
         //if (!isValidPlateNumber)
         if (entryCarDTO == null)
@@ -96,6 +95,24 @@ public class GaragesController : ControllerBase
             return BadRequest(new ApiResponse<object>(null, "Failed to add entry car", false));
         return Ok(new ApiResponse<EntryCar>(result, "Success", true));
 
+    }
+
+    [HttpPut]
+    [Route("CarExit")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> CarExit([FromBody] EntryCarDTO entryCarDTO)
+    {
+        if (entryCarDTO == null)
+            return BadRequest(new ApiResponse<object>(null, "Entry car data is required", false));
+        var isValidGarage = await _garageService.isValidGarage(entryCarDTO.GarageId);
+        if (!isValidGarage)
+            return BadRequest(new ApiResponse<object>(null, $"Invalid Garage ID {entryCarDTO.GarageId}", false));
+        var entryCar = _mapper.Map<EntryCar>(entryCarDTO);
+        var result = await _garageService.UpdateExitCar(entryCar.PlateNumber);
+        if (result == null)
+            return BadRequest(new ApiResponse<object>(null, "Failed to add entry car", false));
+        return Ok(new ApiResponse<EntryCar>(result, "Success", true));
     }
 
     [HttpPost]
