@@ -1,7 +1,7 @@
 ﻿namespace SmartParking.API.Controllers;
 
 [ApiController]
-[Route("api/Ai")]
+[Route("api/[controller]")]
 public class AiController : ControllerBase
 {
     private readonly IAiService _AiService;
