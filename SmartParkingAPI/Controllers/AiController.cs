@@ -1,17 +1,17 @@
 ﻿namespace SmartParking.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/Ai")]
 public class AiController : ControllerBase
 {
-    private readonly IAiService _anbrService;
+    private readonly IAiService _AiService;
 
-    public AiController(IAiService anbrService)
+    public AiController(IAiService AiService)
     {
-        _anbrService = anbrService;
+        _AiService = AiService;
     }
 
-    [HttpPost("PlateRecogantion")]
+    [HttpPost("PlateRecognation")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> PlateRecogantion([FromBody] PlateRecordDTO request)
@@ -19,37 +19,39 @@ public class AiController : ControllerBase
 
         if (string.IsNullOrEmpty(request.ImageFile))
         {
-            return BadRequest("No image data provided.");
+            // Handle the case where the image data is not provided
+            return BadRequest(new ApiResponse<object>(null, "No image data provided.", false));
         }
         try
         {
             byte[] imageBytes = Convert.FromBase64String(request.ImageFile);
 
-            var aiResponse = await _anbrService.SendToAIModel(imageBytes);
+            var aiResponse = await _AiService.SendToAIModel(imageBytes);
 
             if (string.IsNullOrEmpty(aiResponse))
             {
-                return BadRequest("AI model failed to extract the plate number.");
+                // Handle the case where the AI model fails to extract the plate number
+                return BadRequest(new ApiResponse<object>(null, "AI model failed to extract the plate number.", false));
             }
 
             // Extract values from AI response
             var aiResult = JsonSerializer.Deserialize<Dictionary<string, string>>(aiResponse);
             if (aiResult == null || !aiResult.ContainsKey("Plate Number"))
             {
-                return BadRequest("Invalid AI response.");
+                return BadRequest(new ApiResponse<object>(null, "Invalid response format.", false));
             }
 
             string plateNumber = aiResult["Plate Number"];
 
-            bool isValid = await _anbrService.ValidatePlateNumber(plateNumber);
+            bool isValid = await _AiService.ValidatePlateNumber(plateNumber);
 
             //await _anbrService.SavePlateData(imageBytes, plateNumber);
-
-            return Ok(isValid);
+            
+            return Ok(new ApiResponse<string>(plateNumber, "Plate number recognized successfully", true));
         }
         catch (FormatException)
         {
-            return BadRequest("Invalid base64 image data.");
+            return BadRequest(new ApiResponse<object>(null, "Invalid base64 image data.", false));
         }
     }
 }
