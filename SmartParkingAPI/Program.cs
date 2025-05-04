@@ -120,9 +120,13 @@ if (app.Environment.IsDevelopment())
 {
     //app.MapOpenApi();
     app.MapScalarApiReference();
-    app.UseSwagger();
-    app.UseSwaggerUI();
 }
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "SmartParkingAPI");
+    c.RoutePrefix = "swagger";
+});
 
 // allow all origins to access the api 
 app.UseCors(c => c.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
