@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 //builder.Services.AddOpenApi();
-
+//builder.WebHost.UseUrls("http://192.168.1.22:5158");
 // Authentication Configuration
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(
     option =>
@@ -35,7 +35,6 @@ builder.Services.AddTransient<IEmployeeService, EmployeeService>();
 builder.Services.AddTransient<IPaymentService, PaymentService>();
 builder.Services.AddTransient<IGarageService, GarageService>();
 builder.Services.AddTransient<IEmailServices, EmailService>();
-builder.Services.AddTransient<IOwnerService, OwnerService>();
 builder.Services.AddTransient<IAuthService, AuthServicie>();
 builder.Services.AddTransient<ISpotService, SpotService>();
 builder.Services.AddTransient<IRoleService, RoleService>();
@@ -51,11 +50,11 @@ builder.Configuration.AddEnvironmentVariables();
 
 var secret = builder.Configuration["MySecretKey"];
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("MonsterASP")));
-
 //builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//    options.UseSqlServer(builder.Configuration.GetConnectionString("AmorConnection")));
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("MonsterASP")));
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AmorConnection")));
 
 //builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //    options.UseSqlServer(builder.Configuration.GetConnectionString("MedoConnection")));

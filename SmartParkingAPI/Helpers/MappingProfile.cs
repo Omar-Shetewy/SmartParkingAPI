@@ -37,9 +37,6 @@ public class MappingProfile: Profile
         CreateMap<PaymentDetailsDTO, Payment>();
         CreateMap<PaymentDTO, Payment>();
 
-        CreateMap<Owner, OwnerDetailsDTO>();
-        CreateMap<OwnerDTO, Owner>();
-
         CreateMap<Job, JobDetailsDTO>();
         CreateMap<JobDTO, Job>();
 

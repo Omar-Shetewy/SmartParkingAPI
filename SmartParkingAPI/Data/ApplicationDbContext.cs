@@ -43,7 +43,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Payment> Payments { get; set; }
     public DbSet<PaymentMethod> PaymentMethods { get; set; }
     public DbSet<UserVerificationCode> UserVerificationCodes { get; set; }
-    public DbSet<Owner> Owners { get; set; }
     public DbSet<Job> Jobs { get; set; }
     public DbSet<Employee> Employees { get; set; }
     public DbSet<EntryCar> EntryCars { get; set; }

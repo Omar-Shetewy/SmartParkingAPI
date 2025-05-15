@@ -11,5 +11,4 @@ public class GarageDetailsDTO
     public double Longitude { get; set; }
     public int AvailableSpots { get; set; }
     public int ReservedSpots { get; set; }
-    public int OwnerId { get; set; }
 }
