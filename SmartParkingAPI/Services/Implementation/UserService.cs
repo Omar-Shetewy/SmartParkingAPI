@@ -67,4 +67,9 @@ public class UserService : IUserService
         return user;
     }
 
+    public async Task<bool> isValidEmailAsync(string email)
+    {
+        return await _dbContext.Users.AnyAsync(u => u.Email == email);
+    }
+
 }

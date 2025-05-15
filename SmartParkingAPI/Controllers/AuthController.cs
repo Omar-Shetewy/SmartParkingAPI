@@ -91,10 +91,15 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> LogInAsync([FromBody] LoginDTO request)
     {
+        var isValidEmail = await _userService.isValidEmailAsync(request.Email);
+
+        if (!isValidEmail)
+            return BadRequest(new ApiResponse<object>(null, "Email Not Found, Please Register!", false));
+
         var result = await _authServices.UserValidationAsync(request);
 
         if (result == null)
-            return BadRequest(new ApiResponse<object>(null,"Invalid Email or Password!", false));
+            return BadRequest(new ApiResponse<object>(null,"Invalid Password!", false));
 
         if (!result.IsVerified)
             return BadRequest(new ApiResponse<object>(null,"Please verify your email before logging in", false));

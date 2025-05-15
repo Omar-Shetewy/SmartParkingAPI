@@ -1,4 +1,5 @@
 ﻿using SmartParking.API.Services.Interface;
+using System.Security.Cryptography;
 
 namespace SmartParking.API.Services.Implementation
 {
@@ -41,7 +42,7 @@ namespace SmartParking.API.Services.Implementation
         {
             var user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.Email == request.Email);
 
-            if (user == null || new PasswordHasher<User>().VerifyHashedPassword(user, user.PasswordHash, request.Password) == PasswordVerificationResult.Failed)
+            if (new PasswordHasher<User>().VerifyHashedPassword(user, user.PasswordHash, request.Password) == PasswordVerificationResult.Failed)
             {
                 return null;
             }
@@ -75,7 +76,18 @@ namespace SmartParking.API.Services.Implementation
             return new JwtSecurityTokenHandler().WriteToken(TokenDesciptor);
         }
 
+        private string GenerateResfreshToken()
+        {
+            var randomNumber = new byte[32];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+            return Convert.ToBase64String(randomNumber);
+        }
 
-
+        //private async Task<string>? GenerateAndSaveRefreshTokenAsync()
+        //{
+        //    var refreshToken = GenerateResfreshToken();
+        //    User. = refreshToken;
+        //}
     }
 }
