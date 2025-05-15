@@ -14,6 +14,7 @@ namespace SmartParking.API.Controllers
         }
 
         [HttpGet("urls")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult GetCameraUrls()
         {
             var serverIp = _config["MediaServerIp"];
