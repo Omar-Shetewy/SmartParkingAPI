@@ -86,6 +86,7 @@ public class ReservationRecordsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddAsync([FromBody] ReservationRecordDTO dto)
     {
+        
         if (!ModelState.IsValid)
             return BadRequest(new ApiResponse<object>(ModelState, "", false));
 
@@ -98,6 +99,11 @@ public class ReservationRecordsController : ControllerBase
 
         if (!isValidGarage)
             return BadRequest(new ApiResponse<object>(null, $"Invalid Garage Id:{dto.GarageId}", false));
+
+        var garage = await _garageService.GetBy(dto.GarageId);
+
+        if (garage == null || garage.AvailableSpots <= 0)
+            return BadRequest(new ApiResponse<object>(null, "No available spots in this garage", false));
 
         var recordByUserId = await _reservationService.GetByUserId(dto.UserId);
 
