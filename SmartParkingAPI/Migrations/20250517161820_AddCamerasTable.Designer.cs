@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartParking.API.Data;
 
@@ -11,9 +12,11 @@ using SmartParking.API.Data;
 namespace SmartParking.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250517161820_AddCamerasTable")]
+    partial class AddCamerasTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,7 +44,7 @@ namespace SmartParking.API.Migrations
 
                     b.HasIndex("GarageId");
 
-                    b.ToTable("Cameras", (string)null);
+                    b.ToTable("Cameras");
                 });
 
             modelBuilder.Entity("SmartParking.API.Data.Models.Car", b =>
@@ -76,7 +79,7 @@ namespace SmartParking.API.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Cars", (string)null);
+                    b.ToTable("Cars");
                 });
 
             modelBuilder.Entity("SmartParking.API.Data.Models.Employee", b =>
@@ -126,7 +129,7 @@ namespace SmartParking.API.Migrations
 
                     b.HasIndex("JobId");
 
-                    b.ToTable("Employees", (string)null);
+                    b.ToTable("Employees");
                 });
 
             modelBuilder.Entity("SmartParking.API.Data.Models.EntryCar", b =>
@@ -165,7 +168,7 @@ namespace SmartParking.API.Migrations
 
                     b.HasIndex("SpotId");
 
-                    b.ToTable("EntryCars", (string)null);
+                    b.ToTable("EntryCars");
                 });
 
             modelBuilder.Entity("SmartParking.API.Data.Models.Garage", b =>
@@ -211,7 +214,7 @@ namespace SmartParking.API.Migrations
 
                     b.HasKey("GarageId");
 
-                    b.ToTable("Garages", (string)null);
+                    b.ToTable("Garages");
                 });
 
             modelBuilder.Entity("SmartParking.API.Data.Models.Job", b =>
@@ -228,7 +231,7 @@ namespace SmartParking.API.Migrations
 
                     b.HasKey("JobId");
 
-                    b.ToTable("Jobs", (string)null);
+                    b.ToTable("Jobs");
                 });
 
             modelBuilder.Entity("SmartParking.API.Data.Models.Payment", b =>
@@ -258,7 +261,7 @@ namespace SmartParking.API.Migrations
                     b.HasIndex("ReservationRecordId")
                         .IsUnique();
 
-                    b.ToTable("Payments", (string)null);
+                    b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("SmartParking.API.Data.Models.PaymentMethod", b =>
@@ -275,7 +278,7 @@ namespace SmartParking.API.Migrations
 
                     b.HasKey("PaymentMethodId");
 
-                    b.ToTable("PaymentMethods", (string)null);
+                    b.ToTable("PaymentMethods");
                 });
 
             modelBuilder.Entity("SmartParking.API.Data.Models.ReservationRecord", b =>
@@ -305,7 +308,7 @@ namespace SmartParking.API.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("ReservationRecords", (string)null);
+                    b.ToTable("ReservationRecords");
                 });
 
             modelBuilder.Entity("SmartParking.API.Data.Models.Role", b =>
@@ -322,7 +325,7 @@ namespace SmartParking.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("Roles");
 
                     b.HasData(
                         new
@@ -362,7 +365,7 @@ namespace SmartParking.API.Migrations
 
                     b.HasIndex("GarageId");
 
-                    b.ToTable("Spots", (string)null);
+                    b.ToTable("Spots");
                 });
 
             modelBuilder.Entity("SmartParking.API.Data.Models.UserVerificationCode", b =>
@@ -390,7 +393,7 @@ namespace SmartParking.API.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserVerificationCodes", (string)null);
+                    b.ToTable("UserVerificationCodes");
                 });
 
             modelBuilder.Entity("SmartParkingAPI.Data.Models.User", b =>
@@ -440,7 +443,7 @@ namespace SmartParking.API.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("SmartParking.API.Data.Models.Camera", b =>
@@ -575,7 +578,7 @@ namespace SmartParking.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsMany("SmartParkingAPI.Data.Models.User.RefreshTokens#SmartParking.API.Data.Models.RefreshToken", "RefreshTokens", b1 =>
+                    b.OwnsMany("SmartParking.API.Data.Models.RefreshToken", "RefreshTokens", b1 =>
                         {
                             b1.Property<int>("UserId")
                                 .HasColumnType("int");
@@ -601,7 +604,7 @@ namespace SmartParking.API.Migrations
 
                             b1.HasKey("UserId", "Id");
 
-                            b1.ToTable("RefreshToken", (string)null);
+                            b1.ToTable("RefreshToken");
 
                             b1.WithOwner()
                                 .HasForeignKey("UserId");

@@ -16,4 +16,5 @@ public class Garage
     public DateTime CreatedOn { get; set; } = DateTime.Now;
     public List<ReservationRecord> ReservationRecords { get; set; }
     public List<Employee> Employees { get; set; }
+    public List<Camera> Cameras { get; set; }
 }

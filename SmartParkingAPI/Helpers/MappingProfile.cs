@@ -47,5 +47,9 @@ public class MappingProfile : Profile
         CreateMap<Employee, EmployeeDetailsDTO>();
         CreateMap<EmployeeDetailsDTO, Employee>();
         CreateMap<EmployeeDTO, Employee>();
+
+        CreateMap<Camera, CameraDetailsDTO>();
+        CreateMap<CameraDetailsDTO, Camera>();
+        CreateMap<CameraDTO, Camera>();
     }
 }

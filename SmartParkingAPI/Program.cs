@@ -1,3 +1,5 @@
+using SmartParking.API.Services.Implementatiglon;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -42,6 +44,7 @@ builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<ICarService, CarService>();
 builder.Services.AddTransient<IJobService, JobService>();
 builder.Services.AddTransient<IAiService, AiService>();
+builder.Services.AddTransient<ICameraService, CameraService>();
 
 
 builder.Services.AddAutoMapper(typeof(Program));
@@ -50,11 +53,11 @@ builder.Configuration.AddEnvironmentVariables();
 
 var secret = builder.Configuration["MySecretKey"];
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("MonsterASP")));
-
 //builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//    options.UseSqlServer(builder.Configuration.GetConnectionString("AmorConnection")));
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("MonsterASP")));
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AmorConnection")));
 
 //builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //    options.UseSqlServer(builder.Configuration.GetConnectionString("MedoConnection")));

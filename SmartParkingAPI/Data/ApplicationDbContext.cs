@@ -46,5 +46,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Job> Jobs { get; set; }
     public DbSet<Employee> Employees { get; set; }
     public DbSet<EntryCar> EntryCars { get; set; }
+    public DbSet<Camera> Cameras { get; set; }
 
 }
