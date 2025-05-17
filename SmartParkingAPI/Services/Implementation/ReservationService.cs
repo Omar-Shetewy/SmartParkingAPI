@@ -1,6 +1,4 @@
-﻿using SmartParking.API.Services.Interface;
-
-namespace SmartParking.API.Services.Implementation;
+﻿namespace SmartParking.API.Services.Implementation;
 
 public class ReservationService : IReservationService
 {
@@ -47,6 +45,8 @@ public class ReservationService : IReservationService
     public ReservationRecord Delete(ReservationRecord record)
     {
         _dbContext.Remove(record);
+        _dbContext.Garages.FirstOrDefault(g => g.GarageId == record.GarageId).ReservedSpots--;
+        _dbContext.Garages.FirstOrDefault(g => g.GarageId == record.GarageId).AvailableSpots++;
         _dbContext.SaveChanges();
 
         return record;

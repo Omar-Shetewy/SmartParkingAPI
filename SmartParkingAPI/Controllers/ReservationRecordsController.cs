@@ -86,6 +86,7 @@ public class ReservationRecordsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddAsync([FromBody] ReservationRecordDTO dto)
     {
+        
         if (!ModelState.IsValid)
             return BadRequest(new ApiResponse<object>(ModelState, "", false));
 
@@ -99,6 +100,11 @@ public class ReservationRecordsController : ControllerBase
         if (!isValidGarage)
             return BadRequest(new ApiResponse<object>(null, $"Invalid Garage Id:{dto.GarageId}", false));
 
+        var garage = await _garageService.GetBy(dto.GarageId);
+
+        if (garage == null || garage.AvailableSpots <= 0)
+            return BadRequest(new ApiResponse<object>(null, "No available spots in this garage", false));
+
         var recordByUserId = await _reservationService.GetByUserId(dto.UserId);
 
         if (recordByUserId != null)
@@ -108,9 +114,9 @@ public class ReservationRecordsController : ControllerBase
 
         await _reservationService.Add(record);
 
-        var data = _mapper.Map<ReservationRecordDTO>(record);
+        var data = _mapper.Map<ReservationRecordTimeDTO>(record);
 
-        return Ok(new ApiResponse<ReservationRecordDTO>(data, "Success", true));
+        return Ok(new ApiResponse<ReservationRecordTimeDTO>(data, "Success", true));
     }
 
     [HttpPut]
@@ -118,7 +124,7 @@ public class ReservationRecordsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateAsync(int id, [FromBody] ReservationRecordUpdateDTO dto)
+    public async Task<IActionResult> UpdateAsync(int id, [FromBody] ReservationRecordTimeDTO dto)
     {
         if (!ModelState.IsValid)
             return BadRequest(new ApiResponse<object>(ModelState, "", false));

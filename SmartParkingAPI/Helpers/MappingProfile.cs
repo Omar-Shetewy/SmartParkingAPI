@@ -1,6 +1,6 @@
 ﻿namespace SmartParkingAPI.Helpers;
 
-public class MappingProfile: Profile
+public class MappingProfile : Profile
 {
     public MappingProfile()
     {
@@ -11,21 +11,25 @@ public class MappingProfile: Profile
         CreateMap<CarDetailsDTO, Car>();
         CreateMap<CarDTO, Car>();
 
-        CreateMap<GarageDetailsDTO,Garage>();
-        CreateMap<GarageDTO,Garage>();
-        CreateMap<Garage,GarageDetailsDTO>();
+        CreateMap<GarageDetailsDTO, Garage>();
+        CreateMap<GarageDTO, Garage>();
+        CreateMap<Garage, GarageDetailsDTO>();
 
         CreateMap<EntryCar, EntryCarDetailsDTO>();
-        CreateMap<EntryCarDTO,EntryCar>();
+        CreateMap<EntryCarDTO, EntryCar>();
         CreateMap<EntryCar, EntryCarDTO>();
 
         CreateMap<Spot, SpotDetailsDTO>();
         CreateMap<Spot, SpotDTO>();
         CreateMap<SpotDTO, Spot>();
 
-        CreateMap<ReservationRecord,ReservationRecordDetailsDTO>();
-        CreateMap<ReservationRecord,ReservationRecordDTO>();
-        CreateMap<ReservationRecordDTO,ReservationRecord>();
+        CreateMap<ReservationRecord, ReservationRecordDetailsDTO>();
+        CreateMap<ReservationRecord, ReservationRecordDTO>();
+        CreateMap<ReservationRecordDTO, ReservationRecord>();
+        CreateMap<ReservationRecord, ReservationRecordTimeDTO>();
+        CreateMap<ReservationRecordTimeDTO, ReservationRecord>();
+        CreateMap<ReservationRecordTimeDTO, ReservationRecordDTO>();
+        CreateMap<ReservationRecordDTO, ReservationRecordTimeDTO>();
 
         CreateMap<User, UserDTO>();
 
