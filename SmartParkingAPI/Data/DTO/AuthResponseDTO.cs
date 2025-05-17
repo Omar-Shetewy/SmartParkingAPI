@@ -1,8 +1,8 @@
-﻿namespace SmartParking.API.Data.DTO
+﻿namespace SmartParking.API.Data.DTO;
+
+public class AuthResponseDTO
 {
-    public class AuthResponseDTO
-    {
-        public string? Token { get; set; }
-        public bool IsVerified { get; set; }
-    }
+    public string? Token { get; set; }
+    public string? RefreshToken { get; set; }
+    public bool IsVerified { get; set; }
 }
