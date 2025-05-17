@@ -91,22 +91,30 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> LogInAsync([FromBody] LoginDTO request)
     {
-        var isValidEmail = await _userService.isValidEmailAsync(request.Email);
-
-        if (!isValidEmail)
-            return BadRequest(new ApiResponse<object>(null, "Email Not Found, Please Register!", false));
-
-        var result = await _authServices.UserValidationAsync(request);
-
-        if (result == null)
-            return BadRequest(new ApiResponse<object>(null,"Invalid Password!", false));
+        var result = await _authServices.AuthenticateAsync(request);
 
         if (!result.IsVerified)
-            return BadRequest(new ApiResponse<object>(null,"Please verify your email before logging in", false));
+            return BadRequest(new ApiResponse<object>(null, "Please verify your email before logging in", false));
 
-        TokenDTO token = new() { Token = result.Token };
+        if (result == null)
+            return BadRequest(new ApiResponse<object>(null,"Invalid Email or Password!", false));
+
+        TokenDTO token = new() { Token = result.Token, RefreshToken = result.RefreshToken };
 
         return Ok(new ApiResponse<TokenDTO>(token, "User successfully logged in", true));
+    }
+
+    [HttpPost("refresh")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Refresh([FromBody] RefreshTokenDTO refreshToken)
+    {
+        var token = await _authServices.RefreshTokenAsync(refreshToken);
+
+        if (token == null)
+            return BadRequest(new ApiResponse<object>(null, "Invalid refresh token", false));
+
+        return Ok(new ApiResponse<TokenDTO>(token, "Token refreshed successfully", true));
     }
 
     [HttpPost("Forget-Password")]
