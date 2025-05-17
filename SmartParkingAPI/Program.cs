@@ -29,6 +29,8 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 
 
 builder.Services.AddHttpClient();
+
+builder.Services.AddScoped<IRefreshTokenRepositories, RefreshTokenRepositories>();
 builder.Services.AddTransient<IPaymentMethodService, PaymentMethodService>();
 builder.Services.AddTransient<IReservationService, ReservationService>();
 builder.Services.AddTransient<IEmployeeService, EmployeeService>();
@@ -53,11 +55,11 @@ var secret = builder.Configuration["MySecretKey"];
 //builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //    options.UseSqlServer(builder.Configuration.GetConnectionString("MonsterASP")));
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("AmorConnection")));
-
 //builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//    options.UseSqlServer(builder.Configuration.GetConnectionString("MedoConnection")));
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("AmorConnection")));
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MedoConnection")));
 
 //builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //    options.UseSqlServer(builder.Configuration.GetConnectionString("RokaConnection")));
