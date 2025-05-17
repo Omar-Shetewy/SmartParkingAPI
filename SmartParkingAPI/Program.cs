@@ -31,6 +31,8 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 
 
 builder.Services.AddHttpClient();
+
+builder.Services.AddScoped<IRefreshTokenRepositories, RefreshTokenRepositories>();
 builder.Services.AddTransient<IPaymentMethodService, PaymentMethodService>();
 builder.Services.AddTransient<IReservationService, ReservationService>();
 builder.Services.AddTransient<IEmployeeService, EmployeeService>();

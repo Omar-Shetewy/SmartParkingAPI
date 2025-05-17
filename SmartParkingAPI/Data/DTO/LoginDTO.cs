@@ -2,6 +2,7 @@
 
 public class LoginDTO
 {
+    //public int Id { get; set; } // Should be added to track user
     public string Email { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
 

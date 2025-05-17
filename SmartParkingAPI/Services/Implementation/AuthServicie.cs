@@ -1,4 +1,5 @@
-﻿using SmartParking.API.Services.Interface;
+﻿using SmartParking.API.Data.Models;
+using SmartParking.API.Services.Interface;
 using System.Security.Cryptography;
 
 namespace SmartParking.API.Services.Implementation
@@ -6,11 +7,13 @@ namespace SmartParking.API.Services.Implementation
     public class AuthServicie : IAuthService
     {
         private readonly ApplicationDbContext _context;
-        private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
+        private readonly IRefreshTokenRepositories _refreshTokenRepositories;
+        private readonly IMapper _mapper;
 
-        public AuthServicie(ApplicationDbContext context, IConfiguration configuration, IMapper mapper)
+        public AuthServicie(ApplicationDbContext context, IConfiguration configuration, IMapper mapper, IRefreshTokenRepositories refreshTokenRepositories)
         {
+            _refreshTokenRepositories = refreshTokenRepositories;
             _configuration = configuration;
             _context = context;
             _mapper = mapper;
@@ -38,18 +41,55 @@ namespace SmartParking.API.Services.Implementation
             return user;
         }
 
-        public async Task<AuthResponseDTO?> UserValidationAsync(LoginDTO request)
+        public async Task<AuthResponseDTO?> AuthenticateAsync(LoginDTO request)
         {
-            var user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.Email == request.Email);
+            var user = await _context.Users.Include(u => u.Role).Include(u => u.RefreshTokens).FirstOrDefaultAsync(u => u.Email == request.Email);
 
-            if (new PasswordHasher<User>().VerifyHashedPassword(user, user.PasswordHash, request.Password) == PasswordVerificationResult.Failed)
+            if (user == null || new PasswordHasher<User>().VerifyHashedPassword(user, user.PasswordHash, request.Password) == PasswordVerificationResult.Failed || !user.IsVerified )
             {
                 return null;
             }
 
             var token = GenerateToken(user);
+            var RefreshToken = GenerateResfreshToken();
 
-            return new AuthResponseDTO { Token = token, IsVerified = user.IsVerified};
+            user.RefreshTokens.Add(new RefreshToken
+            {
+                Token = RefreshToken,
+                CreatedOn = DateTime.UtcNow,
+                ExpireOn = DateTime.UtcNow.AddDays(7),
+                UserId = user.UserId
+            });
+
+            _context.SaveChanges();
+            return new AuthResponseDTO { Token = token, RefreshToken = RefreshToken, UserId = user.UserId, IsVerified = user.IsVerified};
+        }
+
+        public async Task<TokenDTO> RefreshTokenAsync(RefreshTokenDTO token)
+        {
+            var oldToken = await _refreshTokenRepositories.GetByIdAsync(token);
+            if (oldToken == null || !oldToken.IsActive)
+                return null;
+
+            oldToken.RevokedOn = DateTime.UtcNow;
+
+            var newToken = new RefreshToken
+            {
+                Token = GenerateResfreshToken(),
+                CreatedOn = DateTime.UtcNow,
+                ExpireOn = DateTime.UtcNow.AddDays(7),
+                UserId = oldToken.UserId
+            };
+
+            oldToken.User.RefreshTokens.Add(newToken);
+            await _refreshTokenRepositories.SaveAsync();
+
+            var accessToken = GenerateToken(oldToken.User);
+            return new TokenDTO
+            {
+                Token = accessToken,
+                RefreshToken = newToken.Token
+            };
         }
 
         private string GenerateToken(User user)
@@ -83,11 +123,5 @@ namespace SmartParking.API.Services.Implementation
             rng.GetBytes(randomNumber);
             return Convert.ToBase64String(randomNumber);
         }
-
-        //private async Task<string>? GenerateAndSaveRefreshTokenAsync()
-        //{
-        //    var refreshToken = GenerateResfreshToken();
-        //    User. = refreshToken;
-        //}
     }
 }
