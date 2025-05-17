@@ -58,7 +58,7 @@ namespace SmartParking.API.Controllers
         }
 
         [HttpGet]
-        [Route("GetGarageById/{id}")]
+        [Route("GetCameraById/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -94,7 +94,9 @@ namespace SmartParking.API.Controllers
             var camera = _mapper.Map<Camera>(dto);
             await _cameraService.Add(camera);
 
-            return Ok(new ApiResponse<Camera>(camera, "", true));
+            var data = _mapper.Map<CameraDetailsDTO>(camera);
+
+            return Ok(new ApiResponse<CameraDetailsDTO>(data, "", true));
         }
 
         [HttpPut]
