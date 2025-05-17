@@ -93,13 +93,13 @@ public class AuthController : ControllerBase
     {
         var result = await _authServices.AuthenticateAsync(request);
 
-        if (!result.IsVerified)
-            return BadRequest(new ApiResponse<object>(null, "Please verify your email before logging in", false));
-
         if (result == null)
             return BadRequest(new ApiResponse<object>(null,"Invalid Email or Password!", false));
 
-        TokenDTO token = new() { Token = result.Token, RefreshToken = result.RefreshToken };
+        if (!result.IsVerified)
+            return BadRequest(new ApiResponse<object>(null, "Please verify your email before logging in", false));
+
+        TokenDTO token = new() { Token = result.Token, RefreshToken = result.RefreshToken , UserId = result.UserId};
 
         return Ok(new ApiResponse<TokenDTO>(token, "User successfully logged in", true));
     }

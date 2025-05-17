@@ -62,7 +62,7 @@ namespace SmartParking.API.Services.Implementation
             });
 
             _context.SaveChanges();
-            return new AuthResponseDTO { Token = token, RefreshToken = RefreshToken, IsVerified = user.IsVerified};
+            return new AuthResponseDTO { Token = token, RefreshToken = RefreshToken, UserId = user.UserId, IsVerified = user.IsVerified};
         }
 
         public async Task<TokenDTO> RefreshTokenAsync(RefreshTokenDTO token)
