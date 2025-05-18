@@ -15,6 +15,7 @@ public class GarageService : IGarageService
         return garage;
     }
 
+
     public async Task<EntryCar> UpdateExitCar(string PlateNumber)
     {
         var entryCar = await _dbContext.EntryCars.FirstOrDefaultAsync(e => e.PlateNumber == PlateNumber);
@@ -83,8 +84,11 @@ public class GarageService : IGarageService
     public async Task<bool> isValidPlateNumber(string plateNumber)
     {
         var car = await _dbContext.Cars.FirstOrDefaultAsync(c => c.PlateNumber == plateNumber);
+        var EntryCar = await _dbContext.EntryCars.FirstOrDefaultAsync(c => c.PlateNumber == plateNumber );
 
-        if (car == null) return false;
+        if (car == null)
+
+            return false;
 
         bool Reserve = await _dbContext.ReservationRecords.AnyAsync(r => r.UserId == car.UserId);
         if (Reserve) return false;
