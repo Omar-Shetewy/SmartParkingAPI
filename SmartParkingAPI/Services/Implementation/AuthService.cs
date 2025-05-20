@@ -4,14 +4,14 @@ using System.Security.Cryptography;
 
 namespace SmartParking.API.Services.Implementation
 {
-    public class AuthServicie : IAuthService
+    public class AuthService : IAuthService
     {
         private readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
         private readonly IRefreshTokenRepositories _refreshTokenRepositories;
         private readonly IMapper _mapper;
 
-        public AuthServicie(ApplicationDbContext context, IConfiguration configuration, IMapper mapper, IRefreshTokenRepositories refreshTokenRepositories)
+        public AuthService(ApplicationDbContext context, IConfiguration configuration, IMapper mapper, IRefreshTokenRepositories refreshTokenRepositories)
         {
             _refreshTokenRepositories = refreshTokenRepositories;
             _configuration = configuration;

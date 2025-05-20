@@ -34,6 +34,10 @@ public class SpotService : ISpotService
         return await _dbContext.Spots.Where(s => s.GarageId == garageId).ToListAsync();
     }
 
+    public async Task<bool> IsValidSpot(int? spotId)
+    {
+        return await _dbContext.Spots.AnyAsync(s => s.SpotId == spotId);
+    }
 }
 
 
