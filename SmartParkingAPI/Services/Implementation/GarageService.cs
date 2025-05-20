@@ -1,4 +1,6 @@
-﻿namespace SmartParking.API.Services.Implementation;
+﻿using SmartParking.API.Data.DTO;
+
+namespace SmartParking.API.Services.Implementation;
 
 public class GarageService : IGarageService
 {
@@ -15,6 +17,13 @@ public class GarageService : IGarageService
         return garage;
     }
 
+    public bool IsAvailableSpots(int GarageId)
+    {
+        if (_dbContext.Garages.FirstOrDefault(g => g.GarageId == GarageId).AvailableSpots <= 0)
+            return false;
+
+        return true;
+    }
 
     public async Task<EntryCar> UpdateExitCar(string PlateNumber)
     {
@@ -23,6 +32,19 @@ public class GarageService : IGarageService
         {
             entryCar.ExitTime = DateTime.Now;
             entryCar.IsPaid = true;
+            _dbContext.EntryCars.Update(entryCar);
+            await _dbContext.SaveChangesAsync();
+        }
+        return entryCar;
+    }
+    
+    public async Task<EntryCar> UpdateCarPosition(string PlateNumber,int? spotId)
+    {
+        var entryCar = await _dbContext.EntryCars.FirstOrDefaultAsync(e => e.PlateNumber == PlateNumber);
+        if (entryCar != null)
+        {
+            entryCar.SpotId = spotId;
+
             _dbContext.EntryCars.Update(entryCar);
             await _dbContext.SaveChangesAsync();
         }
@@ -77,6 +99,7 @@ public class GarageService : IGarageService
     public async Task<EntryCar> AddEntryCar(EntryCar entryCar)
     {
         await _dbContext.EntryCars.AddAsync(entryCar);
+        _dbContext.Garages.FirstOrDefault(g => g.GarageId == entryCar.GarageId).AvailableSpots--;
         await _dbContext.SaveChangesAsync();
         return entryCar;
     }
