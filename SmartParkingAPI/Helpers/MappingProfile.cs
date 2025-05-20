@@ -18,6 +18,7 @@ public class MappingProfile : Profile
         CreateMap<EntryCar, EntryCarDetailsDTO>();
         CreateMap<EntryCarDTO, EntryCar>();
         CreateMap<EntryCar, EntryCarDTO>();
+        CreateMap<CarPositionDTO, EntryCar>();
 
         CreateMap<Spot, SpotDetailsDTO>();
         CreateMap<Spot, SpotDTO>();
