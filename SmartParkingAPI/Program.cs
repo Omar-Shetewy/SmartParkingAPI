@@ -32,19 +32,19 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 builder.Services.AddHttpClient();
 
 builder.Services.AddScoped<IRefreshTokenRepositories, RefreshTokenRepositories>();
-builder.Services.AddTransient<IPaymentMethodService, PaymentMethodService>();
-builder.Services.AddTransient<IReservationService, ReservationService>();
-builder.Services.AddTransient<IEmployeeService, EmployeeService>();
-builder.Services.AddTransient<IPaymentService, PaymentService>();
-builder.Services.AddTransient<ICameraService, CameraService>();
-builder.Services.AddTransient<IGarageService, GarageService>();
-builder.Services.AddTransient<IEmailServices, EmailService>();
-builder.Services.AddTransient<IAuthService, AuthService>();
-builder.Services.AddTransient<ISpotService, SpotService>();
-builder.Services.AddTransient<IRoleService, RoleService>();
-builder.Services.AddTransient<IUserService, UserService>();
-builder.Services.AddTransient<ICarService, CarService>();
-builder.Services.AddTransient<IJobService, JobService>();
+builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
+builder.Services.AddScoped<IReservationService, ReservationService>();
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<ICameraService, CameraService>();
+builder.Services.AddScoped<IGarageService, GarageService>();
+builder.Services.AddScoped<IEmailServices, EmailService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ISpotService, SpotService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICarService, CarService>();
+builder.Services.AddScoped<IJobService, JobService>();
 
 
 
