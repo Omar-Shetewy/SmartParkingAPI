@@ -104,6 +104,7 @@ public class UsersController : ControllerBase
         user.LastName = dto.LastName;
         user.PhoneNumber = dto.PhoneNumber;
         user.RoleId = dto.RoleId;
+        user.Email = dto.Email;
 
         _userServices.Update(user);
 
