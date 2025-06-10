@@ -28,7 +28,7 @@ public class CarsController : ControllerBase
 
         var data = _mapper.Map<List<CarDetailsDTO>>(cars);
 
-        return Ok(new ApiResponse<List<CarDetailsDTO>>(data, "", true));
+        return Ok(new ApiResponse<List<CarDetailsDTO>>(data, "Success", true));
     }
 
     [HttpGet]
@@ -48,12 +48,10 @@ public class CarsController : ControllerBase
 
         var cars = await _carService.GetByUserId(userId);
 
-        if (cars.Count() == 0)
-            return NoContent();
 
         var data = _mapper.Map<CarDetailsDTO>(cars);
 
-        return Ok(new ApiResponse<CarDetailsDTO>(data, "", true));
+        return Ok(new ApiResponse<CarDetailsDTO>(data, "Success", true));
     }
 
     [HttpGet]
@@ -73,7 +71,7 @@ public class CarsController : ControllerBase
 
         var data = _mapper.Map<CarDetailsDTO>(car);
 
-        return Ok(new ApiResponse<CarDetailsDTO>(data, "", true));
+        return Ok(new ApiResponse<CarDetailsDTO>(data, "Success", true));
     }
 
     [HttpPost]
@@ -83,7 +81,7 @@ public class CarsController : ControllerBase
     public async Task<IActionResult> AddNewCarAsync([FromBody] CarDTO dto)
     {
         if (!ModelState.IsValid)
-            return BadRequest(new ApiResponse<object>(ModelState,"", false));
+            return BadRequest(new ApiResponse<object>(ModelState, "", false));
 
         var isValidUser = await _userService.isValidUserAsync(dto.UserId);
 
@@ -98,7 +96,7 @@ public class CarsController : ControllerBase
         var car = _mapper.Map<Car>(dto);
         await _carService.Add(car);
 
-        return Ok(new ApiResponse<Car>(car, "", true));
+        return Ok(new ApiResponse<Car>(car, "Success", true));
 
     }
 
