@@ -51,9 +51,9 @@ public class CarsController : ControllerBase
         if (cars.Count() == 0)
             return NoContent();
 
-        var data = _mapper.Map<List<CarDetailsDTO>>(cars);
+        var data = _mapper.Map<CarDetailsDTO>(cars);
 
-        return Ok(new ApiResponse<List<CarDetailsDTO>>(data, "", true));
+        return Ok(new ApiResponse<CarDetailsDTO>(data, "", true));
     }
 
     [HttpGet]

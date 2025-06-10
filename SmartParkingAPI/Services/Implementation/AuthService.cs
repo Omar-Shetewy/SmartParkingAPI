@@ -85,6 +85,7 @@ namespace SmartParking.API.Services.Implementation
             };
 
             oldToken.User.RefreshTokens.Add(newToken);
+            //_refreshTokenRepositories.update()
             await _refreshTokenRepositories.SaveAsync();
 
             var accessToken = GenerateToken(oldToken.User);

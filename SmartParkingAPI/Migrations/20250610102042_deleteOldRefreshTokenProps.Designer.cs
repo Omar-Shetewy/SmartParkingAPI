@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartParking.API.Data;
 
@@ -11,9 +12,11 @@ using SmartParking.API.Data;
 namespace SmartParking.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250610102042_deleteOldRefreshTokenProps")]
+    partial class deleteOldRefreshTokenProps
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -74,8 +77,7 @@ namespace SmartParking.API.Migrations
 
                     b.HasIndex("SpotId");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("Cars");
                 });
@@ -444,9 +446,6 @@ namespace SmartParking.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<byte[]>("Image")
-                        .HasColumnType("varbinary(max)");
-
                     b.Property<bool>("IsVerified")
                         .HasColumnType("bit");
 
@@ -490,8 +489,8 @@ namespace SmartParking.API.Migrations
                         .HasForeignKey("SpotId");
 
                     b.HasOne("SmartParkingAPI.Data.Models.User", "User")
-                        .WithOne("Car")
-                        .HasForeignKey("SmartParking.API.Data.Models.Car", "UserId")
+                        .WithMany("Cars")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -647,8 +646,7 @@ namespace SmartParking.API.Migrations
 
             modelBuilder.Entity("SmartParkingAPI.Data.Models.User", b =>
                 {
-                    b.Navigation("Car")
-                        .IsRequired();
+                    b.Navigation("Cars");
 
                     b.Navigation("RefreshTokens");
 
