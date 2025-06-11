@@ -16,5 +16,6 @@ public class User
     public Car Car { get; set; }
     public ReservationRecord Reservation { get; set; }
     public ICollection<UserVerificationCode> VerificationCodes { get; set; } = new List<UserVerificationCode>();
-    public ICollection<RefreshToken> RefreshTokens { get; set; }
+    //public ICollection<RefreshToken> RefreshTokens { get; set; }
+    public RefreshToken? RefreshToken { get; set; }
 }

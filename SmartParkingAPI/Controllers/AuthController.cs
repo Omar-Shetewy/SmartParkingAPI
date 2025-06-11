@@ -91,7 +91,7 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> LogInAsync([FromBody] LoginDTO request)
     {
-        var result = await _authServices.AuthenticateAsync(request);
+        var result = await _authServices.LoginAsync(request);
 
         if (result == null)
             return BadRequest(new ApiResponse<object>(null,"Invalid Email or Password!", false));

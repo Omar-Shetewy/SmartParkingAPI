@@ -39,12 +39,12 @@ builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<ICameraService, CameraService>();
 builder.Services.AddScoped<IGarageService, GarageService>();
 builder.Services.AddScoped<IEmailServices, EmailService>();
-builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ISpotService, SpotService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICarService, CarService>();
 builder.Services.AddScoped<IJobService, JobService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 
 
