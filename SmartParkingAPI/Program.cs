@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 //builder.Services.AddOpenApi();
-//builder.WebHost.UseUrls("http://192.168.0.109:5158");
+//builder.WebHost.UseUrls("http://192.168.248.251:5158");
 //builder.WebHost.UseUrls("http://192.168.43.13:5158");
 // Authentication Configuration
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(
@@ -54,11 +54,11 @@ builder.Configuration.AddEnvironmentVariables();
 
 var secret = builder.Configuration["MySecretKey"];
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("MonsterASP")));
-
 //builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//    options.UseSqlServer(builder.Configuration.GetConnectionString("AmorConnection")));
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("MonsterASP")));
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AmorConnection")));
 
 //builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //    options.UseSqlServer(builder.Configuration.GetConnectionString("MedoConnection")));

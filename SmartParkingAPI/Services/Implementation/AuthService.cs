@@ -113,7 +113,7 @@ namespace SmartParking.API.Services.Implementation
                 issuer: _configuration.GetValue<string>("JWT:Issuer"),
                 audience: _configuration.GetValue<string>("JWT:Audience"),
                 claims: claims,
-                expires: _configuration.GetValue<DateTime>("JWT:DurationInMinutes"),
+                expires: DateTime.Now.AddDays(10),
                 signingCredentials: creds
             );
 
