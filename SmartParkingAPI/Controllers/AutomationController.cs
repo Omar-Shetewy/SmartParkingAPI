@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using SmartParking.API.Data.DTO;
+using SmartParking.API.Data.Models;
 
 namespace SmartParking.API.Controllers;
 
@@ -11,8 +13,10 @@ public class AutomationController : ControllerBase
     private readonly ISpotService _spotService;
     private readonly IMapper _mapper;
     private readonly IConfiguration _config;
-    public AutomationController(IConfiguration config, IGarageService garageService, IMapper mapper, ISpotService spotService)
+    private readonly IHubContext<ParkingHub> _hub;
+    public AutomationController(IConfiguration config, IGarageService garageService, IMapper mapper, ISpotService spotService, IHubContext<ParkingHub> hub)
     {
+        _hub = hub;
         _config = config;
         _garageService = garageService;
         _mapper = mapper;
@@ -49,10 +53,6 @@ public class AutomationController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddEntryCarAsync([FromBody] EntryCarDTO entryCarDTO)
     {
-
-        var isValidPlateNumber = await _garageService.isValidPlateNumber(entryCarDTO.PlateNumber);
-        //if (!isValidPlateNumber)
-        //    return BadRequest(new ApiResponse<object>(null, $"Invalid Plate Number {entryCarDTO.PlateNumber}", false));
         if (!_garageService.IsAvailableSpots(entryCarDTO.GarageId))
             return BadRequest(new ApiResponse<object>(null, "No Avaliable Spots", false));
 
@@ -69,8 +69,6 @@ public class AutomationController : ControllerBase
         if (result == null)
             return BadRequest(new ApiResponse<object>(null, "Failed to add entry car", false));
 
-        var entryCarDetails = _mapper.Map<EntryCarDetailsDTO>(result);
-
         return Ok(new ApiResponse<object>(null, "Welcome :)", true));
 
     }
@@ -81,7 +79,6 @@ public class AutomationController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CarPosition([FromBody] CarPositionDTO carPositionDTO)
     {
-        Console.WriteLine(carPositionDTO);
         if (carPositionDTO == null)
             return BadRequest(new ApiResponse<object>(null, "data is required", false));
 
@@ -96,6 +93,13 @@ public class AutomationController : ControllerBase
         if (result == null)
             return BadRequest(new ApiResponse<object>(null, "Invalid PlateNumber", false));
 
+        var isPlateNumberInApp = await _garageService.isPlateNumberInApp(carPositionDTO.PlateNumber);
+        if (isPlateNumberInApp == null)
+            return BadRequest(new ApiResponse<object>(null, $"Invalid Plate Number {carPositionDTO.PlateNumber}", false));
+
+
+        await _hub.Clients.User(isPlateNumberInApp.ToString())
+          .SendAsync("ReceiveSpot", carPositionDTO.SpotId);
         return Ok(new ApiResponse<object>(null, "Success", true));
 
     }

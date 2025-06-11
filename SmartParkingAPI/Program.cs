@@ -21,6 +21,21 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]!)), // this ! means not null
             ValidateIssuerSigningKey = true
         };
+        option.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+                var path = context.HttpContext.Request.Path;
+
+                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/parkingHub"))
+                {
+                    context.Token = accessToken;
+                }
+
+                return Task.CompletedTask;
+            }
+        };
     });
 
 builder.Services.Configure<ApiBehaviorOptions>(options =>
@@ -46,7 +61,8 @@ builder.Services.AddScoped<ICarService, CarService>();
 builder.Services.AddScoped<IJobService, JobService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
-
+builder.Services.AddSignalR();
+builder.Services.AddSingleton<IUserIdProvider, MyUserIdProvider>();
 
 builder.Services.AddAutoMapper(typeof(Program));
 
@@ -130,6 +146,8 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "SmartParkingAPI");
     c.RoutePrefix = "swagger";
 });
+
+app.MapHub<ParkingHub>("/parkingHub");
 
 // allow all origins to access the api 
 app.UseCors(c => c.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
