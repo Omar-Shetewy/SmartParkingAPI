@@ -102,7 +102,7 @@ namespace SmartParking.API.Services.Implementation
             {
                 new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role.RoleName)
+                new Claim(ClaimTypes.Role, user.Role.RoleName) // Think about struct
             };
 
             SymmetricSecurityKey key = new(Encoding.UTF8.GetBytes(_configuration.GetValue<string>("JWT:Key")));
@@ -113,7 +113,7 @@ namespace SmartParking.API.Services.Implementation
                 issuer: _configuration.GetValue<string>("JWT:Issuer"),
                 audience: _configuration.GetValue<string>("JWT:Audience"),
                 claims: claims,
-                expires: DateTime.Now.AddDays(1),
+                expires: _configuration.GetValue<DateTime>("JWT:DurationInMinutes"),
                 signingCredentials: creds
             );
 
