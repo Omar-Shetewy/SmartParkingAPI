@@ -79,9 +79,6 @@ public class GaragesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddEntryCarAsync([FromBody] EntryCarDTO entryCarDTO)
     {
-
-        var isValidPlateNumber = await _garageService.isValidPlateNumber(entryCarDTO.PlateNumber);
-        //if (!isValidPlateNumber)
         if (entryCarDTO == null)
             return BadRequest(new ApiResponse<object>(null, "Entry car data is required", false));
         var isValidGarage = await _garageService.isValidGarage(entryCarDTO.GarageId);
