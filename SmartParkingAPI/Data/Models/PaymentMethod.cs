@@ -4,7 +4,6 @@
     {
         public int PaymentMethodId { get; set; }
         public string Name { get; set; }
-
         public List<Payment> Payment { get; set; }
     }
 }

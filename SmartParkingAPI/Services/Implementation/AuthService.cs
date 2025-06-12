@@ -14,6 +14,7 @@ namespace SmartParking.API.Services.Implementation
         public AuthService(ApplicationDbContext context, IConfiguration configuration, IMapper mapper, IUserService userServise, IRefreshTokenRepositories refreshTokenRepositories)
         {
             _refreshTokenRepositories = refreshTokenRepositories;
+            //_userRepository = user;
             _configuration = configuration;
             _userService = userServise;
             _context = context;
@@ -78,9 +79,22 @@ namespace SmartParking.API.Services.Implementation
             return new AuthResponseDTO { Token = token, RefreshToken = user.RefreshToken.Token, UserId = user.UserId, IsVerified = user.IsVerified};
         }
 
+
+        public async Task LogoutAsync(int id)
+        {
+            var user = _context.Users.FindAsync(id);
+
+            user.Result.RefreshToken.RevokedOn = DateTime.UtcNow;
+
+            _context.Users.Update(user.Result);
+        }
+
         public async Task<TokenDTO> RefreshTokenAsync(RefreshTokenDTO token)
         {
             var newToken = await _refreshTokenRepositories.GetByIdAsync(token.Id);
+
+            if (newToken == null)
+                return null;
 
             newToken.Token = GenerateResfreshToken();
             newToken.CreatedOn = DateTime.UtcNow;
@@ -127,5 +141,6 @@ namespace SmartParking.API.Services.Implementation
             rng.GetBytes(randomNumber);
             return Convert.ToBase64String(randomNumber);
         }
+
     }
 }
