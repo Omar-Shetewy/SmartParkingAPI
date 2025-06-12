@@ -6,14 +6,16 @@ namespace SmartParking.API.Services.Implementation
 {
     public class AuthService : IAuthService
     {
+        private readonly IRefreshTokenRepositories _refreshTokenRepositories;
+        //private readonly IRepository<User> _userRepository;
         private readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
-        private readonly IRefreshTokenRepositories _refreshTokenRepositories;
         private readonly IMapper _mapper;
 
         public AuthService(ApplicationDbContext context, IConfiguration configuration, IMapper mapper, IRefreshTokenRepositories refreshTokenRepositories)
         {
             _refreshTokenRepositories = refreshTokenRepositories;
+            //_userRepository = user;
             _configuration = configuration;
             _context = context;
             _mapper = mapper;
@@ -41,7 +43,7 @@ namespace SmartParking.API.Services.Implementation
             return user;
         }
 
-        public async Task<AuthResponseDTO?> AuthenticateAsync(LoginDTO request)
+        public async Task<AuthResponseDTO?> LoginAsync(LoginDTO request)
         {
             var user = await _context.Users
                 .Include(u => u.Role)
@@ -66,6 +68,19 @@ namespace SmartParking.API.Services.Implementation
 
             _context.SaveChanges();
             return new AuthResponseDTO { Token = token, RefreshToken = RefreshToken, UserId = user.UserId, IsVerified = user.IsVerified};
+        }
+
+
+        public async Task LogoutAsync(int id)
+        {
+            var user = _context.Users.FindAsync(id);
+
+            foreach (var token in user.Result.RefreshTokens.Where(t => t.IsActive))
+            {
+                token.RevokedOn = DateTime.UtcNow;
+            }
+
+            _context.Users.Update(user.Result);
         }
 
         public async Task<TokenDTO> RefreshTokenAsync(RefreshTokenDTO token)
@@ -126,5 +141,6 @@ namespace SmartParking.API.Services.Implementation
             rng.GetBytes(randomNumber);
             return Convert.ToBase64String(randomNumber);
         }
+
     }
 }

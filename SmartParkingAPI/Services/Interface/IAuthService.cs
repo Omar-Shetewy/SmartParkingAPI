@@ -3,7 +3,8 @@
     public interface IAuthService
     {
         public Task<User?> AddAsync(RegisterDTO request);
-        public Task<AuthResponseDTO?> AuthenticateAsync(LoginDTO request);
+        public Task<AuthResponseDTO?> LoginAsync(LoginDTO request);
+        public Task LogoutAsync(int id);
         Task<TokenDTO> RefreshTokenAsync(RefreshTokenDTO token);
     }
 }

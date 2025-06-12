@@ -1,13 +1,15 @@
-﻿namespace SmartParking.API.Controllers;
+﻿using Microsoft.Identity.Client;
+
+namespace SmartParking.API.Controllers;
 
 [Route("api/Auth")]
 [ApiController]
 public class AuthController : ControllerBase
 {
 
+    private readonly IEmailServices _emailServices;
     private readonly IAuthService _authServices;
     private readonly IUserService _userService;
-    private readonly IEmailServices _emailServices;
     public AuthController(IAuthService authServices, IEmailServices emailServices, IUserService userService)
     {
         _authServices = authServices;
@@ -23,12 +25,12 @@ public class AuthController : ControllerBase
     {
 
         if (!ModelState.IsValid)
-            return BadRequest(new ApiResponse<object>(ModelState,"", false));
+            return BadRequest(new ApiResponse<object>(ModelState, "", false));
 
         var user = await _authServices.AddAsync(request);
 
         if (user == null)
-            return BadRequest(new ApiResponse<object>(null,"User already exists!",false));
+            return BadRequest(new ApiResponse<object>(null, "User already exists!", false));
 
         await _emailServices.SendVerificationCodeAsync(user.UserId);
 
@@ -41,7 +43,7 @@ public class AuthController : ControllerBase
             UserId = user.UserId
         };
 
-        return Ok(new ApiResponse<RegisterDetailsDTO>(userData, "Verify your email",true));
+        return Ok(new ApiResponse<RegisterDetailsDTO>(userData, "Verify your email", true));
     }
 
     [HttpPost("Resend-verification")]
@@ -52,7 +54,7 @@ public class AuthController : ControllerBase
     {
         var user = await _userService.GetByAsync(userId);
         if (!ModelState.IsValid)
-            return BadRequest(new ApiResponse<object>(ModelState,"", false));
+            return BadRequest(new ApiResponse<object>(ModelState, "", false));
 
         if (user == null)
             return BadRequest(new ApiResponse<object>(null, "User not found!", false));
@@ -75,12 +77,12 @@ public class AuthController : ControllerBase
         var user = await _userService.GetByAsync(request.Id);
 
         if (user.IsVerified)
-            return BadRequest(new ApiResponse<object>(null,"User already verified", false));
+            return BadRequest(new ApiResponse<object>(null, "User already verified", false));
 
         var result = await _emailServices.VerifyCodeAsync(request.Id, request.Code);
 
         if (!result)
-            return BadRequest(new ApiResponse<object>(null,"Invalid or expired code", false));
+            return BadRequest(new ApiResponse<object>(null, "Invalid or expired code", false));
 
         return Ok(new ApiResponse<object>(null, "Email verified successfully", true));
     }
@@ -91,17 +93,35 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> LogInAsync([FromBody] LoginDTO request)
     {
-        var result = await _authServices.AuthenticateAsync(request);
+        var result = await _authServices.LoginAsync(request);
 
         if (result == null)
-            return BadRequest(new ApiResponse<object>(null,"Invalid Email or Password!", false));
+            return BadRequest(new ApiResponse<object>(null, "Invalid Email or Password!", false));
 
         if (!result.IsVerified)
             return BadRequest(new ApiResponse<object>(null, "Please verify your email before logging in", false));
 
-        TokenDTO token = new() { Token = result.Token, RefreshToken = result.RefreshToken , UserId = result.UserId};
+        TokenDTO token = new() { Token = result.Token, RefreshToken = result.RefreshToken, UserId = result.UserId };
 
         return Ok(new ApiResponse<TokenDTO>(token, "User successfully logged in", true));
+    }
+
+    [HttpPost("logout")]
+    public async Task<IActionResult> logoutAsync()
+    {
+        try
+        {
+            var user = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (user == null)
+                return Unauthorized(new ApiResponse<object>(null, "Invalid User", false));
+
+            return Ok(new ApiResponse<object>(null, "Logged out successfully", true));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new ApiResponse<object>(null, ex.Message, false));
+        }
     }
 
     [HttpPost("refresh")]
@@ -122,12 +142,12 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ForgetPassword(string Email)
-    { 
+    {
         var user = await _userService.GetByAsync(Email);
 
         if (user == null)
             return BadRequest(new ApiResponse<object>(null, "User not found!", false));
-        
+
         if (user.IsVerified)
             user.IsVerified = false;
 
@@ -146,9 +166,9 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> UpdatePassword(int id, string password)
     {
         var user = await _userService.GetByAsync(id);
-        
+
         if (user == null)
-            return BadRequest(new ApiResponse<object>(null,"User Not Found, Please Register First", false));
+            return BadRequest(new ApiResponse<object>(null, "User Not Found, Please Register First", false));
 
         var updated = _userService.UpdatePass(user, password);
 
