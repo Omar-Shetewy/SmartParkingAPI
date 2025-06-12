@@ -84,10 +84,7 @@ namespace SmartParking.API.Services.Implementation
         {
             var user = _context.Users.FindAsync(id);
 
-            foreach (var token in user.Result.RefreshTokens.Where(t => t.IsActive))
-            {
-                token.RevokedOn = DateTime.UtcNow;
-            }
+            user.Result.RefreshToken.RevokedOn = DateTime.UtcNow;
 
             _context.Users.Update(user.Result);
         }
