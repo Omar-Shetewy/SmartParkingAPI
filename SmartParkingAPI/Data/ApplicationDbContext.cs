@@ -28,10 +28,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             Id = 2,
             RoleName = "Admin"
         });
-        modelBuilder.Entity<User>()
-            .HasMany(u => u.VerificationCodes)
-            .WithOne(vc => vc.User)
-            .HasForeignKey(vc => vc.UserId);
+
     }
 
     public DbSet<Spot> Spots { get; set; }
