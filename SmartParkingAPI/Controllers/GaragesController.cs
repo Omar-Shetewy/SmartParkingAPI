@@ -73,42 +73,6 @@ public class GaragesController : ControllerBase
         return Ok(new ApiResponse<List<EntryCarDetailsDTO>>(data, "Success", true));
     }
 
-    [HttpPost]
-    [Route("AddEntryCar")]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> AddEntryCarAsync([FromBody] EntryCarDTO entryCarDTO)
-    {
-        if (entryCarDTO == null)
-            return BadRequest(new ApiResponse<object>(null, "Entry car data is required", false));
-        var isValidGarage = await _garageService.isValidGarage(entryCarDTO.GarageId);
-        if (!isValidGarage)
-            return BadRequest(new ApiResponse<object>(null, $"Invalid Garage ID {entryCarDTO.GarageId}", false));
-        var entryCar = _mapper.Map<EntryCar>(entryCarDTO);
-        var result = await _garageService.AddEntryCar(entryCar);
-        if (result == null)
-            return BadRequest(new ApiResponse<object>(null, "Failed to add entry car", false));
-        return Ok(new ApiResponse<EntryCar>(result, "Success", true));
-
-    }
-
-    [HttpPut]
-    [Route("CarExit")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CarExit([FromBody] EntryCarDTO entryCarDTO)
-    {
-        if (entryCarDTO == null)
-            return BadRequest(new ApiResponse<object>(null, "Entry car data is required", false));
-        var isValidGarage = await _garageService.isValidGarage(entryCarDTO.GarageId);
-        if (!isValidGarage)
-            return BadRequest(new ApiResponse<object>(null, $"Invalid Garage ID {entryCarDTO.GarageId}", false));
-        var entryCar = _mapper.Map<EntryCar>(entryCarDTO);
-        var result = await _garageService.UpdateExitCar(entryCar.PlateNumber);
-        if (result == null)
-            return BadRequest(new ApiResponse<object>(null, "Failed to add entry car", false));
-        return Ok(new ApiResponse<EntryCar>(result, "Success", true));
-    }
 
     [HttpPost]
     [Route("AddGarage")]
