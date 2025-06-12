@@ -102,19 +102,18 @@ public class GarageService : IGarageService
         return entryCar;
     }
 
-    public async Task<object?> isPlateNumberInApp(string plateNumber)
+    public async Task<int?> isPlateNumberInApp(string plateNumber)
     {
         var car = await _dbContext.Cars.FirstOrDefaultAsync(c => c.PlateNumber == plateNumber);
+
         if (car == null)
         {
-            return car;
+            return null;
         }
         var userId = car.UserId;
 
-
         bool Reserve = await _dbContext.ReservationRecords.AnyAsync(r => r.UserId == userId);
         if (!Reserve) return null;
-
 
         return userId;
 
