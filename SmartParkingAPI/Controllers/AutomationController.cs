@@ -94,12 +94,14 @@ public class AutomationController : ControllerBase
             return BadRequest(new ApiResponse<object>(null, "Invalid PlateNumber", false));
 
         var isPlateNumberInApp = await _garageService.isPlateNumberInApp(carPositionDTO.PlateNumber);
-        if (isPlateNumberInApp == null)
-            return BadRequest(new ApiResponse<object>(null, $"Invalid Plate Number {carPositionDTO.PlateNumber}", false));
+        if (isPlateNumberInApp != null)
+        {
+            await _hub.Clients.User(isPlateNumberInApp.ToString())
+              .SendAsync("ReceiveSpot", carPositionDTO.SpotId);
+        }
+            //return BadRequest(new ApiResponse<object>(null, $"Invalid Plate Number {carPositionDTO.PlateNumber}", false));
 
 
-        await _hub.Clients.User(isPlateNumberInApp.ToString())
-          .SendAsync("ReceiveSpot", carPositionDTO.SpotId);
         return Ok(new ApiResponse<object>(null, "Success", true));
 
     }
