@@ -35,7 +35,7 @@ public class UsersController : ControllerBase
         return Ok(new ApiResponse<IEnumerable<UserDTO>>(data, "Success", true));
     }
 
-    [Authorize(Roles = "User")]
+    [Authorize(Roles = "User, Admin")]
     [HttpGet]
     [Route("GetUserById/{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]

@@ -93,6 +93,9 @@ namespace SmartParking.API.Services.Implementation
         {
             var newToken = await _refreshTokenRepositories.GetByIdAsync(token.Id);
 
+            if (newToken == null)
+                return null;
+
             newToken.Token = GenerateResfreshToken();
             newToken.CreatedOn = DateTime.UtcNow;
             newToken.ExpireOn = DateTime.UtcNow.AddDays(7);
