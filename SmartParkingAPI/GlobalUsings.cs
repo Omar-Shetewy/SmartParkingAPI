@@ -13,6 +13,7 @@ global using System.Text.Json.Serialization;
 global using Microsoft.AspNetCore.Identity;
 global using Microsoft.EntityFrameworkCore;
 global using SmartParking.API.Data.Models;
+global using Microsoft.AspNetCore.SignalR;
 global using SmartParkingAPI.Data.Models;
 global using SmartParking.API.Data.DTO;
 global using Microsoft.AspNetCore.Mvc;

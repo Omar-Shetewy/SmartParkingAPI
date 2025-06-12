@@ -1,6 +1,4 @@
-﻿using SmartParking.API.Data.DTO;
-
-namespace SmartParking.API.Services.Implementation;
+﻿namespace SmartParking.API.Services.Implementation;
 
 public class GarageService : IGarageService
 {
@@ -37,8 +35,8 @@ public class GarageService : IGarageService
         }
         return entryCar;
     }
-    
-    public async Task<EntryCar> UpdateCarPosition(string PlateNumber,int? spotId)
+
+    public async Task<EntryCar> UpdateCarPosition(string PlateNumber, int? spotId)
     {
         var entryCar = await _dbContext.EntryCars.FirstOrDefaultAsync(e => e.PlateNumber == PlateNumber);
         if (entryCar != null)
@@ -104,20 +102,21 @@ public class GarageService : IGarageService
         return entryCar;
     }
 
-    public async Task<bool> isValidPlateNumber(string plateNumber)
+    public async Task<int?> isPlateNumberInApp(string plateNumber)
     {
         var car = await _dbContext.Cars.FirstOrDefaultAsync(c => c.PlateNumber == plateNumber);
-        var EntryCar = await _dbContext.EntryCars.FirstOrDefaultAsync(c => c.PlateNumber == plateNumber );
-
         if (car == null)
+        {
+            return null;
+        }
+        var userId = car.UserId;
 
-            return false;
 
-        bool Reserve = await _dbContext.ReservationRecords.AnyAsync(r => r.UserId == car.UserId);
-        if (Reserve) return false;
+        bool Reserve = await _dbContext.ReservationRecords.AnyAsync(r => r.UserId == userId);
+        if (!Reserve) return null;
 
 
-        return true;
+        return userId;
 
     }
 }

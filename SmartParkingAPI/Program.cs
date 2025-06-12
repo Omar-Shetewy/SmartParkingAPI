@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 //builder.Services.AddOpenApi();
-//builder.WebHost.UseUrls("http://192.168.0.109:5158");
+builder.WebHost.UseUrls("http://192.168.1.6:5158");
 //builder.WebHost.UseUrls("http://192.168.43.13:5158");
 // Authentication Configuration
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(
@@ -20,6 +20,21 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
             ValidateLifetime = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]!)), // this ! means not null
             ValidateIssuerSigningKey = true
+        };
+        option.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+                var path = context.HttpContext.Request.Path;
+
+                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/parkingHub"))
+                {
+                    context.Token = accessToken;
+                }
+
+                return Task.CompletedTask;
+            }
         };
     });
 
@@ -39,14 +54,15 @@ builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<ICameraService, CameraService>();
 builder.Services.AddScoped<IGarageService, GarageService>();
 builder.Services.AddScoped<IEmailServices, EmailService>();
-builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ISpotService, SpotService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICarService, CarService>();
 builder.Services.AddScoped<IJobService, JobService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
-
+builder.Services.AddSignalR();
+builder.Services.AddSingleton<IUserIdProvider, MyUserIdProvider>();
 
 builder.Services.AddAutoMapper(typeof(Program));
 
@@ -130,6 +146,8 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "SmartParkingAPI");
     c.RoutePrefix = "swagger";
 });
+
+app.MapHub<ParkingHub>("/parkingHub");
 
 // allow all origins to access the api 
 app.UseCors(c => c.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());

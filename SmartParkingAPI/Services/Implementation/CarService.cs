@@ -16,9 +16,9 @@ public class CarService : ICarService
         return await _dbContext.Cars.ToListAsync();
     }
 
-    public async Task<IEnumerable<Car>> GetByUserId(int userId)
+    public async Task<Car> GetByUserId(int userId)
     {
-        return await _dbContext.Cars.Where(c => c.UserId == userId).ToListAsync();
+        return await _dbContext.Cars.FirstOrDefaultAsync(c => c.UserId == userId);
     }
 
     public async Task<Car> GetBy(int id)

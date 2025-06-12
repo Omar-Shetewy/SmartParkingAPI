@@ -9,9 +9,10 @@ public class RefreshTokenRepositories : IRefreshTokenRepositories
         _context = context;
     }
 
-    public async Task<RefreshToken?> GetByIdAsync(RefreshTokenDTO token)
+    public async Task<RefreshToken?> GetByIdAsync(int id)
     {
-        return await _context.RefreshTokens.Include(t => t.User).ThenInclude(r => r.Role).FirstOrDefaultAsync(t => t.UserId == token.Id);
+        //return await _context.RefreshTokens.Include(t => t.User).ThenInclude(r => r.Role).FirstOrDefaultAsync(t => t.UserId == token.Id);
+        return await _context.RefreshTokens.FindAsync(id);
     }
 
     public async Task<RefreshToken?> GetByTokenAsync(RefreshTokenDTO token)

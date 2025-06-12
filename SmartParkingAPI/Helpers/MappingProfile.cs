@@ -10,6 +10,7 @@ public class MappingProfile : Profile
         CreateMap<Car, CarDetailsDTO>();
         CreateMap<CarDetailsDTO, Car>();
         CreateMap<CarDTO, Car>();
+        CreateMap<Car, CarDTO>();
 
         CreateMap<GarageDetailsDTO, Garage>();
         CreateMap<GarageDTO, Garage>();
@@ -33,6 +34,7 @@ public class MappingProfile : Profile
         CreateMap<ReservationRecordDTO, ReservationRecordTimeDTO>();
 
         CreateMap<User, UserDTO>();
+        CreateMap<UserDTO, User>();
 
         CreateMap<PaymentMethod, PaymentMethodDetailsDTO>();
         CreateMap<PaymentMethodDetailsDTO, PaymentMethod>();
