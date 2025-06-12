@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 //builder.Services.AddOpenApi();
-builder.WebHost.UseUrls("http://192.168.1.6:5158");
+//builder.WebHost.UseUrls("http://192.168.1.6:5158");
 //builder.WebHost.UseUrls("http://192.168.43.13:5158");
 // Authentication Configuration
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(
