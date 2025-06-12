@@ -16,6 +16,6 @@ public class User
     public DateTime? RefreshTokenExpiryTime { get; set; }
     public List<Car> Cars { get; set; }
     public ReservationRecord Reservation { get; set; }
-    public ICollection<UserVerificationCode> VerificationCodes { get; set; } = new List<UserVerificationCode>();
+    public UserVerificationCode? VerificationCode { get; set; } 
     public ICollection<RefreshToken>? RefreshTokens { get; set; }
 }
