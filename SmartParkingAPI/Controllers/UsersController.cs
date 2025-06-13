@@ -1,4 +1,6 @@
-﻿namespace SmartParkingAPI.Controllers;
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace SmartParkingAPI.Controllers;
 
 //[Authorize(Roles = "User,Admin")]
 [Route("api/Users")]
@@ -7,6 +9,7 @@ public class UsersController : ControllerBase
 {
     private readonly IUserService _userServices;
     private readonly IMapper _mapper;
+    private readonly ApplicationDbContext _dbContext;
 
     private List<string> _allowedExtenstion = new List<string> { ".jpg", ".png" };
     private long _maxAllowedPosterSize = 5 * 1048576;
@@ -55,6 +58,21 @@ public class UsersController : ControllerBase
         var data = _mapper.Map<UserDTO>(user);
 
         return Ok(new ApiResponse<UserDTO>(data, "Success", true));
+    }
+
+    [HttpPost("UpdateFCMToken")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> UpdateFcmToken([FromBody] FcmTokenDTO fcmToken)
+    {
+
+        var user = await _dbContext.Users.FindAsync(fcmToken.UserId);
+        if (user == null) return NoContent();
+
+        user.FcmToken = fcmToken.FcmToken;
+        await _dbContext.SaveChangesAsync();
+
+        return Ok(new ApiResponse<object>(null,"Success",true));
     }
 
     [HttpPut]

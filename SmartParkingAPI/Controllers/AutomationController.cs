@@ -1,9 +1,4 @@
-﻿using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
-using SmartParking.API.Data.DTO;
-using SmartParking.API.Data.Models;
-
-namespace SmartParking.API.Controllers;
+﻿namespace SmartParking.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -99,7 +94,7 @@ public class AutomationController : ControllerBase
             await _hub.Clients.User(isPlateNumberInApp.ToString())
               .SendAsync("ReceiveSpot", carPositionDTO.SpotId);
         }
-            //return BadRequest(new ApiResponse<object>(null, $"Invalid Plate Number {carPositionDTO.PlateNumber}", false));
+        //return BadRequest(new ApiResponse<object>(null, $"Invalid Plate Number {carPositionDTO.PlateNumber}", false));
 
 
         return Ok(new ApiResponse<object>(null, "Success", true));

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartParking.API.Data;
 
@@ -11,9 +12,11 @@ using SmartParking.API.Data;
 namespace SmartParking.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250612153007_AddFCMtokentoUser")]
+    partial class AddFCMtokentoUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -249,14 +252,14 @@ namespace SmartParking.API.Migrations
                     b.Property<bool>("PaymentStatus")
                         .HasColumnType("bit");
 
-                    b.Property<int>("ReservationId")
+                    b.Property<int>("ReservationRecordId")
                         .HasColumnType("int");
 
                     b.HasKey("PaymentId");
 
                     b.HasIndex("PaymentMethodId");
 
-                    b.HasIndex("ReservationId")
+                    b.HasIndex("ReservationRecordId")
                         .IsUnique();
 
                     b.ToTable("Payments");
@@ -293,9 +296,6 @@ namespace SmartParking.API.Migrations
                     b.Property<DateTime>("ExpireOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("RevokedOn")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Token")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -311,13 +311,13 @@ namespace SmartParking.API.Migrations
                     b.ToTable("RefreshTokens");
                 });
 
-            modelBuilder.Entity("SmartParking.API.Data.Models.Reservation", b =>
+            modelBuilder.Entity("SmartParking.API.Data.Models.ReservationRecord", b =>
                 {
-                    b.Property<int>("ReservationId")
+                    b.Property<int>("ReservationRecordId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReservationId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReservationRecordId"));
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
@@ -331,7 +331,7 @@ namespace SmartParking.API.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.HasKey("ReservationId");
+                    b.HasKey("ReservationRecordId");
 
                     b.HasIndex("GarageId");
 
@@ -421,8 +421,7 @@ namespace SmartParking.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("UserVerificationCodes");
                 });
@@ -549,9 +548,9 @@ namespace SmartParking.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SmartParking.API.Data.Models.Reservation", "ReservationRecord")
+                    b.HasOne("SmartParking.API.Data.Models.ReservationRecord", "ReservationRecord")
                         .WithOne("Payment")
-                        .HasForeignKey("SmartParking.API.Data.Models.Payment", "ReservationId")
+                        .HasForeignKey("SmartParking.API.Data.Models.Payment", "ReservationRecordId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -571,7 +570,7 @@ namespace SmartParking.API.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SmartParking.API.Data.Models.Reservation", b =>
+            modelBuilder.Entity("SmartParking.API.Data.Models.ReservationRecord", b =>
                 {
                     b.HasOne("SmartParking.API.Data.Models.Garage", "Garage")
                         .WithMany("ReservationRecords")
@@ -581,7 +580,7 @@ namespace SmartParking.API.Migrations
 
                     b.HasOne("SmartParkingAPI.Data.Models.User", "User")
                         .WithOne("Reservation")
-                        .HasForeignKey("SmartParking.API.Data.Models.Reservation", "UserId")
+                        .HasForeignKey("SmartParking.API.Data.Models.ReservationRecord", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -604,8 +603,8 @@ namespace SmartParking.API.Migrations
             modelBuilder.Entity("SmartParking.API.Data.Models.UserVerificationCode", b =>
                 {
                     b.HasOne("SmartParkingAPI.Data.Models.User", "User")
-                        .WithOne("VerificationCode")
-                        .HasForeignKey("SmartParking.API.Data.Models.UserVerificationCode", "UserId")
+                        .WithMany("VerificationCodes")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -644,7 +643,7 @@ namespace SmartParking.API.Migrations
                     b.Navigation("Payment");
                 });
 
-            modelBuilder.Entity("SmartParking.API.Data.Models.Reservation", b =>
+            modelBuilder.Entity("SmartParking.API.Data.Models.ReservationRecord", b =>
                 {
                     b.Navigation("Payment")
                         .IsRequired();
@@ -660,8 +659,7 @@ namespace SmartParking.API.Migrations
                     b.Navigation("Reservation")
                         .IsRequired();
 
-                    b.Navigation("VerificationCode")
-                        .IsRequired();
+                    b.Navigation("VerificationCodes");
                 });
 #pragma warning restore 612, 618
         }

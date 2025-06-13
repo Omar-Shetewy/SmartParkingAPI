@@ -9,6 +9,7 @@ public class User
     public string PhoneNumber { get; set; } = string.Empty;
     public string PasswordHash { get; set; } = string.Empty;
     public bool IsVerified { get; set; } = false;
+    public string? FcmToken { get; set; }
     public byte[]? Image { get; set; }
     public DateTime CreatedOn { get; set; } = DateTime.Now;
     public int RoleId { get; set; }
