@@ -12,6 +12,9 @@ public class User
     public string? FcmToken { get; set; }
     public byte[]? Image { get; set; }
     public DateTime CreatedOn { get; set; } = DateTime.Now;
+    public Gender? Gender { get; set; }
+    public DateTime? DateOfBirth { get; set; }
+    public byte? Age => DateOfBirth == null ? null : (byte)((DateTime.Today - DateOfBirth.Value).TotalDays / 365.25);
     public int RoleId { get; set; }
     public Role Role { get; set; }
     public Car Car { get; set; }
