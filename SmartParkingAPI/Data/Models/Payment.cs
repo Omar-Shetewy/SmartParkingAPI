@@ -6,8 +6,8 @@
         public double Amount { get; set; }
         public bool PaymentStatus { get; set; }
         public int PaymentMethodId { get; set; }
-        public int ReservationId { get; set; }
+        public int ReservationRecordId { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
-        public Reservation ReservationRecord { get; set; }
+        public ReservationRecord ReservationRecord { get; set; }
     }
 }
