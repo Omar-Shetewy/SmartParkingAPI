@@ -23,7 +23,7 @@ namespace SmartParking.API.Services.Implementation
 
         public async Task<IEnumerable<Payment>> GetByReservationRecordId(int reservationRecordId)
         {
-            return await _dbContext.Payments.Where(r => r.ReservationRecordId == reservationRecordId).ToListAsync();
+            return await _dbContext.Payments.Where(r => r.ReservationId == reservationRecordId).ToListAsync();
         }
 
         public async Task<Payment> GetById(int id)

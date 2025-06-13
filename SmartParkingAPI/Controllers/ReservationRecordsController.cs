@@ -110,13 +110,13 @@ public class ReservationRecordsController : ControllerBase
         if (recordByUserId != null)
             return BadRequest(new ApiResponse<object>(null, $"Invalid User ID: user ID {dto.UserId} is already assigned to another registration record", false));
 
-        var record = _mapper.Map<ReservationRecord>(dto);
+        var record = _mapper.Map<Reservation>(dto);
 
         await _reservationService.Add(record);
 
-        var data = _mapper.Map<ReservationRecordTimeDTO>(record);
+        var data = _mapper.Map<ReservationTimeDTO>(record);
 
-        return Ok(new ApiResponse<ReservationRecordTimeDTO>(data, "Success", true));
+        return Ok(new ApiResponse<ReservationTimeDTO>(data, "Success", true));
     }
 
     [HttpPut]
@@ -124,7 +124,7 @@ public class ReservationRecordsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateAsync(int id, [FromBody] ReservationRecordTimeDTO dto)
+    public async Task<IActionResult> UpdateAsync(int id, [FromBody] ReservationTimeDTO dto)
     {
         if (!ModelState.IsValid)
             return BadRequest(new ApiResponse<object>(ModelState, "", false));

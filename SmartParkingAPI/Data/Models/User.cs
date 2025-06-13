@@ -18,7 +18,7 @@ public class User
     public int RoleId { get; set; }
     public Role Role { get; set; }
     public Car Car { get; set; }
-    public ReservationRecord Reservation { get; set; }
+    public Reservation Reservation { get; set; }
     public UserVerificationCode VerificationCode { get; set; }
     public RefreshToken? RefreshToken { get; set; }
 }
