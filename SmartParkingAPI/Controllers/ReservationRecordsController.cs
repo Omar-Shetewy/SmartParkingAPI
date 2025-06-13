@@ -110,7 +110,7 @@ public class ReservationRecordsController : ControllerBase
         if (recordByUserId != null)
             return BadRequest(new ApiResponse<object>(null, $"Invalid User ID: user ID {dto.UserId} is already assigned to another registration record", false));
 
-        var record = _mapper.Map<Reservation>(dto);
+        var record = _mapper.Map<ReservationRecord>(dto);
 
         await _reservationService.Add(record);
 

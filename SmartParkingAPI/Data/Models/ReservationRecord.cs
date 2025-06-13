@@ -1,8 +1,8 @@
 ﻿namespace SmartParking.API.Data.Models
 {
-    public class Reservation
+    public class ReservationRecord
     {
-        public int ReservationId { get; set; }
+        public int ReservationRecordId { get; set; }
         public DateTime StartDate { get; set; } = DateTime.Now;
         public DateTime EndDate { get; set; }  = DateTime.Now.AddMinutes(10);
         public int UserId { get; set; }
