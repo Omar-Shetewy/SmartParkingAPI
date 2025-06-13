@@ -41,7 +41,7 @@ namespace SmartParking.API.Migrations
 
                     b.HasIndex("GarageId");
 
-                    b.ToTable("Cameras");
+                    b.ToTable("Cameras", (string)null);
                 });
 
             modelBuilder.Entity("SmartParking.API.Data.Models.Car", b =>
@@ -77,7 +77,7 @@ namespace SmartParking.API.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Cars");
+                    b.ToTable("Cars", (string)null);
                 });
 
             modelBuilder.Entity("SmartParking.API.Data.Models.Employee", b =>
@@ -127,7 +127,7 @@ namespace SmartParking.API.Migrations
 
                     b.HasIndex("JobId");
 
-                    b.ToTable("Employees");
+                    b.ToTable("Employees", (string)null);
                 });
 
             modelBuilder.Entity("SmartParking.API.Data.Models.EntryCar", b =>
@@ -166,7 +166,7 @@ namespace SmartParking.API.Migrations
 
                     b.HasIndex("SpotId");
 
-                    b.ToTable("EntryCars");
+                    b.ToTable("EntryCars", (string)null);
                 });
 
             modelBuilder.Entity("SmartParking.API.Data.Models.Garage", b =>
@@ -212,7 +212,7 @@ namespace SmartParking.API.Migrations
 
                     b.HasKey("GarageId");
 
-                    b.ToTable("Garages");
+                    b.ToTable("Garages", (string)null);
                 });
 
             modelBuilder.Entity("SmartParking.API.Data.Models.Job", b =>
@@ -229,7 +229,7 @@ namespace SmartParking.API.Migrations
 
                     b.HasKey("JobId");
 
-                    b.ToTable("Jobs");
+                    b.ToTable("Jobs", (string)null);
                 });
 
             modelBuilder.Entity("SmartParking.API.Data.Models.Payment", b =>
@@ -249,17 +249,17 @@ namespace SmartParking.API.Migrations
                     b.Property<bool>("PaymentStatus")
                         .HasColumnType("bit");
 
-                    b.Property<int>("ReservationId")
+                    b.Property<int>("ReservationRecordId")
                         .HasColumnType("int");
 
                     b.HasKey("PaymentId");
 
                     b.HasIndex("PaymentMethodId");
 
-                    b.HasIndex("ReservationId")
+                    b.HasIndex("ReservationRecordId")
                         .IsUnique();
 
-                    b.ToTable("Payments");
+                    b.ToTable("Payments", (string)null);
                 });
 
             modelBuilder.Entity("SmartParking.API.Data.Models.PaymentMethod", b =>
@@ -276,7 +276,7 @@ namespace SmartParking.API.Migrations
 
                     b.HasKey("PaymentMethodId");
 
-                    b.ToTable("PaymentMethods");
+                    b.ToTable("PaymentMethods", (string)null);
                 });
 
             modelBuilder.Entity("SmartParking.API.Data.Models.RefreshToken", b =>
@@ -308,16 +308,16 @@ namespace SmartParking.API.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("RefreshTokens");
+                    b.ToTable("RefreshTokens", (string)null);
                 });
 
-            modelBuilder.Entity("SmartParking.API.Data.Models.Reservation", b =>
+            modelBuilder.Entity("SmartParking.API.Data.Models.ReservationRecord", b =>
                 {
-                    b.Property<int>("ReservationId")
+                    b.Property<int>("ReservationRecordId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReservationId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReservationRecordId"));
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
@@ -331,14 +331,14 @@ namespace SmartParking.API.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.HasKey("ReservationId");
+                    b.HasKey("ReservationRecordId");
 
                     b.HasIndex("GarageId");
 
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("ReservationRecords");
+                    b.ToTable("ReservationRecords", (string)null);
                 });
 
             modelBuilder.Entity("SmartParking.API.Data.Models.Role", b =>
@@ -355,7 +355,7 @@ namespace SmartParking.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
 
                     b.HasData(
                         new
@@ -395,7 +395,7 @@ namespace SmartParking.API.Migrations
 
                     b.HasIndex("GarageId");
 
-                    b.ToTable("Spots");
+                    b.ToTable("Spots", (string)null);
                 });
 
             modelBuilder.Entity("SmartParking.API.Data.Models.UserVerificationCode", b =>
@@ -424,7 +424,7 @@ namespace SmartParking.API.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("UserVerificationCodes");
+                    b.ToTable("UserVerificationCodes", (string)null);
                 });
 
             modelBuilder.Entity("SmartParkingAPI.Data.Models.User", b =>
@@ -480,7 +480,7 @@ namespace SmartParking.API.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("SmartParking.API.Data.Models.Camera", b =>
@@ -555,9 +555,9 @@ namespace SmartParking.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SmartParking.API.Data.Models.Reservation", "ReservationRecord")
+                    b.HasOne("SmartParking.API.Data.Models.ReservationRecord", "ReservationRecord")
                         .WithOne("Payment")
-                        .HasForeignKey("SmartParking.API.Data.Models.Payment", "ReservationId")
+                        .HasForeignKey("SmartParking.API.Data.Models.Payment", "ReservationRecordId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -577,7 +577,7 @@ namespace SmartParking.API.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SmartParking.API.Data.Models.Reservation", b =>
+            modelBuilder.Entity("SmartParking.API.Data.Models.ReservationRecord", b =>
                 {
                     b.HasOne("SmartParking.API.Data.Models.Garage", "Garage")
                         .WithMany("ReservationRecords")
@@ -587,7 +587,7 @@ namespace SmartParking.API.Migrations
 
                     b.HasOne("SmartParkingAPI.Data.Models.User", "User")
                         .WithOne("Reservation")
-                        .HasForeignKey("SmartParking.API.Data.Models.Reservation", "UserId")
+                        .HasForeignKey("SmartParking.API.Data.Models.ReservationRecord", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -650,7 +650,7 @@ namespace SmartParking.API.Migrations
                     b.Navigation("Payment");
                 });
 
-            modelBuilder.Entity("SmartParking.API.Data.Models.Reservation", b =>
+            modelBuilder.Entity("SmartParking.API.Data.Models.ReservationRecord", b =>
                 {
                     b.Navigation("Payment")
                         .IsRequired();

@@ -11,7 +11,7 @@ public class RefreshTokenRepositories : IRefreshTokenRepositories
 
     public async Task<RefreshToken?> GetByIdAsync(int id)
     {
-        return await _context.RefreshTokens.Include(t => t.User).ThenInclude(r => r.Role).FirstOrDefaultAsync(i => i.Id == id); // eagerly loaded
+        return await _context.RefreshTokens.FirstOrDefaultAsync(i => i.Id == id); // eagerly loaded
     }
 
     public async Task<RefreshToken?> GetByTokenAsync(RefreshTokenDTO token)

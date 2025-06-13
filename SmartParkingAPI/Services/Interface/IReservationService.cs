@@ -2,11 +2,11 @@
 
 public interface IReservationService
 {
-    Task<IEnumerable<Reservation>> GetAll();
-    Task<Reservation> GetById(int id);
-    Task<Reservation> GetByUserId(int userId);
-    Task<Reservation> Add(Reservation record);
-    Reservation Update(Reservation record);
-    Reservation Delete(Reservation record);
+    Task<IEnumerable<ReservationRecord>> GetAll();
+    Task<ReservationRecord> GetById(int id);
+    Task<ReservationRecord> GetByUserId(int userId);
+    Task<ReservationRecord> Add(ReservationRecord record);
+    ReservationRecord Update(ReservationRecord record);
+    ReservationRecord Delete(ReservationRecord record);
     Task<bool> isValidReservationRecord(int id);
 }
