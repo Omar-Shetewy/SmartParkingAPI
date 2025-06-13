@@ -9,22 +9,22 @@ public class ReservationService : IReservationService
         _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<ReservationRecord>> GetAll()
+    public async Task<IEnumerable<Reservation>> GetAll()
     {
         return await _dbContext.ReservationRecords.ToListAsync();
     }
 
-    public async Task<ReservationRecord> GetById(int id)
+    public async Task<Reservation> GetById(int id)
     {
         return await _dbContext.ReservationRecords.FindAsync(id);
     }
 
-    public async Task<ReservationRecord> GetByUserId(int userId)
+    public async Task<Reservation> GetByUserId(int userId)
     {
         return await _dbContext.ReservationRecords.FirstOrDefaultAsync(r => r.UserId == userId);
     }
 
-    public async Task<ReservationRecord> Add(ReservationRecord record)
+    public async Task<Reservation> Add(Reservation record)
     {
         await _dbContext.ReservationRecords.AddAsync(record);
         _dbContext.Garages.FirstOrDefault(g => g.GarageId == record.GarageId).ReservedSpots++;
@@ -34,7 +34,7 @@ public class ReservationService : IReservationService
         return record;
     }
 
-    public ReservationRecord Update(ReservationRecord record)
+    public Reservation Update(Reservation record)
     {
         _dbContext.ReservationRecords.Update(record);
         _dbContext.SaveChanges();
@@ -42,7 +42,7 @@ public class ReservationService : IReservationService
         return record;
     }
 
-    public ReservationRecord Delete(ReservationRecord record)
+    public Reservation Delete(Reservation record)
     {
         _dbContext.Remove(record);
         _dbContext.Garages.FirstOrDefault(g => g.GarageId == record.GarageId).ReservedSpots--;
@@ -54,6 +54,6 @@ public class ReservationService : IReservationService
 
     public async Task<bool> isValidReservationRecord(int id)
     {
-        return await _dbContext.ReservationRecords.AnyAsync(r => r.ReservationRecordId == id);
+        return await _dbContext.ReservationRecords.AnyAsync(r => r.ReservationId == id);
     }
 }

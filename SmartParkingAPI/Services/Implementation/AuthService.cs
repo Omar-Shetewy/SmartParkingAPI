@@ -99,12 +99,14 @@ namespace SmartParking.API.Services.Implementation
             newToken.Token = GenerateResfreshToken();
             newToken.CreatedOn = DateTime.UtcNow;
             newToken.ExpireOn = DateTime.UtcNow.AddDays(7);
+            //newToken.UserId = token.Id;
 
             await _refreshTokenRepositories.SaveAsync();
 
             var accessToken = GenerateToken(newToken.User);
             return new TokenDTO
             {
+                UserId = newToken.UserId,
                 Token = accessToken,
                 RefreshToken = newToken.Token
             };
@@ -112,6 +114,7 @@ namespace SmartParking.API.Services.Implementation
 
         private string GenerateToken(User user)
         {
+
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),

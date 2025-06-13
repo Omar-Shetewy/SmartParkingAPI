@@ -37,7 +37,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<Role> Roles { get; set; }
     public DbSet<Car> Cars { get; set; }
-    public DbSet<ReservationRecord> ReservationRecords { get; set; }
+    public DbSet<Reservation> ReservationRecords { get; set; }
     public DbSet<Payment> Payments { get; set; }
     public DbSet<PaymentMethod> PaymentMethods { get; set; }
     public DbSet<UserVerificationCode> UserVerificationCodes { get; set; }
