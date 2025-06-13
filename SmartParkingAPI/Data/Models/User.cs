@@ -21,4 +21,5 @@ public class User
     public Reservation Reservation { get; set; }
     public UserVerificationCode VerificationCode { get; set; }
     public RefreshToken? RefreshToken { get; set; }
+    public Employee Employee { get; set; }
 }
