@@ -249,14 +249,14 @@ namespace SmartParking.API.Migrations
                     b.Property<bool>("PaymentStatus")
                         .HasColumnType("bit");
 
-                    b.Property<int>("ReservationRecordId")
+                    b.Property<int>("ReservationId")
                         .HasColumnType("int");
 
                     b.HasKey("PaymentId");
 
                     b.HasIndex("PaymentMethodId");
 
-                    b.HasIndex("ReservationRecordId")
+                    b.HasIndex("ReservationId")
                         .IsUnique();
 
                     b.ToTable("Payments");
@@ -293,6 +293,9 @@ namespace SmartParking.API.Migrations
                     b.Property<DateTime>("ExpireOn")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("RevokedOn")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Token")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -308,13 +311,13 @@ namespace SmartParking.API.Migrations
                     b.ToTable("RefreshTokens");
                 });
 
-            modelBuilder.Entity("SmartParking.API.Data.Models.ReservationRecord", b =>
+            modelBuilder.Entity("SmartParking.API.Data.Models.Reservation", b =>
                 {
-                    b.Property<int>("ReservationRecordId")
+                    b.Property<int>("ReservationId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReservationRecordId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReservationId"));
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
@@ -328,7 +331,7 @@ namespace SmartParking.API.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.HasKey("ReservationRecordId");
+                    b.HasKey("ReservationId");
 
                     b.HasIndex("GarageId");
 
@@ -418,7 +421,8 @@ namespace SmartParking.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("UserVerificationCodes");
                 });
@@ -542,9 +546,9 @@ namespace SmartParking.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SmartParking.API.Data.Models.ReservationRecord", "ReservationRecord")
+                    b.HasOne("SmartParking.API.Data.Models.Reservation", "ReservationRecord")
                         .WithOne("Payment")
-                        .HasForeignKey("SmartParking.API.Data.Models.Payment", "ReservationRecordId")
+                        .HasForeignKey("SmartParking.API.Data.Models.Payment", "ReservationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -564,7 +568,7 @@ namespace SmartParking.API.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SmartParking.API.Data.Models.ReservationRecord", b =>
+            modelBuilder.Entity("SmartParking.API.Data.Models.Reservation", b =>
                 {
                     b.HasOne("SmartParking.API.Data.Models.Garage", "Garage")
                         .WithMany("ReservationRecords")
@@ -574,7 +578,7 @@ namespace SmartParking.API.Migrations
 
                     b.HasOne("SmartParkingAPI.Data.Models.User", "User")
                         .WithOne("Reservation")
-                        .HasForeignKey("SmartParking.API.Data.Models.ReservationRecord", "UserId")
+                        .HasForeignKey("SmartParking.API.Data.Models.Reservation", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -597,8 +601,8 @@ namespace SmartParking.API.Migrations
             modelBuilder.Entity("SmartParking.API.Data.Models.UserVerificationCode", b =>
                 {
                     b.HasOne("SmartParkingAPI.Data.Models.User", "User")
-                        .WithMany("VerificationCodes")
-                        .HasForeignKey("UserId")
+                        .WithOne("VerificationCode")
+                        .HasForeignKey("SmartParking.API.Data.Models.UserVerificationCode", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -637,7 +641,7 @@ namespace SmartParking.API.Migrations
                     b.Navigation("Payment");
                 });
 
-            modelBuilder.Entity("SmartParking.API.Data.Models.ReservationRecord", b =>
+            modelBuilder.Entity("SmartParking.API.Data.Models.Reservation", b =>
                 {
                     b.Navigation("Payment")
                         .IsRequired();
@@ -653,7 +657,8 @@ namespace SmartParking.API.Migrations
                     b.Navigation("Reservation")
                         .IsRequired();
 
-                    b.Navigation("VerificationCodes");
+                    b.Navigation("VerificationCode")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
