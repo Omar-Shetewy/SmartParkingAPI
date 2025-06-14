@@ -27,12 +27,6 @@ namespace SmartParking.API.Migrations
                 type: "int",
                 nullable: true);
 
-            migrationBuilder.AddColumn<DateTime>(
-                name: "RevokedOn",
-                table: "RefreshTokens",
-                type: "datetime2",
-                nullable: true);
-
             migrationBuilder.CreateIndex(
                 name: "IX_UserVerificationCodes_UserId",
                 table: "UserVerificationCodes",
@@ -54,10 +48,6 @@ namespace SmartParking.API.Migrations
             migrationBuilder.DropColumn(
                 name: "Gender",
                 table: "Users");
-
-            migrationBuilder.DropColumn(
-                name: "RevokedOn",
-                table: "RefreshTokens");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserVerificationCodes_UserId",

@@ -106,7 +106,6 @@ namespace SmartParking.API.Services.Implementation
             var accessToken = GenerateToken(newToken.User);
             return new TokenDTO
             {
-                UserId = newToken.UserId,
                 Token = accessToken,
                 RefreshToken = newToken.Token
             };

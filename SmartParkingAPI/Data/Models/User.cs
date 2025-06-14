@@ -16,9 +16,10 @@ public class User
     public DateTime? DateOfBirth { get; set; }
     public byte? Age => DateOfBirth == null ? null : (byte)((DateTime.Today - DateOfBirth.Value).TotalDays / 365.25);
     public int RoleId { get; set; }
+    public Owner Owner { get; set; }
     public Role Role { get; set; }
     public Car Car { get; set; }
-    public Reservation Reservation { get; set; }
+    public ReservationRecord ReservationRecord { get; set; }
     public UserVerificationCode VerificationCode { get; set; }
     public RefreshToken? RefreshToken { get; set; }
     public Employee Employee { get; set; }
