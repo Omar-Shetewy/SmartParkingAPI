@@ -17,6 +17,5 @@ public class Garage
     public Owner? Owner { get; set; }
     public List<Spot> Spots { get; set; }
     public List<ReservationRecord> ReservationRecords { get; set; }
-    public List<Employee> Employees { get; set; }
     public List<Camera> Cameras { get; set; }
 }
