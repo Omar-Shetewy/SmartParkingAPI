@@ -4,7 +4,6 @@ global using System.ComponentModel.DataAnnotations.Schema;
 global using SmartParking.API.Services.Implementatiglon;
 global using SmartParking.API.Services.Implementation;
 global using SmartParking.API.Repositories.Interface;
-global using static SmartParking.API.Helpers.Helper;
 global using System.ComponentModel.DataAnnotations;
 global using SmartParking.API.Services.Interface;
 global using Microsoft.AspNetCore.Authorization;

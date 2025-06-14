@@ -14,6 +14,11 @@
             return await _dbContext.Employees.ToListAsync();
         }
 
+        public async Task<IEnumerable<Employee>> GetByGarageId(int garageId)
+        {
+            return await _dbContext.Employees.Where(e => e.GarageId == garageId).ToListAsync();
+        }
+
         public async Task<IEnumerable<Employee>> GetByJobId(int jobId)
         {
             return await _dbContext.Employees.Where(e => e.JobId == jobId).ToListAsync();

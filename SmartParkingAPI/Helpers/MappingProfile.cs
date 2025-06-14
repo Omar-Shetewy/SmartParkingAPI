@@ -28,10 +28,10 @@ public class MappingProfile : Profile
         CreateMap<ReservationRecord, ReservationRecordDetailsDTO>();
         CreateMap<ReservationRecord, ReservationRecordDTO>();
         CreateMap<ReservationRecordDTO, ReservationRecord>();
-        CreateMap<ReservationRecord, ReservationTimeDTO>();
-        CreateMap<ReservationTimeDTO, ReservationRecord>();
-        CreateMap<ReservationTimeDTO, ReservationRecordDTO>();
-        CreateMap<ReservationRecordDTO, ReservationTimeDTO>();
+        CreateMap<ReservationRecord, ReservationRecordTimeDTO>();
+        CreateMap<ReservationRecordTimeDTO, ReservationRecord>();
+        CreateMap<ReservationRecordTimeDTO, ReservationRecordDTO>();
+        CreateMap<ReservationRecordDTO, ReservationRecordTimeDTO>();
 
         CreateMap<User, UserDTO>();
         CreateMap<UserDTO, User>();

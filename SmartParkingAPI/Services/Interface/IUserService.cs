@@ -7,7 +7,6 @@ public interface IUserService
     Task<User> GetByAsync(int id);
     Task<bool> isValidEmailAsync(string email);
     User Update(User user);
-    Owner VerifyRole(User user);
     User UpdatePass(User user, string password);
     User Delete(User user);
     Task<bool> isValidUserAsync(int userId);
