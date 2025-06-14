@@ -12,8 +12,8 @@ using SmartParking.API.Data;
 namespace SmartParking.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250614125310_AddingOwnersTable")]
-    partial class AddingOwnersTable
+    [Migration("20250614160336_UpdateEmployeeTable")]
+    partial class UpdateEmployeeTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -91,44 +91,21 @@ namespace SmartParking.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EmployeeId"));
 
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("GarageId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Gender")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("JobId")
                         .HasColumnType("int");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Salary")
                         .HasColumnType("float");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("EmployeeId");
 
-                    b.HasIndex("GarageId");
-
                     b.HasIndex("JobId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Employees");
                 });
@@ -253,8 +230,7 @@ namespace SmartParking.API.Migrations
 
                     b.HasKey("OwnerId");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("Owners");
                 });
@@ -541,21 +517,21 @@ namespace SmartParking.API.Migrations
 
             modelBuilder.Entity("SmartParking.API.Data.Models.Employee", b =>
                 {
-                    b.HasOne("SmartParking.API.Data.Models.Garage", "Garage")
-                        .WithMany("Employees")
-                        .HasForeignKey("GarageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("SmartParking.API.Data.Models.Job", "Job")
                         .WithMany("Employees")
                         .HasForeignKey("JobId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Garage");
+                    b.HasOne("SmartParkingAPI.Data.Models.User", "User")
+                        .WithOne("Employee")
+                        .HasForeignKey("SmartParking.API.Data.Models.Employee", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Job");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SmartParking.API.Data.Models.EntryCar", b =>
@@ -587,8 +563,8 @@ namespace SmartParking.API.Migrations
             modelBuilder.Entity("SmartParking.API.Data.Models.Owner", b =>
                 {
                     b.HasOne("SmartParkingAPI.Data.Models.User", "User")
-                        .WithOne("Owner")
-                        .HasForeignKey("SmartParking.API.Data.Models.Owner", "UserId")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -681,8 +657,6 @@ namespace SmartParking.API.Migrations
                 {
                     b.Navigation("Cameras");
 
-                    b.Navigation("Employees");
-
                     b.Navigation("ReservationRecords");
 
                     b.Navigation("Spots");
@@ -719,7 +693,7 @@ namespace SmartParking.API.Migrations
                     b.Navigation("Car")
                         .IsRequired();
 
-                    b.Navigation("Owner")
+                    b.Navigation("Employee")
                         .IsRequired();
 
                     b.Navigation("RefreshToken");
