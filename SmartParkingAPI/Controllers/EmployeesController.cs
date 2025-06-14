@@ -6,14 +6,14 @@ public class EmployeesController : ControllerBase
 {
     private readonly IMapper _mapper;
     private readonly IEmployeeService _employeeService;
-    private readonly IGarageService _garageService;
+    private readonly IUserService _userService;
     private readonly IJobService _jobService;
 
-    public EmployeesController(IMapper mapper, IEmployeeService employeeService, IGarageService garageService, IJobService jobService)
+    public EmployeesController(IMapper mapper, IEmployeeService employeeService, IUserService userService, IJobService jobService)
     {
         _mapper = mapper;
         _employeeService = employeeService;
-        _garageService = garageService;
+        _userService = userService;
         _jobService = jobService;
     }
 
@@ -32,32 +32,6 @@ public class EmployeesController : ControllerBase
 
         return Ok(new ApiResponse<List<EmployeeDetailsDTO>>(data, "", true));
 
-    }
-
-    [HttpGet]
-    [Route("GetByGarageId/{id}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetByGarageId(int id)
-    {
-        if (id < 1)
-            return BadRequest(new ApiResponse<object>(null, $"Invalid Id:{id}", false));
-
-
-        var isValidGarage = await _garageService.isValidGarage(id);
-
-        if (!isValidGarage)
-            return BadRequest(new ApiResponse<object>(null, $"Invalid Garage Id:{id}", false));
-
-        var employees = await _employeeService.GetByGarageId(id);
-
-        if (employees.Count() == 0)
-            return NoContent();
-
-        var data = _mapper.Map<List<EmployeeDetailsDTO>>(employees);
-
-        return Ok(new ApiResponse<List<EmployeeDetailsDTO>>(data, "", true));
     }
 
     [HttpGet]
@@ -116,15 +90,15 @@ public class EmployeesController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(new ApiResponse<object>(ModelState,"", false));
 
-        var isValidGarage = await _garageService.isValidGarage(dto.GarageId);
-
-        if (!isValidGarage)
-            return BadRequest(new ApiResponse<object>(null, $"Invalid Garage Id:{dto.GarageId}", false));
-
         var isValidJob = await _jobService.isValidJob(dto.JobId);
 
         if (!isValidJob)
             return BadRequest(new ApiResponse<object>(null, $"Invalid Job ID:{dto.JobId}", false));
+
+        var isValidUser = await _userService.isValidUserAsync(dto.UserId);
+
+        if (!isValidUser)
+            return BadRequest(new ApiResponse<object>(null, $"Invalid User ID:{dto.UserId}", false));
 
         var employee = _mapper.Map<Employee>(dto);
 
@@ -148,30 +122,24 @@ public class EmployeesController : ControllerBase
         if (id < 1)
             return BadRequest(new ApiResponse<object>(null, $"Invalid Id:{id}", false));
 
-        var isValidGarage = await _garageService.isValidGarage(dto.GarageId);
-
-        if (!isValidGarage)
-            return BadRequest(new ApiResponse<object>(null, $"Invalid Garage Id:{dto.GarageId}", false));
-
         var isValidJob = await _jobService.isValidJob(dto.JobId);
 
         if (!isValidJob)
-            return BadRequest(new ApiResponse<object>(null, $"Invalid Job Id:{dto.GarageId}", false));
+            return BadRequest(new ApiResponse<object>(null, $"Invalid Job Id:{dto.JobId}", false));
+
+        var isValidUser = await _userService.isValidUserAsync(dto.UserId);
+
+        if (!isValidUser)
+            return BadRequest(new ApiResponse<object>(null, $"Invalid User ID:{dto.UserId}", false));
 
         var employee = await _employeeService.GetById(id);
 
         if (employee == null)
             return NotFound($"Employee with id {id} is not found!");
 
-        employee.FirstName = dto.FirstName;
-        employee.LastName = dto.LastName;
         employee.Salary = dto.Salary;
-        employee.Email = dto.Email;
-        employee.PhoneNumber = dto.PhoneNumber;
-        employee.Address = dto.Address;
-        employee.Gender = dto.Gender;
-        employee.GarageId = dto.GarageId;
         employee.JobId = dto.JobId;
+        employee.UserId = dto.UserId;
 
         _employeeService.Update(employee);
 

@@ -1,4 +1,6 @@
-﻿namespace SmartParking.API.Services.Implementation;
+﻿using System.Net.WebSockets;
+
+namespace SmartParking.API.Services.Implementation;
 
 public class UserService : IUserService
 {
@@ -20,12 +22,12 @@ public class UserService : IUserService
 
     public async Task<IEnumerable<User>> GetAllAsync()
     {
-        return  await _dbContext.Users.ToListAsync();
+        return await _dbContext.Users.ToListAsync();
     }
 
     public async Task<User?> GetByAsync(int id)
     {
-        return await _dbContext.Users.FindAsync(id);
+        return await _dbContext.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.UserId == id);
     }
 
     public async Task<User?> GetByAsync(string email)
@@ -43,6 +45,35 @@ public class UserService : IUserService
         _dbContext.SaveChanges();
 
         return user;
+    }
+
+    public Owner VerifyRole(User user)
+    {
+        if (user == null)
+            return null;
+
+        var owner = _dbContext.Owners.FirstOrDefault(o => o.UserId == user.UserId);
+        var role = _dbContext.Roles.FirstOrDefault(r => r.Id == user.RoleId);
+
+        if (role == null)
+            return null;
+
+        if (role.RoleName == "Owner" && owner == null)
+        {
+            var newOwner = new Owner
+            {
+                UserId = user.UserId,
+            };
+            _dbContext.Owners.Add(newOwner);
+            _dbContext.SaveChanges();
+        }
+        else if (user.Role.RoleName != "Owner" && owner != null)
+        {
+            _dbContext.Owners.Remove(owner);
+            _dbContext.SaveChanges();
+        }
+        // Continue in Employee 
+        return null; // temporary return
     }
 
     public User UpdatePass(User user, string password)
