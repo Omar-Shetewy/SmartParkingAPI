@@ -18,11 +18,18 @@ public class GaragesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> GetAllGaragesAsync()
     {
-        var garages = await _garageService.GetAll();
-        if (garages.Count() == 0)
-            return NoContent();
-        var data = _mapper.Map<List<GarageDetailsDTO>>(garages);
-        return Ok(new ApiResponse<List<GarageDetailsDTO>>(data, "Success", true));
+        try
+        {
+            var garages = await _garageService.GetAll();
+            if (garages.Count() == 0)
+                return NoContent();
+            var data = _mapper.Map<List<GarageDetailsDTO>>(garages);
+            return Ok(new ApiResponse<List<GarageDetailsDTO>>(data, "Success", true));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new ApiResponse<object>(null, ex.Message, false));
+        }
     }
 
     [HttpGet]
@@ -32,13 +39,21 @@ public class GaragesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetGarageById(int id)
     {
-        if (id < 1)
-            return BadRequest(new ApiResponse<object>(null, $"Invalid ID:{id}", false));
-        var garage = await _garageService.GetBy(id);
-        if (garage == null)
-            return NoContent();
-        var data = _mapper.Map<GarageDetailsDTO>(garage);
-        return Ok(new ApiResponse<GarageDetailsDTO>(data, "Success", true));
+        try
+        {
+            if (id < 1)
+                return BadRequest(new ApiResponse<object>(null, $"Invalid Id", false));
+            var garage = await _garageService.GetBy(id);
+            if (garage == null)
+                return NoContent();
+            var data = _mapper.Map<GarageDetailsDTO>(garage);
+            return Ok(new ApiResponse<GarageDetailsDTO>(data, "Success", true));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new ApiResponse<object>(null, ex.Message, false));
+        }
+
     }
 
     [HttpGet]
@@ -48,13 +63,20 @@ public class GaragesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetAllSpots(int id)
     {
-        if (id < 1)
-            return BadRequest(new ApiResponse<object>(null, $"Invalid ID:{id}", false));
-        var spots = await _garageService.GetAllSpots(id);
-        if (spots.Count() == 0)
-            return NoContent();
-        var data = _mapper.Map<List<SpotDetailsDTO>>(spots);
-        return Ok(new ApiResponse<List<SpotDetailsDTO>>(data, "Success", true));
+        try
+        {
+            if (id < 1)
+                return BadRequest(new ApiResponse<object>(null, $"Invalid Id", false));
+            var spots = await _garageService.GetAllSpots(id);
+            if (spots.Count() == 0)
+                return NoContent();
+            var data = _mapper.Map<List<SpotDetailsDTO>>(spots);
+            return Ok(new ApiResponse<List<SpotDetailsDTO>>(data, "Success", true));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new ApiResponse<object>(null, ex.Message, false));
+        }
     }
 
     [HttpGet]
@@ -64,13 +86,21 @@ public class GaragesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetAllCars(int id)
     {
-        if (id < 1)
-            return BadRequest(new ApiResponse<object>(null, $"Invalid ID:{id}", false));
-        var cars = await _garageService.GetAllCars(id);
-        if (cars.Count() == 0)
-            return NoContent();
-        var data = _mapper.Map<List<EntryCarDetailsDTO>>(cars);
-        return Ok(new ApiResponse<List<EntryCarDetailsDTO>>(data, "Success", true));
+        try
+        {
+            if (id < 1)
+                return BadRequest(new ApiResponse<object>(null, $"Invalid Id", false));
+            var cars = await _garageService.GetAllCars(id);
+            if (cars.Count() == 0)
+                return NoContent();
+            var data = _mapper.Map<List<EntryCarDetailsDTO>>(cars);
+            return Ok(new ApiResponse<List<EntryCarDetailsDTO>>(data, "Success", true));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new ApiResponse<object>(null, ex.Message, false));
+        }
+
     }
 
     [HttpPost]
@@ -79,16 +109,25 @@ public class GaragesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddEntryCarAsync([FromBody] EntryCarDTO entryCarDTO)
     {
-        if (entryCarDTO == null)
-            return BadRequest(new ApiResponse<object>(null, "Entry car data is required", false));
-        var isValidGarage = await _garageService.isValidGarage(entryCarDTO.GarageId);
-        if (!isValidGarage)
-            return BadRequest(new ApiResponse<object>(null, $"Invalid Garage ID {entryCarDTO.GarageId}", false));
-        var entryCar = _mapper.Map<EntryCar>(entryCarDTO);
-        var result = await _garageService.AddEntryCar(entryCar);
-        if (result == null)
-            return BadRequest(new ApiResponse<object>(null, "Failed to add entry car", false));
-        return Ok(new ApiResponse<EntryCar>(result, "Success", true));
+        try
+        {
+            if (entryCarDTO == null)
+                return BadRequest(new ApiResponse<object>(null, "Entry car data is required", false));
+            var isValidGarage = await _garageService.isValidGarage(entryCarDTO.GarageId);
+            if (!isValidGarage)
+                return BadRequest(new ApiResponse<object>(null, $"Invalid Garage Id", false));
+            var entryCar = _mapper.Map<EntryCar>(entryCarDTO);
+            var result = await _garageService.AddEntryCar(entryCar);
+
+            if (result == null)
+                return BadRequest(new ApiResponse<object>(null, "Failed to add entry car", false));
+
+            return Ok(new ApiResponse<EntryCar>(result, "Success", true));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new ApiResponse<object>(null, ex.Message, false));
+        }
 
     }
 
@@ -98,16 +137,26 @@ public class GaragesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CarExit([FromBody] EntryCarDTO entryCarDTO)
     {
-        if (entryCarDTO == null)
-            return BadRequest(new ApiResponse<object>(null, "Entry car data is required", false));
-        var isValidGarage = await _garageService.isValidGarage(entryCarDTO.GarageId);
-        if (!isValidGarage)
-            return BadRequest(new ApiResponse<object>(null, $"Invalid Garage ID {entryCarDTO.GarageId}", false));
-        var entryCar = _mapper.Map<EntryCar>(entryCarDTO);
-        var result = await _garageService.UpdateExitCar(entryCar.PlateNumber);
-        if (result == null)
-            return BadRequest(new ApiResponse<object>(null, "Failed to add entry car", false));
-        return Ok(new ApiResponse<EntryCar>(result, "Success", true));
+        try
+        {
+            if (entryCarDTO == null)
+                return BadRequest(new ApiResponse<object>(null, "Entry car data is required", false));
+            var isValidGarage = await _garageService.isValidGarage(entryCarDTO.GarageId);
+            if (!isValidGarage)
+                return BadRequest(new ApiResponse<object>(null, $"Invalid Garage Id", false));
+
+            var entryCar = _mapper.Map<EntryCar>(entryCarDTO);
+            var result = await _garageService.UpdateExitCar(entryCar.PlateNumber);
+
+            if (result == null)
+                return BadRequest(new ApiResponse<object>(null, "Failed to add entry car", false));
+
+            return Ok(new ApiResponse<EntryCar>(result, "Success", true));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new ApiResponse<object>(null, ex.Message, false));
+        }
     }
 
     [HttpPost]
@@ -116,14 +165,23 @@ public class GaragesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddGarageAsync([FromBody] GarageDTO garageDTO)
     {
-        if (garageDTO == null)
-            return BadRequest(new ApiResponse<object>(null, "Garage data is required", false));
+        try
+        {
+            if (garageDTO == null)
+                return BadRequest(new ApiResponse<object>(null, "Garage data is required", false));
 
-        var garage = _mapper.Map<Garage>(garageDTO);
-        var result = await _garageService.Add(garage);
-        if (result == null)
-            return BadRequest(new ApiResponse<object>(null, "Failed to add garage", false));
-        return Ok(new ApiResponse<Garage>(result, "Success", true));
+            var garage = _mapper.Map<Garage>(garageDTO);
+            var result = await _garageService.Add(garage);
+
+            if (result == null)
+                return BadRequest(new ApiResponse<object>(null, "Failed to add garage", false));
+
+            return Ok(new ApiResponse<Garage>(result, "Success", true));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new ApiResponse<object>(null, ex.Message, false));
+        }
     }
 
     [HttpPut]
@@ -132,14 +190,23 @@ public class GaragesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public IActionResult UpdateGarage([FromBody] GarageDTO garageDTO)
     {
-        if (garageDTO == null)
-            return BadRequest(new ApiResponse<object>(null, "Garage data is required", false));
+        try
+        {
+            if (garageDTO == null)
+                return BadRequest(new ApiResponse<object>(null, "Garage data is required", false));
 
-        var garage = _mapper.Map<Garage>(garageDTO);
-        var result = _garageService.Update(garage);
-        if (result == null)
-            return BadRequest(new ApiResponse<object>(null, "Failed to update garage", false));
-        return Ok(new ApiResponse<Garage>(result, "Success", true));
+            var garage = _mapper.Map<Garage>(garageDTO);
+            var result = _garageService.Update(garage);
+
+            if (result == null)
+                return BadRequest(new ApiResponse<object>(null, "Failed to update garage", false));
+
+            return Ok(new ApiResponse<Garage>(result, "Success", true));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new ApiResponse<object>(null, ex.Message, false));
+        }
     }
 
     [HttpDelete]
@@ -148,14 +215,21 @@ public class GaragesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> DeleteGarage(int id)
     {
-        if (id < 1)
-            return BadRequest(new ApiResponse<object>(null, $"Invalid ID:{id}", false));
-        var garage = await _garageService.GetBy(id);
-        if (garage == null)
-            return BadRequest(new ApiResponse<object>(null, $"Garage with ID:{id} not found", false));
-        var result = _garageService.Delete(garage);
-        if (result == null)
-            return BadRequest(new ApiResponse<object>(null, "Failed to delete garage", false));
-        return Ok(new ApiResponse<Garage>(result, "Success", true));
+        try
+        {
+            if (id < 1)
+                return BadRequest(new ApiResponse<object>(null, $"Invalid Id", false));
+            var garage = await _garageService.GetBy(id);
+            if (garage == null)
+                return BadRequest(new ApiResponse<object>(null, $"Garage with Id", false));
+            var result = _garageService.Delete(garage);
+            if (result == null)
+                return BadRequest(new ApiResponse<object>(null, "Failed to delete garage", false));
+            return Ok(new ApiResponse<Garage>(result, "Success", true));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new ApiResponse<object>(null, ex.Message, false));
+        }
     }
 }
