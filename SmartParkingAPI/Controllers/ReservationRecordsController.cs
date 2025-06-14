@@ -114,9 +114,9 @@ public class ReservationRecordsController : ControllerBase
 
         await _reservationService.Add(record);
 
-        var data = _mapper.Map<ReservationRecordDTO>(record);
+        var data = _mapper.Map<ReservationRecordDetailsDTO>(record);
 
-        return Ok(new ApiResponse<ReservationRecordDTO>(data, "Success", true));
+        return Ok(new ApiResponse<ReservationRecordDetailsDTO>(data, "Success", true));
     }
 
     [HttpPut]
