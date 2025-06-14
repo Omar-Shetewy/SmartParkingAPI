@@ -114,9 +114,9 @@ public class ReservationRecordsController : ControllerBase
 
         await _reservationService.Add(record);
 
-        var data = _mapper.Map<ReservationTimeDTO>(record);
+        var data = _mapper.Map<ReservationRecordDTO>(record);
 
-        return Ok(new ApiResponse<ReservationTimeDTO>(data, "Success", true));
+        return Ok(new ApiResponse<ReservationRecordDTO>(data, "Success", true));
     }
 
     [HttpPut]
@@ -124,7 +124,7 @@ public class ReservationRecordsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateAsync(int id, [FromBody] ReservationTimeDTO dto)
+    public async Task<IActionResult> UpdateAsync(int id, [FromBody] ReservationRecordDetailsDTO dto)
     {
         if (!ModelState.IsValid)
             return BadRequest(new ApiResponse<object>(ModelState, "", false));
