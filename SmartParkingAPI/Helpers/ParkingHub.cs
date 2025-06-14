@@ -2,9 +2,14 @@
 
 public class ParkingHub : Hub
 {
-    public async Task SendSpot(string userId, string spotNumber)
+    public async Task SendSpot(string userId, string spotName)
     {
-        await Clients.User(userId).SendAsync("ReceiveSpot", spotNumber);
+        await Clients.User(userId).SendAsync("ReceiveSpot", spotName);
+    }
+
+    public async Task SendAlert(string userId, string title, string message)
+    {
+        await Clients.User(userId).SendAsync("SendAlert", title, message);
     }
 }
 

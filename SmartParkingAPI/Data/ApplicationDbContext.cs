@@ -29,6 +29,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             RoleName = "Admin"
         });
 
+        modelBuilder.Entity<ReservationRecord>()
+        .Property(e => e.ReservationRecordId)
+        .HasColumnName("ReservationRecordId");
+
     }
 
     public DbSet<Spot> Spots { get; set; }
@@ -36,6 +40,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<User> Users { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<Role> Roles { get; set; }
+    public DbSet<Owner> Owners { get; set; }
     public DbSet<Car> Cars { get; set; }
     public DbSet<ReservationRecord> ReservationRecords { get; set; }
     public DbSet<Payment> Payments { get; set; }
@@ -45,5 +50,5 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Employee> Employees { get; set; }
     public DbSet<EntryCar> EntryCars { get; set; }
     public DbSet<Camera> Cameras { get; set; }
-
+    //public DbSet<Owner> Owners { get; set; }
 }

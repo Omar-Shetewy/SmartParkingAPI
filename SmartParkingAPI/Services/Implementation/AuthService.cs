@@ -82,23 +82,24 @@ namespace SmartParking.API.Services.Implementation
 
         public async Task LogoutAsync(int id)
         {
-            var user = _context.Users.FindAsync(id);
+            var user = await _userService.GetByAsync(id);
 
-            user.Result.RefreshToken.RevokedOn = DateTime.UtcNow;
+            user.RefreshToken.RevokedOn = DateTime.UtcNow;
 
-            _context.Users.Update(user.Result);
+            _userService.Update(user);
         }
 
         public async Task<TokenDTO> RefreshTokenAsync(RefreshTokenDTO token)
         {
             var newToken = await _refreshTokenRepositories.GetByIdAsync(token.Id);
 
-            if (newToken == null)
+            if (newToken == null || newToken.IsActive)
                 return null;
 
             newToken.Token = GenerateResfreshToken();
             newToken.CreatedOn = DateTime.UtcNow;
             newToken.ExpireOn = DateTime.UtcNow.AddDays(7);
+            newToken.RevokedOn = null;
 
             await _refreshTokenRepositories.SaveAsync();
 
@@ -112,6 +113,7 @@ namespace SmartParking.API.Services.Implementation
 
         private string GenerateToken(User user)
         {
+
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),

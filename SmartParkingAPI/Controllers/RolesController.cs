@@ -83,7 +83,7 @@ public class RolesController : ControllerBase
             return BadRequest(new ApiResponse<object>(ModelState,"", false));
         
         if (id < 1)
-            return BadRequest(new ApiResponse<object>(null, $"Invalid Id:{id}", false));
+            return BadRequest(new ApiResponse<object>(null, $"Invalid Id", false));
 
         var role = await _roleService.GetRoleByIdAsync(id);
 

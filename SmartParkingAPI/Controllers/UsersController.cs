@@ -142,9 +142,11 @@ public class UsersController : ControllerBase
         var user = await _userServices.GetByAsync(id);
 
         if (user == null || dto.RoleId < 1)
-            return BadRequest(new ApiResponse<object>(null, $"Invalid User Id:{id}", false));
+            return BadRequest(new ApiResponse<object>(null, $"Invalid User Id", false));
 
         user.RoleId = dto.RoleId;
+
+        _userServices.VerifyRole(user);
 
         _userServices.Update(user);
 
