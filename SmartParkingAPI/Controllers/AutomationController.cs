@@ -67,6 +67,13 @@ public class AutomationController : ControllerBase
         if (result == null)
             return BadRequest(new ApiResponse<object>(null, "Failed to add entry car", false));
 
+        var entryCars = await _garageService.GetAllCars(entryCar.GarageId);
+        if (entryCars != null)
+        {
+            await _hub.Clients.User(2.ToString())
+                .SendAsync("ReceiveAllEntryCars", entryCars);
+        }
+
         return Ok(new ApiResponse<object>(null, "Welcome :)", true));
 
     }
@@ -137,7 +144,7 @@ public class AutomationController : ControllerBase
              .SendAsync("SendAlert", "Thanks.", "We hope to see you soon.");
 
         await _hub.Clients.User(1.ToString())
-             .SendAsync("ReceiveSpot", null);
+             .SendAsync("ReceiveSpot", "");
         return Ok(new ApiResponse<object>(null, "Success", true));
         //return Ok(new ApiResponse<EntryCar>(result, "Success", true));
     }

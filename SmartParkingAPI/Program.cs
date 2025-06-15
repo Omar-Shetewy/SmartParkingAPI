@@ -61,6 +61,18 @@ builder.Services.AddScoped<ICarService, CarService>();
 builder.Services.AddScoped<IJobService, JobService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
+// add cors policy to allow all origins
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReact", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
+
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<IUserIdProvider, MyUserIdProvider>();
 
@@ -85,8 +97,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //    options.UseSqlServer(builder.Configuration.GetConnectionString("ElZa3eMConnection")));
 
-// add cors policy to allow all origins
-builder.Services.AddCors();
 
 builder.Services.AddSwaggerGen(c =>
 {
