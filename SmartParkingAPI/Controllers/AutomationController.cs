@@ -97,22 +97,22 @@ public class AutomationController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CarPosition([FromBody] CarPositionDTO carPositionDTO)
     {
-        //if (carPositionDTO == null)
-        //    return BadRequest(new ApiResponse<object>(null, "data is required", false));
+        if (carPositionDTO == null)
+            return BadRequest(new ApiResponse<object>(null, "data is required", false));
 
-        //var isValidSpot = await _spotService.IsValidSpot(carPositionDTO.SpotId);
-        //if (!isValidSpot)
-        //    return BadRequest(new ApiResponse<object>(null, $"Invalid Spot ID {carPositionDTO.SpotId}", false));
+        var isValidSpot = await _spotService.IsValidSpot(carPositionDTO.SpotId);
+        if (!isValidSpot)
+            return BadRequest(new ApiResponse<object>(null, $"Invalid Spot ID {carPositionDTO.SpotId}", false));
 
-        //var carPosition = _mapper.Map<EntryCar>(carPositionDTO);
+        var carPosition = _mapper.Map<EntryCar>(carPositionDTO);
 
-        //var result = await _garageService.UpdateCarPosition(carPosition.PlateNumber, carPosition.SpotId);
+        var result = await _garageService.UpdateCarPosition(carPosition.PlateNumber, carPosition.SpotId);
 
-        //if (result == null)
-        //    return BadRequest(new ApiResponse<object>(null, "Invalid PlateNumber", false));
-        //var spot = _spotService.GetById(carPositionDTO.SpotId);
+        if (result == null)
+            return BadRequest(new ApiResponse<object>(null, "Invalid PlateNumber", false));
+        var spot = _spotService.GetById(carPositionDTO.SpotId);
 
-        //var isPlateNumberInApp = await _garageService.isPlateNumberInApp(carPositionDTO.PlateNumber);
+        var isPlateNumberInApp = await _garageService.isPlateNumberInApp(carPositionDTO.PlateNumber);
         //if (isPlateNumberInApp != null)
         //{
         await _hub.Clients.User(1.ToString())
