@@ -21,7 +21,9 @@ public class ReservationService : IReservationService
 
     public async Task<ReservationRecord> GetByUserId(int userId)
     {
-        var user = await _dbContext.ReservationRecords.FirstOrDefaultAsync(r => r.UserId == userId);
+        var user = await _dbContext.ReservationRecords.Where(c => c.UserId == userId)
+            .OrderByDescending(c =>c.StartDate)
+            .LastOrDefaultAsync();
         if (user.EndDate == null )
             return null;
         return user;

@@ -105,14 +105,15 @@ public class ReservationRecordsController : ControllerBase
         if (garage == null || garage.AvailableSpots <= 0)
             return BadRequest(new ApiResponse<object>(null, "No available spots in this garage", false));
 
+        var record = _mapper.Map<ReservationRecord>(dto);
+
+        await _reservationService.Add(record);
+
         var recordByUserId = await _reservationService.GetByUserId(dto.UserId);
 
         if (recordByUserId == null)
             return BadRequest(new ApiResponse<object>(null, $"Invalid User is already assigned to another registration record", false));
 
-        var record = _mapper.Map<ReservationRecord>(dto);
-
-        await _reservationService.Add(record);
 
         var data = _mapper.Map<ReservationRecordDetailsDTO>(record);
 
