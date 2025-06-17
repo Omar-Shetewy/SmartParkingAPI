@@ -9,11 +9,13 @@ public class AutomationController : ControllerBase
 {
     private readonly IGarageService _garageService;
     private readonly ISpotService _spotService;
+    private readonly ICarService _carService;
     private readonly IMapper _mapper;
     private readonly IConfiguration _config;
     private readonly IHubContext<ParkingHub> _hub;
-    public AutomationController(IConfiguration config, IGarageService garageService, IMapper mapper, ISpotService spotService, IHubContext<ParkingHub> hub)
+    public AutomationController(IConfiguration config, IGarageService garageService, IMapper mapper, ISpotService spotService, ICarService carService, IHubContext<ParkingHub> hub)
     {
+        _carService = carService;
         _hub = hub;
         _config = config;
         _garageService = garageService;
@@ -110,14 +112,14 @@ public class AutomationController : ControllerBase
 
         if (result == null)
             return BadRequest(new ApiResponse<object>(null, "Invalid PlateNumber", false));
-        var spot = _spotService.GetById(carPositionDTO.SpotId);
 
-        var isPlateNumberInApp = await _garageService.isPlateNumberInApp(carPositionDTO.PlateNumber);
-        //if (isPlateNumberInApp != null)
-        //{
-        await _hub.Clients.User(1.ToString())
-          .SendAsync("ReceiveSpot", "A1");
-        //}
+        var userid = await _garageService.GetUserUsingplate(carPositionDTO.PlateNumber);
+        if (userid != null)
+        {
+            var spot = _spotService.GetById(carPositionDTO.SpotId);
+            await _hub.Clients.User(userid.ToString())
+          .SendAsync("ReceiveSpot", spot.Result.Code);
+        }
 
 
         return Ok(new ApiResponse<object>(null, "Success", true));
@@ -131,21 +133,26 @@ public class AutomationController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CarExit([FromBody] EntryCarDTO entryCarDTO)
     {
-        //if (entryCarDTO == null)
-        //    return BadRequest(new ApiResponse<object>(null, "Entry car data is required", false));
-        //var isValidGarage = await _garageService.isValidGarage(entryCarDTO.GarageId);
-        //if (!isValidGarage)
-        //    return BadRequest(new ApiResponse<object>(null, $"Invalid Garage ID {entryCarDTO.GarageId}", false));
-        //var entryCar = _mapper.Map<EntryCar>(entryCarDTO);
-        //var result = await _garageService.UpdateExitCar(entryCar.PlateNumber);
-        //if (result == null)
-        //    return BadRequest(new ApiResponse<object>(null, "Failed to add entry car", false));
-        await _hub.Clients.User(1.ToString())
-             .SendAsync("SendAlert", "Thanks.", "We hope to see you soon.");
+        if (entryCarDTO == null)
+            return BadRequest(new ApiResponse<object>(null, "Entry car data is required", false));
+        var isValidGarage = await _garageService.isValidGarage(entryCarDTO.GarageId);
+        if (!isValidGarage)
+            return BadRequest(new ApiResponse<object>(null, $"Invalid Garage ID {entryCarDTO.GarageId}", false));
+        var entryCar = _mapper.Map<EntryCar>(entryCarDTO);
+        var result = await _garageService.UpdateExitCar(entryCar.PlateNumber);
+        if (result == null)
+            return BadRequest(new ApiResponse<object>(null, "Failed to add entry car", false));
+        var car = await _carService.GetBy(entryCar.PlateNumber);
+        if (car != null)
+        { 
+            await _hub.Clients.User(car.UserId.ToString())
+                 .SendAsync("SendAlert", "Thanks.", "We hope to see you soon.");
 
-        await _hub.Clients.User(1.ToString())
-             .SendAsync("ReceiveSpot", "");
+            await _hub.Clients.User(car.UserId.ToString())
+                 .SendAsync("ReceiveSpot", "");
+
+        }
+
         return Ok(new ApiResponse<object>(null, "Success", true));
-        //return Ok(new ApiResponse<EntryCar>(result, "Success", true));
     }
 }
