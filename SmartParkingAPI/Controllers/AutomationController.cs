@@ -51,23 +51,25 @@ public class AutomationController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddEntryCarAsync([FromBody] EntryCarDTO entryCarDTO)
     {
-        if (!_garageService.IsAvailableSpots(entryCarDTO.GarageId))
-            return BadRequest(new ApiResponse<object>(null, "No Avaliable Spots", false));
-
         if (entryCarDTO == null)
             return BadRequest(new ApiResponse<object>(null, "Entry car data is required", false));
 
+        if (!_garageService.IsAvailableSpots(entryCarDTO.GarageId))
+            return BadRequest(new ApiResponse<object>(null, "No Avaliable Spots", false));
+
         var isValidGarage = await _garageService.isValidGarage(entryCarDTO.GarageId);
+
         if (!isValidGarage)
-            return BadRequest(new ApiResponse<object>(null, $"Invalid Garage ID {entryCarDTO.GarageId}", false));
+            return BadRequest(new ApiResponse<object>(null, $"Invalid Garage", false));
 
         var entryCar = _mapper.Map<EntryCar>(entryCarDTO);
 
         var result = await _garageService.AddEntryCar(entryCar);
+
         if (result == null)
             return BadRequest(new ApiResponse<object>(null, "Failed to add entry car", false));
 
-        return Ok(new ApiResponse<object>(null, "Welcome :)", true));
+        return Ok(new ApiResponse<object>(null, "Welcome ❤️", true));
 
     }
     [HttpPost("SendAlert")]
@@ -78,7 +80,7 @@ public class AutomationController : ControllerBase
     {
 
         await _hub.Clients.User(1.ToString())
-             .SendAsync("SendAlert", "Alert, Someone near your car.", "Please, Check on app.");
+             .SendAsync("SendAlert", "Alert, Someone near your car يا أبو عمو.", "Please, Check on app.");
 
         return Ok(new ApiResponse<object>(null, "Success", true));
     }
@@ -133,12 +135,15 @@ public class AutomationController : ControllerBase
         //var result = await _garageService.UpdateExitCar(entryCar.PlateNumber);
         //if (result == null)
         //    return BadRequest(new ApiResponse<object>(null, "Failed to add entry car", false));
+
         await _hub.Clients.User(1.ToString())
              .SendAsync("SendAlert", "Thanks.", "We hope to see you soon.");
 
         await _hub.Clients.User(1.ToString())
              .SendAsync("ReceiveSpot", null);
+
         return Ok(new ApiResponse<object>(null, "Success", true));
+
         //return Ok(new ApiResponse<EntryCar>(result, "Success", true));
     }
 }
