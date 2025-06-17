@@ -8,13 +8,15 @@ namespace SmartParking.API.Controllers;
 public class AutomationController : ControllerBase
 {
     private readonly IGarageService _garageService;
+    private readonly ApplicationDbContext _dbContext;
     private readonly ISpotService _spotService;
     private readonly ICarService _carService;
     private readonly IMapper _mapper;
     private readonly IConfiguration _config;
     private readonly IHubContext<ParkingHub> _hub;
-    public AutomationController(IConfiguration config, IGarageService garageService, IMapper mapper, ISpotService spotService, ICarService carService, IHubContext<ParkingHub> hub)
+    public AutomationController(IConfiguration config, IGarageService garageService, IMapper mapper, ApplicationDbContext dbContext, ISpotService spotService, ICarService carService, IHubContext<ParkingHub> hub)
     {
+        _dbContext = dbContext;
         _carService = carService;
         _hub = hub;
         _config = config;
@@ -87,8 +89,12 @@ public class AutomationController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> SendAlert([FromBody] AlertDTO alertdto)
     {
+        var entryCar = _dbContext.EntryCars.FirstOrDefaultAsync(c => c.SpotId == alertdto.SpotId && c.ExitTime == null);
+        if (entryCar == null)
+            return NotFound(new ApiResponse<object>(null, "No car found in this spot", false));
+        var user = await _carService.GetBy(entryCar.Result.PlateNumber);
 
-        await _hub.Clients.User(1.ToString())
+        await _hub.Clients.User(user.UserId.ToString())
              .SendAsync("SendAlert", "Alert, Someone near your car يا أبو عمو.", "Please, Check on app.");
 
         return Ok(new ApiResponse<object>(null, "Success", true));
@@ -146,7 +152,7 @@ public class AutomationController : ControllerBase
             return BadRequest(new ApiResponse<object>(null, "Failed to add entry car", false));
         var car = await _carService.GetBy(entryCar.PlateNumber);
         if (car != null)
-        { 
+        {
             await _hub.Clients.User(car.UserId.ToString())
                  .SendAsync("SendAlert", "Thanks.", "We hope to see you soon.");
 
