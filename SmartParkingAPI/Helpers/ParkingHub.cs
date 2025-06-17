@@ -11,5 +11,10 @@ public class ParkingHub : Hub
     {
         await Clients.User(userId).SendAsync("SendAlert", title, message);
     }
+
+    public async Task SendAllEntryCars(IEnumerable<EntryCarDetailsDTO> entryCars)
+    {
+        await Clients.All.SendAsync("ReceiveAllEntryCars", entryCars);
+    }
 }
 

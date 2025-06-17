@@ -19,7 +19,7 @@ public class User
     //public Owner Owner { get; set; }
     public Role Role { get; set; }
     public Car Car { get; set; }
-    public ReservationRecord ReservationRecord { get; set; }
+    public List<ReservationRecord> ReservationRecord { get; set; }
     public UserVerificationCode VerificationCode { get; set; }
     public RefreshToken? RefreshToken { get; set; }
     public Employee Employee { get; set; }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartParking.API.Data;
 
@@ -11,9 +12,11 @@ using SmartParking.API.Data;
 namespace SmartParking.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250617184221_UpdateStatusforSpots")]
+    partial class UpdateStatusforSpots
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -336,7 +339,8 @@ namespace SmartParking.API.Migrations
 
                     b.HasIndex("GarageId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("ReservationRecords");
                 });
@@ -606,8 +610,8 @@ namespace SmartParking.API.Migrations
                         .IsRequired();
 
                     b.HasOne("SmartParkingAPI.Data.Models.User", "User")
-                        .WithMany("ReservationRecord")
-                        .HasForeignKey("UserId")
+                        .WithOne("ReservationRecord")
+                        .HasForeignKey("SmartParking.API.Data.Models.ReservationRecord", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -694,7 +698,8 @@ namespace SmartParking.API.Migrations
 
                     b.Navigation("RefreshToken");
 
-                    b.Navigation("ReservationRecord");
+                    b.Navigation("ReservationRecord")
+                        .IsRequired();
 
                     b.Navigation("VerificationCode")
                         .IsRequired();

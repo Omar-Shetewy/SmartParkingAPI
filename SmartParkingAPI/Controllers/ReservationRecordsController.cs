@@ -86,33 +86,35 @@ public class ReservationRecordsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddAsync([FromBody] ReservationRecordDTO dto)
     {
-        
+
         if (!ModelState.IsValid)
             return BadRequest(new ApiResponse<object>(ModelState, "", false));
 
         var isValidUser = await _userService.isValidUserAsync(dto.UserId);
 
         if (!isValidUser)
-            return BadRequest(new ApiResponse<object>(null, $"Invalid User Id:{dto.UserId}", false));
+            return BadRequest(new ApiResponse<object>(null, $"Invalid User", false));
 
         var isValidGarage = await _garageService.isValidGarage(dto.GarageId);
 
         if (!isValidGarage)
-            return BadRequest(new ApiResponse<object>(null, $"Invalid Garage Id:{dto.GarageId}", false));
+            return BadRequest(new ApiResponse<object>(null, $"Invalid Garage", false));
 
         var garage = await _garageService.GetBy(dto.GarageId);
 
         if (garage == null || garage.AvailableSpots <= 0)
             return BadRequest(new ApiResponse<object>(null, "No available spots in this garage", false));
 
+        var record = _mapper.Map<ReservationRecord>(dto);
+        await _reservationService.Add(record);
+
         var recordByUserId = await _reservationService.GetByUserId(dto.UserId);
 
         if (recordByUserId != null)
-            return BadRequest(new ApiResponse<object>(null, $"Invalid User ID: user ID {dto.UserId} is already assigned to another registration record", false));
-
-        var record = _mapper.Map<ReservationRecord>(dto);
-
-        await _reservationService.Add(record);
+        {
+            _reservationService.Delete(record);
+            return BadRequest(new ApiResponse<object>(null, $"Invalid User is already assigned to another registration record", false));
+        }
 
         var data = _mapper.Map<ReservationRecordDetailsDTO>(record);
 

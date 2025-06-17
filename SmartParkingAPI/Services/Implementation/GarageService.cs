@@ -1,4 +1,6 @@
-﻿namespace SmartParking.API.Services.Implementation;
+﻿using SmartParking.API.Data.Models;
+
+namespace SmartParking.API.Services.Implementation;
 
 public class GarageService : IGarageService
 {
@@ -31,6 +33,8 @@ public class GarageService : IGarageService
             entryCar.ExitTime = DateTime.Now;
             entryCar.IsPaid = true;
             _dbContext.EntryCars.Update(entryCar);
+            _dbContext.Garages.FirstOrDefault(g => g.GarageId == entryCar.GarageId).AvailableSpots++;
+
             await _dbContext.SaveChangesAsync();
         }
         return entryCar;
@@ -38,12 +42,16 @@ public class GarageService : IGarageService
 
     public async Task<EntryCar> UpdateCarPosition(string PlateNumber, int? spotId)
     {
-        var entryCar = await _dbContext.EntryCars.FirstOrDefaultAsync(e => e.PlateNumber == PlateNumber);
+        var entryCar = _dbContext.EntryCars.Where(e => e.PlateNumber == PlateNumber)
+            .OrderByDescending(c => c.EntryTime)
+            .FirstOrDefault();
+
         if (entryCar != null)
         {
             entryCar.SpotId = spotId;
 
             _dbContext.EntryCars.Update(entryCar);
+            _dbContext.Spots.FirstOrDefault(s => s.SpotId == spotId).Status = false;
             await _dbContext.SaveChangesAsync();
         }
         return entryCar;
@@ -98,22 +106,35 @@ public class GarageService : IGarageService
     {
         await _dbContext.EntryCars.AddAsync(entryCar);
         _dbContext.Garages.FirstOrDefault(g => g.GarageId == entryCar.GarageId).AvailableSpots--;
+
         await _dbContext.SaveChangesAsync();
         return entryCar;
     }
 
-    public async Task<int?> isPlateNumberInApp(string plateNumber)
+    public async Task<int?> GetUserUsingplate(string plateNumber)
     {
         var car = await _dbContext.Cars.FirstOrDefaultAsync(c => c.PlateNumber == plateNumber);
 
         if (car == null)
-        {
             return null;
-        }
         var userId = car.UserId;
 
-        bool Reserve = await _dbContext.ReservationRecords.AnyAsync(r => r.UserId == userId);
-        if (!Reserve) return null;
+        var entryCar = await _dbContext.EntryCars.FirstOrDefaultAsync(e => e.PlateNumber == plateNumber);
+        if (entryCar != null)
+        {
+            var Reserve = _dbContext.ReservationRecords.Where(u=>u.UserId == userId).OrderByDescending(o=>o.StartDate).FirstOrDefault();
+            if (Reserve != null)
+            {
+                Reserve.EndDate = DateTime.Now;
+                _dbContext.ReservationRecords.Update(Reserve);
+            }
+            entryCar.InApp = true;
+
+            _dbContext.EntryCars.Update(entryCar);
+            _dbContext.Garages.FirstOrDefault(g => g.GarageId == entryCar.GarageId).ReservedSpots--;
+            _dbContext.Garages.FirstOrDefault(g => g.GarageId == entryCar.GarageId).AvailableSpots++;
+            await _dbContext.SaveChangesAsync();
+        }
 
         return userId;
 
