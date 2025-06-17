@@ -61,7 +61,6 @@ builder.Services.AddScoped<ICarService, CarService>();
 builder.Services.AddScoped<IJobService, JobService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
-
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<IUserIdProvider, MyUserIdProvider>();
 
