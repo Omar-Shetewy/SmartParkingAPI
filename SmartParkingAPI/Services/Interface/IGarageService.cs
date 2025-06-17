@@ -15,6 +15,6 @@ public interface IGarageService
     Garage Update(Garage garage);
     Garage Delete(Garage garage);
     Task<bool> isValidGarage(int id);
-    Task<int?> isPlateNumberInApp(string plateNumber);
+    Task<int?> GetUserUsingplate(string plateNumber);
 
 }
