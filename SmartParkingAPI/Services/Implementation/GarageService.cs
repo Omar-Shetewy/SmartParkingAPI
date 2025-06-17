@@ -106,7 +106,6 @@ public class GarageService : IGarageService
     {
         var car = await _dbContext.Cars.FirstOrDefaultAsync(c => c.PlateNumber == entryCar.PlateNumber);
 
-        var entryCars = await _dbContext.EntryCars.FirstOrDefaultAsync(e => e.PlateNumber == entryCar.PlateNumber);
         if (car != null)
         {
             var userId = car.UserId;
@@ -117,16 +116,17 @@ public class GarageService : IGarageService
                 Reserve.EndDate = DateTime.Now;
                 _dbContext.ReservationRecords.Update(Reserve);
             }
-            entryCars.InApp = true;
 
-            _dbContext.EntryCars.AddAsync(entryCars);
+            _dbContext.EntryCars.AddAsync(entryCar);
             _dbContext.Garages.FirstOrDefault(g => g.GarageId == entryCar.GarageId).ReservedSpots--;
+
+            entryCar.InApp = true;
             await _dbContext.SaveChangesAsync();
             return entryCar;
 
         }
         _dbContext.Garages.FirstOrDefault(g => g.GarageId == entryCar.GarageId).AvailableSpots--;
-        await _dbContext.EntryCars.AddAsync(entryCars);
+        await _dbContext.EntryCars.AddAsync(entryCar);
 
         await _dbContext.SaveChangesAsync();
         return entryCar;
