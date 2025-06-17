@@ -42,12 +42,14 @@ public class GarageService : IGarageService
 
     public async Task<EntryCar> UpdateCarPosition(string PlateNumber, int? spotId)
     {
-        var entryCar = await _dbContext.EntryCars.FirstOrDefaultAsync(e => e.PlateNumber == PlateNumber);
+        var entryCar = _dbContext.EntryCars.LastOrDefault(e => e.PlateNumber == PlateNumber);
         if (entryCar != null)
         {
+
             entryCar.SpotId = spotId;
 
             _dbContext.EntryCars.Update(entryCar);
+            _dbContext.Spots.FirstOrDefault(s => s.SpotId == spotId).Status = false;
             await _dbContext.SaveChangesAsync();
         }
         return entryCar;
