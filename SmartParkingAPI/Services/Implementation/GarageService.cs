@@ -104,8 +104,29 @@ public class GarageService : IGarageService
 
     public async Task<EntryCar> AddEntryCar(EntryCar entryCar)
     {
-        await _dbContext.EntryCars.AddAsync(entryCar);
+        var car = await _dbContext.Cars.FirstOrDefaultAsync(c => c.PlateNumber == entryCar.PlateNumber);
+
+        var entryCars = await _dbContext.EntryCars.FirstOrDefaultAsync(e => e.PlateNumber == entryCar.PlateNumber);
+        if (car != null)
+        {
+            var userId = car.UserId;
+
+            var Reserve = _dbContext.ReservationRecords.Where(u => u.UserId == userId).OrderByDescending(o => o.StartDate).FirstOrDefault();
+            if (Reserve != null)
+            {
+                Reserve.EndDate = DateTime.Now;
+                _dbContext.ReservationRecords.Update(Reserve);
+            }
+            entryCars.InApp = true;
+
+            _dbContext.EntryCars.AddAsync(entryCars);
+            _dbContext.Garages.FirstOrDefault(g => g.GarageId == entryCar.GarageId).ReservedSpots--;
+            await _dbContext.SaveChangesAsync();
+            return entryCar;
+
+        }
         _dbContext.Garages.FirstOrDefault(g => g.GarageId == entryCar.GarageId).AvailableSpots--;
+        await _dbContext.EntryCars.AddAsync(entryCars);
 
         await _dbContext.SaveChangesAsync();
         return entryCar;
@@ -118,23 +139,6 @@ public class GarageService : IGarageService
         if (car == null)
             return null;
         var userId = car.UserId;
-
-        var entryCar = await _dbContext.EntryCars.FirstOrDefaultAsync(e => e.PlateNumber == plateNumber);
-        if (entryCar != null)
-        {
-            var Reserve = _dbContext.ReservationRecords.Where(u=>u.UserId == userId).OrderByDescending(o=>o.StartDate).FirstOrDefault();
-            if (Reserve != null)
-            {
-                Reserve.EndDate = DateTime.Now;
-                _dbContext.ReservationRecords.Update(Reserve);
-            }
-            entryCar.InApp = true;
-
-            _dbContext.EntryCars.Update(entryCar);
-            _dbContext.Garages.FirstOrDefault(g => g.GarageId == entryCar.GarageId).ReservedSpots--;
-            _dbContext.Garages.FirstOrDefault(g => g.GarageId == entryCar.GarageId).AvailableSpots++;
-            await _dbContext.SaveChangesAsync();
-        }
 
         return userId;
 
