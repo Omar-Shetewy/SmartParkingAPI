@@ -21,17 +21,17 @@ namespace SmartParking.API.Migrations
             migrationBuilder.RenameColumn(
                 name: "ReservationRecordId",
                 table: "ReservationRecords",
-                newName: "ReservationId");
+                newName: "ReservationRecordId");
 
             migrationBuilder.RenameColumn(
                 name: "ReservationRecordId",
                 table: "Payments",
-                newName: "ReservationId");
+                newName: "ReservationRecordId");
 
             migrationBuilder.RenameIndex(
                 name: "IX_Payments_ReservationRecordId",
                 table: "Payments",
-                newName: "IX_Payments_ReservationId");
+                newName: "IX_Payments_ReservationRecordId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserVerificationCodes_UserId",
@@ -40,11 +40,11 @@ namespace SmartParking.API.Migrations
                 unique: true);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Payments_ReservationRecords_ReservationId",
+                name: "FK_Payments_ReservationRecords_ReservationRecordId",
                 table: "Payments",
-                column: "ReservationId",
+                column: "ReservationRecordId",
                 principalTable: "ReservationRecords",
-                principalColumn: "ReservationId",
+                principalColumn: "ReservationRecordId",
                 onDelete: ReferentialAction.Cascade);
         }
 
@@ -52,7 +52,7 @@ namespace SmartParking.API.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Payments_ReservationRecords_ReservationId",
+                name: "FK_Payments_ReservationRecords_ReservationRecordId",
                 table: "Payments");
 
             migrationBuilder.DropIndex(
@@ -60,17 +60,17 @@ namespace SmartParking.API.Migrations
                 table: "UserVerificationCodes");
 
             migrationBuilder.RenameColumn(
-                name: "ReservationId",
+                name: "ReservationRecordId",
                 table: "ReservationRecords",
                 newName: "ReservationRecordId");
 
             migrationBuilder.RenameColumn(
-                name: "ReservationId",
+                name: "ReservationRecordId",
                 table: "Payments",
                 newName: "ReservationRecordId");
 
             migrationBuilder.RenameIndex(
-                name: "IX_Payments_ReservationId",
+                name: "IX_Payments_ReservationRecordId",
                 table: "Payments",
                 newName: "IX_Payments_ReservationRecordId");
 
