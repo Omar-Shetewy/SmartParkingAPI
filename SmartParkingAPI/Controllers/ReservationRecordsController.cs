@@ -86,7 +86,7 @@ public class ReservationRecordsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddAsync([FromBody] ReservationRecordDTO dto)
     {
-        
+
         if (!ModelState.IsValid)
             return BadRequest(new ApiResponse<object>(ModelState, "", false));
 
@@ -106,14 +106,15 @@ public class ReservationRecordsController : ControllerBase
             return BadRequest(new ApiResponse<object>(null, "No available spots in this garage", false));
 
         var record = _mapper.Map<ReservationRecord>(dto);
-
         await _reservationService.Add(record);
 
         var recordByUserId = await _reservationService.GetByUserId(dto.UserId);
 
-        if (recordByUserId == null)
+        if (recordByUserId != null)
+        {
+            _reservationService.Delete(record);
             return BadRequest(new ApiResponse<object>(null, $"Invalid User is already assigned to another registration record", false));
-
+        }
 
         var data = _mapper.Map<ReservationRecordDetailsDTO>(record);
 

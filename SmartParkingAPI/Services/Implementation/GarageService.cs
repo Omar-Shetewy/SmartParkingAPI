@@ -122,7 +122,7 @@ public class GarageService : IGarageService
         var entryCar = await _dbContext.EntryCars.FirstOrDefaultAsync(e => e.PlateNumber == plateNumber);
         if (entryCar != null)
         {
-            var Reserve = _dbContext.ReservationRecords.FirstOrDefault(r => r.UserId == userId);
+            var Reserve = _dbContext.ReservationRecords.Where(u=>u.UserId == userId).OrderByDescending(o=>o.StartDate).FirstOrDefault();
             if (Reserve != null)
             {
                 Reserve.EndDate = DateTime.Now;
