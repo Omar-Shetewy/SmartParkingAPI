@@ -53,6 +53,7 @@ public class UserService : IUserService
             return null;
 
         var owner = _dbContext.Owners.FirstOrDefault(o => o.UserId == user.UserId);
+
         var role = _dbContext.Roles.FirstOrDefault(r => r.Id == user.RoleId);
 
         if (role == null)
@@ -67,13 +68,14 @@ public class UserService : IUserService
             _dbContext.Owners.Add(newOwner);
             _dbContext.SaveChanges();
         }
-        else if (user.Role.RoleName != "Owner" && owner != null)
+        else if (role.RoleName != "Owner" && owner != null)
         {
-            _dbContext.Owners.Remove(owner);
+            _dbContext.Owners.Remove(owner); // Think about it again becauses of Garage has owner id 
             _dbContext.SaveChanges();
         }
-        // Continue in Employee 
-        return null; // temporary return
+
+            // Continue in Employee 
+            return null; // temporary return
     }
 
     public User UpdatePass(User user, string password)
