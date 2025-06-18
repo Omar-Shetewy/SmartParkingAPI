@@ -36,7 +36,7 @@ public class SpotService : ISpotService
 
     public async Task<bool> IsValidSpot(int? spotId)
     {
-        return await _dbContext.Spots.AnyAsync(s => s.SpotId == spotId);
+        return await _dbContext.Spots.AnyAsync(s => s.SpotId == spotId && s.Status == false);
     }
 }
 

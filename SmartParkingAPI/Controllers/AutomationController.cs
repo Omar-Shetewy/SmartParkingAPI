@@ -1,4 +1,8 @@
-﻿namespace SmartParking.API.Controllers;
+﻿using SmartParking.API.Data.DTO;
+using SmartParking.API.Data.Models;
+using SmartParkingAPI.Data.Models;
+
+namespace SmartParking.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -7,11 +11,13 @@ public class AutomationController : ControllerBase
     private readonly IGarageService _garageService;
     private readonly ISpotService _spotService;
     private readonly ICarService _carService;
+    private readonly IUserService _userService;
     private readonly IMapper _mapper;
     private readonly IConfiguration _config;
     private readonly IHubContext<ParkingHub> _hub;
-    public AutomationController(IConfiguration config, IGarageService garageService, IMapper mapper, ISpotService spotService, ICarService carService, IHubContext<ParkingHub> hub)
+    public AutomationController(IConfiguration config, IGarageService garageService, IUserService userService, IMapper mapper, ISpotService spotService, ICarService carService, IHubContext<ParkingHub> hub)
     {
+        _userService = userService;
         _carService = carService;
         _hub = hub;
         _config = config;
@@ -60,6 +66,9 @@ public class AutomationController : ControllerBase
 
         if (!isValidGarage)
             return BadRequest(new ApiResponse<object>(null, $"Invalid Garage", false));
+        var allcars = await _garageService.GetAllCars(entryCarDTO.GarageId);
+        if (allcars != null && allcars.Any(c => c.PlateNumber == entryCarDTO.PlateNumber && c.ExitTime == null))
+            return BadRequest(new ApiResponse<object>(null, "This car is already in the garage", false));
 
         var entryCar = _mapper.Map<EntryCar>(entryCarDTO);
 
@@ -67,14 +76,13 @@ public class AutomationController : ControllerBase
 
         if (result == null)
             return BadRequest(new ApiResponse<object>(null, "Failed to add entry car", false));
-
-        var entryCars = await _garageService.GetAllCars(entryCar.GarageId);
-        if (entryCars != null)
+        var userid = await _garageService.GetUserUsingplate(entryCarDTO.PlateNumber);
+        if (userid != null)
         {
-            await _hub.Clients.User(2.ToString())
-                .SendAsync("ReceiveAllEntryCars", entryCars);
+            var user = await _userService.GetByAsync(userid.Value);
+            await _hub.Clients.User(userid.ToString())
+                .SendAsync("SendAlert", $"Welcome! {user.FirstName}", "your car is in good hands.");
         }
-
         return Ok(new ApiResponse<object>(null, "Welcome :)", true));
 
     }
@@ -87,11 +95,13 @@ public class AutomationController : ControllerBase
         var entryCar = await _garageService.GetEntrycarBySpotId(alertdto.SpotId);
         if (entryCar == null)
             return BadRequest(new ApiResponse<object>(null, "No car found in this spot", false));
-        var user = await _carService.GetBy(entryCar.PlateNumber);
-        if (user != null)
+        var car = await _carService.GetBy(entryCar.PlateNumber);
+        if (car != null)
+        {
+            var user = await _userService.GetByAsync(car.UserId);
             await _hub.Clients.User(user.UserId.ToString())
-                 .SendAsync("SendAlert", "Alert, Someone near your car يا أبو عمو.", "Please, Check on app.");
-
+                 .SendAsync("SendAlert", $"Alert! {user.FirstName}, Someone near your car.", "Your safety is our priority. Check on app, Please.");
+        }
         return Ok(new ApiResponse<object>(null, "Success", true));
     }
 
@@ -107,7 +117,7 @@ public class AutomationController : ControllerBase
 
         var isValidSpot = await _spotService.IsValidSpot(carPositionDTO.SpotId);
         if (!isValidSpot)
-            return BadRequest(new ApiResponse<object>(null, $"Invalid Spot ID {carPositionDTO.SpotId}", false));
+            return BadRequest(new ApiResponse<object>(null, $"This spot is not avaliable", false));
 
         var carPosition = _mapper.Map<EntryCar>(carPositionDTO);
 
@@ -119,9 +129,12 @@ public class AutomationController : ControllerBase
         var userid = await _garageService.GetUserUsingplate(carPositionDTO.PlateNumber);
         if (userid != null)
         {
+            var user = await _userService.GetByAsync(userid.Value);
             var spot = _spotService.GetById(carPositionDTO.SpotId);
             await _hub.Clients.User(userid.ToString())
-          .SendAsync("ReceiveSpot", spot.Result.Code);
+                    .SendAsync("ReceiveSpot", spot.Result.Code);
+            await _hub.Clients.User(userid.ToString())
+                 .SendAsync("SendAlert", $"{user.FirstName} Enjoy your time", $"your car is in {spot.Result.Code}, We’ll notify you if anything changes.");
         }
 
 
@@ -148,8 +161,9 @@ public class AutomationController : ControllerBase
         var car = await _carService.GetBy(entryCar.PlateNumber);
         if (car != null)
         {
+            var user = await _userService.GetByAsync(car.UserId);
             await _hub.Clients.User(car.UserId.ToString())
-                 .SendAsync("SendAlert", "Thanks.", "We hope to see you soon.");
+                 .SendAsync("SendAlert", $"Thanks {user.FirstName} for using our service!.", "Thanks for parking with us, We hope to see you soon.");
 
             await _hub.Clients.User(car.UserId.ToString())
                  .SendAsync("ReceiveSpot", "");

@@ -35,6 +35,7 @@ public class GarageService : IGarageService
             entryCar.IsPaid = true;
             _dbContext.EntryCars.Update(entryCar);
             _dbContext.Garages.FirstOrDefault(g => g.GarageId == entryCar.GarageId).AvailableSpots++;
+            _dbContext.Spots.FirstOrDefault(s => s.SpotId == entryCar.SpotId).Status = false;
 
             await _dbContext.SaveChangesAsync();
         }
@@ -52,7 +53,7 @@ public class GarageService : IGarageService
             entryCar.SpotId = spotId;
 
             _dbContext.EntryCars.Update(entryCar);
-            _dbContext.Spots.FirstOrDefault(s => s.SpotId == spotId).Status = false;
+            _dbContext.Spots.FirstOrDefault(s => s.SpotId == spotId).Status = true;
             await _dbContext.SaveChangesAsync();
         }
         return entryCar;
@@ -112,12 +113,17 @@ public class GarageService : IGarageService
             var userId = car.UserId;
 
             var Reserve = _dbContext.ReservationRecords.Where(u => u.UserId == userId).OrderByDescending(o => o.StartDate).FirstOrDefault();
-            if (Reserve != null)
+            if (Reserve == null)
             {
-                Reserve.EndDate = DateTime.Now;
-                _dbContext.ReservationRecords.Update(Reserve);
+                _dbContext.Garages.FirstOrDefault(g => g.GarageId == entryCar.GarageId).AvailableSpots--;
+                await _dbContext.EntryCars.AddAsync(entryCar);
+                entryCar.InApp = true;
+                await _dbContext.SaveChangesAsync();
+                return entryCar;
             }
 
+            Reserve.EndDate = DateTime.Now;
+            _dbContext.ReservationRecords.Update(Reserve);
             _dbContext.EntryCars.AddAsync(entryCar);
             _dbContext.Garages.FirstOrDefault(g => g.GarageId == entryCar.GarageId).ReservedSpots--;
 
