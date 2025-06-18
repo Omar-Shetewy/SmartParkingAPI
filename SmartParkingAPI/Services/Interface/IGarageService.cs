@@ -7,6 +7,7 @@ public interface IGarageService
     Task<Garage> GetBy(string name);
     Task<IEnumerable<Spot>> GetAllSpots(int garageId);
     Task<IEnumerable<EntryCar>> GetAllCars(int garageId);
+   Task<EntryCar> GetEntrycarBySpotId(int id);
     Task<EntryCar> AddEntryCar(EntryCar entryCar);
     Task<EntryCar> UpdateCarPosition(string PlateNumber,int? spotId);
     Task<EntryCar> UpdateExitCar(string PlateNumber);

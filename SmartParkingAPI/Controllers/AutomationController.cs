@@ -1,22 +1,17 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SmartParking.API.Data.DTO;
-
-namespace SmartParking.API.Controllers;
+﻿namespace SmartParking.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
 public class AutomationController : ControllerBase
 {
     private readonly IGarageService _garageService;
-    private readonly ApplicationDbContext _dbContext;
     private readonly ISpotService _spotService;
     private readonly ICarService _carService;
     private readonly IMapper _mapper;
     private readonly IConfiguration _config;
     private readonly IHubContext<ParkingHub> _hub;
-    public AutomationController(IConfiguration config, IGarageService garageService, IMapper mapper, ApplicationDbContext dbContext, ISpotService spotService, ICarService carService, IHubContext<ParkingHub> hub)
+    public AutomationController(IConfiguration config, IGarageService garageService, IMapper mapper, ISpotService spotService, ICarService carService, IHubContext<ParkingHub> hub)
     {
-        _dbContext = dbContext;
         _carService = carService;
         _hub = hub;
         _config = config;
@@ -86,16 +81,16 @@ public class AutomationController : ControllerBase
     [HttpPost("SendAlert")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> SendAlert([FromBody] AlertDTO alertdto)
     {
-        var entryCar = _dbContext.EntryCars.FirstOrDefaultAsync(c => c.SpotId == alertdto.SpotId && c.ExitTime == null);
+        var entryCar = await _garageService.GetEntrycarBySpotId(alertdto.SpotId);
         if (entryCar == null)
-            return NotFound(new ApiResponse<object>(null, "No car found in this spot", false));
-        var user = await _carService.GetBy(entryCar.Result.PlateNumber);
-
-        await _hub.Clients.User(user.UserId.ToString())
-             .SendAsync("SendAlert", "Alert, Someone near your car يا أبو عمو.", "Please, Check on app.");
+            return BadRequest(new ApiResponse<object>(null, "No car found in this spot", false));
+        var user = await _carService.GetBy(entryCar.PlateNumber);
+        if (user != null)
+            await _hub.Clients.User(user.UserId.ToString())
+                 .SendAsync("SendAlert", "Alert, Someone near your car يا أبو عمو.", "Please, Check on app.");
 
         return Ok(new ApiResponse<object>(null, "Success", true));
     }

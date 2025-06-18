@@ -1,4 +1,5 @@
-﻿using SmartParking.API.Data.Models;
+﻿using SmartParking.API.Data.DTO;
+using SmartParking.API.Data.Models;
 
 namespace SmartParking.API.Services.Implementation;
 
@@ -27,7 +28,7 @@ public class GarageService : IGarageService
 
     public async Task<EntryCar> UpdateExitCar(string PlateNumber)
     {
-        var entryCar = await _dbContext.EntryCars.FirstOrDefaultAsync(e => e.PlateNumber == PlateNumber);
+        var entryCar = await _dbContext.EntryCars.FirstOrDefaultAsync(e => e.PlateNumber == PlateNumber && e.ExitTime == null);
         if (entryCar != null)
         {
             entryCar.ExitTime = DateTime.Now;
@@ -131,7 +132,6 @@ public class GarageService : IGarageService
         await _dbContext.SaveChangesAsync();
         return entryCar;
     }
-
     public async Task<int?> GetUserUsingplate(string plateNumber)
     {
         var car = await _dbContext.Cars.FirstOrDefaultAsync(c => c.PlateNumber == plateNumber);
@@ -143,4 +143,13 @@ public class GarageService : IGarageService
         return userId;
 
     }
+
+    public async Task<EntryCar> GetEntrycarBySpotId(int id)
+    {
+        var entryCar = await _dbContext.EntryCars.FirstOrDefaultAsync(c => c.SpotId == id && c.ExitTime == null);
+
+        return entryCar;
+    }
 }
+
+
