@@ -150,18 +150,21 @@ public class AutomationController : ControllerBase
     [Route("CarExit")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CarExit([FromBody] EntryCarDTO entryCarDTO)
+    public async Task<IActionResult> CarExit([FromBody] ExitCarDTO exitCarDTO)
     {
-        if (entryCarDTO == null)
+        if(exitCarDTO.PlateNumber != null)
+            return BadRequest(new ApiResponse<object>(null, "This car is in Garage", false));
+        if (exitCarDTO == null)
             return BadRequest(new ApiResponse<object>(null, "Entry car data is required", false));
-        var isValidGarage = await _garageService.isValidGarage(entryCarDTO.GarageId);
+        var isValidGarage = await _garageService.isValidGarage(exitCarDTO.GarageId);
         if (!isValidGarage)
-            return BadRequest(new ApiResponse<object>(null, $"Invalid Garage ID {entryCarDTO.GarageId}", false));
-        var entryCar = _mapper.Map<EntryCar>(entryCarDTO);
-        var result = await _garageService.UpdateExitCar(entryCar.PlateNumber);
+            return BadRequest(new ApiResponse<object>(null, $"Invalid Garage", false));
+        var entryCar = _mapper.Map<EntryCar>(exitCarDTO);
+
+        var result = await _garageService.UpdateExitCar(entryCar.SpotId);
         if (result == null)
-            return BadRequest(new ApiResponse<object>(null, "Failed to add entry car", false));
-        var car = await _carService.GetBy(entryCar.PlateNumber);
+            return BadRequest(new ApiResponse<object>(null, "Failed to add Exit car", false));
+        var car = await _carService.GetBy(result.PlateNumber);
         if (car != null)
         {
             var user = await _userService.GetByAsync(car.UserId);

@@ -10,7 +10,7 @@ public interface IGarageService
    Task<EntryCar> GetEntrycarBySpotId(int id);
     Task<EntryCar> AddEntryCar(EntryCar entryCar);
     Task<EntryCar> UpdateCarPosition(string PlateNumber,int? spotId);
-    Task<EntryCar> UpdateExitCar(string PlateNumber);
+    Task<EntryCar> UpdateExitCar(int? spotId);
     bool IsAvailableSpots(int GarageId);
     Task<Garage> Add(Garage garage);
     Garage Update(Garage garage);
