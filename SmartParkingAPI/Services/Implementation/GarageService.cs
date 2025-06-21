@@ -101,7 +101,7 @@ public class GarageService : IGarageService
 
     public async Task<IEnumerable<EntryCar>> GetAllCars(int garageId)
     {
-        return await _dbContext.EntryCars.Where(s => s.GarageId == garageId).ToListAsync();
+        return await _dbContext.EntryCars.Where(s => s.GarageId == garageId).OrderByDescending(c =>c.EntryTime).ToListAsync();
     }
 
     public async Task<EntryCar> AddEntryCar(EntryCar entryCar)

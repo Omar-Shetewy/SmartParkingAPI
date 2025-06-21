@@ -83,6 +83,8 @@ public class AutomationController : ControllerBase
             await _hub.Clients.User(userid.ToString())
                 .SendAsync("SendAlert", $"Welcome! {user.FirstName}", "your car is in good hands.");
         }
+        await _hub.Clients.All.SendAsync("ReceiveAllEntryCars", 1);
+
         return Ok(new ApiResponse<object>(null, "Welcome :)", true));
 
     }
@@ -136,7 +138,8 @@ public class AutomationController : ControllerBase
             await _hub.Clients.User(userid.ToString())
                  .SendAsync("SendAlert", $"{user.FirstName} Enjoy your time", $"your car is in {spot.Result.Code}, We’ll notify you if anything changes.");
         }
-
+        await _hub.Clients.All.SendAsync("ReceiveEntryCar", carPositionDTO);
+        await _hub.Clients.All.SendAsync("ReceiveAllEntryCars", 1);
 
         return Ok(new ApiResponse<object>(null, "Success", true));
 
@@ -169,7 +172,8 @@ public class AutomationController : ControllerBase
                  .SendAsync("ReceiveSpot", "");
 
         }
-
+        await _hub.Clients.All.SendAsync("ReceiveExitCar", entryCar.SpotId);
+        await _hub.Clients.All.SendAsync("ReceiveAllEntryCars", 1);
         return Ok(new ApiResponse<object>(null, "Success", true));
     }
 }
