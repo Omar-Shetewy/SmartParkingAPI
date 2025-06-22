@@ -20,8 +20,6 @@ public class MappingProfile : Profile
         CreateMap<EntryCarDTO, EntryCar>();
         CreateMap<EntryCar, EntryCarDTO>();
         CreateMap<CarPositionDTO, EntryCar>();
-        CreateMap<ExitCarDTO,EntryCar>();
-        CreateMap<EntryCar, ExitCarDTO>();
 
         CreateMap<Spot, SpotDetailsDTO>();
         CreateMap<Spot, SpotDTO>();
