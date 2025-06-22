@@ -150,15 +150,15 @@ public class AutomationController : ControllerBase
     [Route("CarExit")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CarExit([FromBody] ExitCarDTO exitCarDTO)
+    public async Task<IActionResult> CarExit([FromBody] CarPositionDTO exitCarDTO)
     {
         if(exitCarDTO.PlateNumber != null)
             return BadRequest(new ApiResponse<object>(null, "This car is in Garage", false));
         if (exitCarDTO == null)
             return BadRequest(new ApiResponse<object>(null, "Entry car data is required", false));
-        var isValidGarage = await _garageService.isValidGarage(exitCarDTO.GarageId);
-        if (!isValidGarage)
-            return BadRequest(new ApiResponse<object>(null, $"Invalid Garage", false));
+        //var isValidGarage = await _garageService.isValidGarage(exitCarDTO.GarageId);
+        //if (!isValidGarage)
+        //    return BadRequest(new ApiResponse<object>(null, $"Invalid Garage", false));
         var entryCar = _mapper.Map<EntryCar>(exitCarDTO);
 
         var result = await _garageService.UpdateExitCar(entryCar.SpotId);
